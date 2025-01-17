@@ -1,0 +1,163 @@
+<div class="max-w-4xl mx-auto p-md">
+  <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-lg">
+    <!-- Header -->
+    <div class="px-lg py-md border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">
+        {{ isEditMode() ? 'Edit' : 'Create' }} Customer
+      </h2>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="customerForm" (ngSubmit)="onSubmit()" class="p-lg">
+      @if (error()) {
+        <div class="bg-error-light text-error-dark p-md rounded-md mb-md">
+          {{ error() }}
+        </div>
+      }
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+        <!-- Left Column -->
+        <div class="space-y-md">
+          <!-- Name Field -->
+          <div class="space-y-sm">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Name *
+            </label>
+            <input
+              type="text"
+              formControlName="name"
+              class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                     bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              [class.border-error-DEFAULT]="customerForm.get('name')?.invalid && 
+                                         customerForm.get('name')?.touched"
+            >
+            @if (customerForm.get('name')?.invalid && customerForm.get('name')?.touched) {
+              <p class="text-sm text-error-DEFAULT">Name is required</p>
+            }
+          </div>
+
+          <!-- Email Field -->
+          <div class="space-y-sm">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Email *
+            </label>
+            <input
+              type="email"
+              formControlName="email"
+              class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                     bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              [class.border-error-DEFAULT]="customerForm.get('email')?.invalid && 
+                                         customerForm.get('email')?.touched"
+            >
+            @if (customerForm.get('email')?.invalid && customerForm.get('email')?.touched) {
+              <p class="text-sm text-error-DEFAULT">
+                Please enter a valid email address
+              </p>
+            }
+          </div>
+
+          <!-- Phone Field -->
+          <div class="space-y-sm">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Phone *
+            </label>
+            <input
+              type="tel"
+              formControlName="phone"
+              class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                     bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              [class.border-error-DEFAULT]="customerForm.get('phone')?.invalid && 
+                                         customerForm.get('phone')?.touched"
+            >
+            @if (customerForm.get('phone')?.invalid && customerForm.get('phone')?.touched) {
+              <p class="text-sm text-error-DEFAULT">Phone number is required</p>
+            }
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="space-y-md">
+          <!-- Address Field -->
+          <div class="space-y-sm">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Address *
+            </label>
+            <textarea
+              formControlName="address"
+              rows="3"
+              class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                     bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              [class.border-error-DEFAULT]="customerForm.get('address')?.invalid && 
+                                         customerForm.get('address')?.touched"
+            ></textarea>
+            @if (customerForm.get('address')?.invalid && customerForm.get('address')?.touched) {
+              <p class="text-sm text-error-DEFAULT">Address is required</p>
+            }
+          </div>
+
+          <!-- Status Field -->
+          <div class="space-y-sm">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Status
+            </label>
+            <select
+              formControlName="status"
+              class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                     bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+
+          <!-- Notes Field -->
+          <div class="space-y-sm">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Notes
+            </label>
+            <textarea
+              formControlName="notes"
+              rows="3"
+              class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                     bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex justify-end space-x-md mt-lg pt-lg border-t border-gray-200 dark:border-gray-700">
+        <button
+          type="button"
+          routerLink="/admin/customers"
+          class="px-lg py-sm rounded-lg border border-gray-300 dark:border-gray-600
+                 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-surface-dark-primary
+                 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="customerForm.invalid || isLoading()"
+          class="px-lg py-sm rounded-lg bg-primary-500 text-white
+                 hover:bg-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                 disabled:opacity-50 disabled:cursor-not-allowed
+                 transition-colors"
+        >
+          @if (isLoading()) {
+            <span>Saving...</span>
+          } @else {
+            <span>{{ isEditMode() ? 'Update' : 'Create' }} Customer</span>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

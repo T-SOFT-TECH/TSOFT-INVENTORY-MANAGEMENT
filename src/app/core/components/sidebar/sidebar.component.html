@@ -1,0 +1,37 @@
+<aside class="w-64 bg-surface-light-secondary dark:bg-surface-dark-secondary p-md fixed h-full left-0 top-16">
+  <nav class="space-y-sm">
+    @if (isAdmin) {
+      <a routerLink="/admin/dashboard" 
+         routerLinkActive="bg-primary-100 dark:bg-primary-900 text-primary-600"
+         class="flex items-center p-sm rounded-md hover:bg-primary-50 dark:hover:bg-primary-900 transition-colors">
+        <span class="material-icons mr-sm">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/admin/categories" 
+         routerLinkActive="bg-primary-100 dark:bg-primary-900 text-primary-600"
+         class="flex items-center p-sm rounded-md hover:bg-primary-50 dark:hover:bg-primary-900 transition-colors">
+        <span class="material-icons mr-sm">category</span>
+        <span>Categories</span>
+      </a>
+      <a routerLink="/admin/inventory" 
+         routerLinkActive="bg-primary-100 dark:bg-primary-900 text-primary-600"
+         class="flex items-center p-sm rounded-md hover:bg-primary-50 dark:hover:bg-primary-900 transition-colors">
+        <span class="material-icons mr-sm">inventory</span>
+        <span>Inventory</span>
+      </a>
+    } @else {
+      <a routerLink="/sales/new-sale" 
+         routerLinkActive="bg-primary-100 dark:bg-primary-900 text-primary-600"
+         class="flex items-center p-sm rounded-md hover:bg-primary-50 dark:hover:bg-primary-900 transition-colors">
+        <span class="material-icons mr-sm">point_of_sale</span>
+        <span>New Sale</span>
+      </a>
+      <a routerLink="/sales/history" 
+         routerLinkActive="bg-primary-100 dark:bg-primary-900 text-primary-600"
+         class="flex items-center p-sm rounded-md hover:bg-primary-50 dark:hover:bg-primary-900 transition-colors">
+        <span class="material-icons mr-sm">history</span>
+        <span>Sales History</span>
+      </a>
+    }
+  </nav>
+</aside> 

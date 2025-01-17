@@ -1,0 +1,215 @@
+<div class="p-md">
+  <!-- Header -->
+  <div class="mb-lg">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-sm">
+      Dashboard
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400">
+      Welcome back! Here's an overview of your business
+    </p>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex justify-center items-center h-64">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+    </div>
+  } @else if (error()) {
+    <div class="bg-error-light text-error-dark p-md rounded-lg">
+      {{ error() }}
+    </div>
+  } @else {
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md mb-lg">
+      <!-- Today's Sales -->
+      <div class="bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">
+              Today's Sales
+            </p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ summary().todaySales }}
+            </p>
+          </div>
+          <div class="w-12 h-12 bg-primary-50 dark:bg-primary-900/20 rounded-full 
+                      flex items-center justify-center">
+            <span class="material-icons text-primary-500">shopping_cart</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today's Revenue -->
+      <div class="bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">
+              Today's Revenue
+            </p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ formatCurrency(summary().todayRevenue) }}
+            </p>
+          </div>
+          <div class="w-12 h-12 bg-success-50 dark:bg-success-900/20 rounded-full 
+                      flex items-center justify-center">
+            <span class="material-icons text-success-500">payments</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Customers -->
+      <div class="bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">
+              Active Customers
+            </p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ summary().activeCustomers }}
+            </p>
+          </div>
+          <div class="w-12 h-12 bg-info-50 dark:bg-info-900/20 rounded-full 
+                      flex items-center justify-center">
+            <span class="material-icons text-info-500">people</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Low Stock Items -->
+      <div class="bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">
+              Low Stock Items
+            </p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ summary().lowStockItems }}
+            </p>
+          </div>
+          <div class="w-12 h-12 bg-warning-50 dark:bg-warning-900/20 rounded-full 
+                      flex items-center justify-center">
+            <span class="material-icons text-warning-500">inventory</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+      <!-- Sales Trend Chart -->
+      <div class="lg:col-span-2 bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-md">
+          Sales Trend
+        </h3>
+        <div class="h-80">
+          <canvas id="salesTrendChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Recent Sales -->
+      <div class="bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
+        <div class="flex items-center justify-between mb-md">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+            Recent Sales
+          </h3>
+          <a 
+            routerLink="/sales/history"
+            class="text-sm text-primary-500 hover:text-primary-600"
+          >
+            View All
+          </a>
+        </div>
+        
+        <div class="space-y-sm">
+          @for (sale of summary().recentSales; track sale.id) {
+            <div class="flex items-center justify-between py-sm border-b 
+                        border-gray-100 dark:border-gray-700 last:border-0">
+              <div>
+                <p class="text-sm font-medium text-gray-900 dark:text-white">
+                  {{ sale.customer.name || 'Walk-in Customer' }}
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  {{ formatDate(sale.date) }}
+                </p>
+              </div>
+              <div class="text-right">
+                <p class="text-sm font-medium text-gray-900 dark:text-white">
+                  {{ formatCurrency(sale.totalAmount) }}
+                </p>
+                <span class="inline-flex items-center px-sm py-xs text-xs rounded-full
+                           {{ sale.paymentStatus === 'paid' 
+                              ? 'bg-success-100 text-success-800 dark:bg-success-900/20 dark:text-success-300'
+                              : 'bg-warning-100 text-warning-800 dark:bg-warning-900/20 dark:text-warning-300' }}">
+                  {{ sale.paymentStatus }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Products -->
+    <div class="mt-lg bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-md">
+        Top Products
+      </h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead>
+            <tr>
+              <th class="px-md py-sm text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                Product
+              </th>
+              <th class="px-md py-sm text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                Sold
+              </th>
+              <th class="px-md py-sm text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                Revenue
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            @for (product of summary().topProducts; track product.id) {
+              <tr>
+                <td class="px-md py-sm whitespace-nowrap">
+                  <div class="flex items-center">
+                    @if (product.imageUrl) {
+                      <img 
+                        [src]="product.imageUrl" 
+                        class="w-10 h-10 rounded-lg object-cover"
+                        alt="{{ product.name }}"
+                      >
+                    } @else {
+                      <div class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 
+                                flex items-center justify-center">
+                        <span class="material-icons text-gray-400">inventory_2</span>
+                      </div>
+                    }
+                    <div class="ml-md">
+                      <p class="text-sm font-medium text-gray-900 dark:text-white">
+                        {{ product.name }}
+                      </p>
+                      <p class="text-sm text-gray-500 dark:text-gray-400">
+                        SKU: {{ product.sku }}
+                      </p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-md py-sm whitespace-nowrap">
+                  <p class="text-sm text-gray-900 dark:text-white">
+                    {{ product.totalQuantitySold }} units
+                  </p>
+                </td>
+                <td class="px-md py-sm whitespace-nowrap">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white">
+                    {{ formatCurrency(product.totalRevenue) }}
+                  </p>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div> 

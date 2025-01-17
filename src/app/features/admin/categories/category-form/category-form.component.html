@@ -1,0 +1,122 @@
+<div class="max-w-2xl mx-auto p-md">
+  <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-lg">
+    <!-- Header -->
+    <div class="px-lg py-md border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">
+        {{ isEditMode() ? 'Edit' : 'Create' }} Category
+      </h2>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()" class="p-lg space-y-md">
+      @if (error()) {
+        <div class="bg-error-light text-error-dark p-md rounded-md mb-md">
+          {{ error() }}
+        </div>
+      }
+
+      <!-- Name Field -->
+      <div class="space-y-sm">
+        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Category Name
+        </label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          (blur)="generateSlug()"
+          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                 bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                 transition-colors"
+          [class.border-error-DEFAULT]="categoryForm.get('name')?.invalid && 
+                                      categoryForm.get('name')?.touched"
+        >
+        @if (categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched) {
+          <p class="text-sm text-error-DEFAULT mt-xs">
+            Category name is required and must be at least 2 characters
+          </p>
+        }
+      </div>
+
+      <!-- Slug Field -->
+      <div class="space-y-sm">
+        <label for="slug" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Slug
+        </label>
+        <input
+          type="text"
+          id="slug"
+          formControlName="slug"
+          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                 bg-gray-50 dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                 transition-colors"
+        >
+      </div>
+
+      <!-- Parent Category Field -->
+      <div class="space-y-sm">
+        <label for="parentId" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Parent Category
+        </label>
+        <select
+          id="parentId"
+          formControlName="parentId"
+          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                 bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                 transition-colors"
+        >
+          <option value="">None (Top Level)</option>
+          @for (category of parentCategories(); track category.id) {
+            <option [value]="category.id">{{ category.name }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Description Field -->
+      <div class="space-y-sm">
+        <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Description
+        </label>
+        <textarea
+          id="description"
+          formControlName="description"
+          rows="4"
+          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                 bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                 transition-colors resize-none"
+        ></textarea>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex justify-end space-x-sm pt-md">
+        <button
+          type="button"
+          routerLink="/admin/categories"
+          class="px-lg py-sm rounded-lg border border-gray-300 dark:border-gray-600
+                 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-surface-dark-tertiary
+                 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="categoryForm.invalid || isLoading()"
+          class="px-lg py-sm rounded-lg bg-primary-500 text-white
+                 hover:bg-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                 disabled:opacity-50 disabled:cursor-not-allowed
+                 transition-colors"
+        >
+          @if (isLoading()) {
+            <span>Saving...</span>
+          } @else {
+            <span>{{ isEditMode() ? 'Update' : 'Create' }} Category</span>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div> 

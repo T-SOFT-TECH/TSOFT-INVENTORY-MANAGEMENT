@@ -1,0 +1,10 @@
+<div class="min-h-screen bg-surface-light-primary dark:bg-surface-dark-primary">
+  <app-header />
+  <app-sidebar [isAdmin]="true" />
+  
+  <main class="ml-64 pt-16 min-h-screen">
+    <div class="container mx-auto p-md">
+      <router-outlet />
+    </div>
+  </main>
+</div> 
