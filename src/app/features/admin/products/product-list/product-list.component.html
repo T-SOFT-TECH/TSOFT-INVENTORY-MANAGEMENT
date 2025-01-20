@@ -3,8 +3,8 @@
   <div class="mb-xl">
     <div class="flex justify-between items-center mb-lg">
       <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Products</h1>
-      <a 
-        routerLink="new" 
+      <a
+        routerLink="new"
         class="inline-flex items-center px-lg py-sm rounded-lg bg-primary-500 text-white
                hover:bg-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
                transition-colors">
@@ -20,16 +20,16 @@
         <select
           [ngModel]="selectedCategory()"
           (ngModelChange)="filterByCategory($event)"
-          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
                  bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
                  focus:ring-2 focus:ring-primary-500 focus:border-transparent
                  transition-colors appearance-none">
           <option value="all">All Categories</option>
-          @for (category of categories(); track category.id) {
-            <option [value]="category.id">{{ category.name }}</option>
+          @for (category of categories(); track category.$id) {
+            <option [value]="category.$id">{{ category.name }}</option>
           }
         </select>
-        <span class="material-icons absolute right-sm top-1/2 transform -translate-y-1/2 
+        <span class="material-icons absolute right-sm top-1/2 transform -translate-y-1/2
                      text-gray-400 pointer-events-none">
           expand_more
         </span>
@@ -41,11 +41,11 @@
           type="text"
           [(ngModel)]="searchQuery"
           placeholder="Search products..."
-          class="w-full px-md py-sm pl-xl rounded-lg border border-gray-300 dark:border-gray-600 
+          class="w-full px-md py-sm pl-xl rounded-lg border border-gray-300 dark:border-gray-600
                  bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
                  focus:ring-2 focus:ring-primary-500 focus:border-transparent
                  transition-colors">
-        <span class="material-icons absolute left-sm top-1/2 transform -translate-y-1/2 
+        <span class="material-icons absolute left-sm top-1/2 transform -translate-y-1/2
                      text-gray-400">
           search
         </span>
@@ -71,12 +71,12 @@
     </div>
   } @else {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-md">
-      @for (product of products(); track product.id) {
+      @for (product of products(); track product.$id) {
         <div class="bg-white dark:bg-surface-dark-secondary rounded-lg shadow-md overflow-hidden
                     hover:shadow-lg transition-shadow">
           <!-- Product Image -->
           <div class="aspect-w-16 aspect-h-9 bg-gray-100 dark:bg-surface-dark-primary">
-            <img 
+            <img
               [src]="getImageUrl(product.imageUrl)"
               [alt]="product.name"
               class="object-cover w-full h-48">
@@ -100,16 +100,16 @@
             </div>
 
             <!-- Actions -->
-            <div class="mt-md pt-sm border-t border-gray-200 dark:border-gray-700 
+            <div class="mt-md pt-sm border-t border-gray-200 dark:border-gray-700
                         flex justify-end space-x-sm">
-              <a 
-                [routerLink]="['edit', product.id]"
+              <a
+                [routerLink]="['edit', product.$id]"
                 class="text-primary-500 hover:text-primary-600 p-xs rounded-md
                        hover:bg-primary-50 dark:hover:bg-primary-900/20">
                 <span class="material-icons">edit</span>
               </a>
-              <button 
-                (click)="deleteProduct(product.id)"
+              <button
+                (click)="deleteProduct(product.$id)"
                 class="text-error-DEFAULT hover:text-error-dark p-xs rounded-md
                        hover:bg-error-50 dark:hover:bg-error-900/20">
                 <span class="material-icons">delete</span>
@@ -120,4 +120,4 @@
       }
     </div>
   }
-</div> 
+</div>

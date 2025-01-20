@@ -8,6 +8,7 @@ export interface User {
   email: string;
   name: string;
   role: 'admin' | 'user';
+  labels: string[];
 }
 
 @Injectable({
@@ -43,9 +44,10 @@ export class AuthService {
       id: userData.$id,
       email: userData.email,
       name: userData.name,
-      role: userData.role || 'user'
+      role: userData.role || 'user',
+      labels: userData.labels || []
     };
-    
+
     this.currentUser.set(user);
     this.isAuthenticated.set(true);
   }
@@ -106,4 +108,4 @@ export class AuthService {
       throw error;
     }
   }
-} 
+}

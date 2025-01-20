@@ -21,7 +21,7 @@ export class PosComponent implements OnInit {
 
   // Signals
   products = signal<BaseProduct[]>([]);
-  
+
   customers = signal<Customer[]>([]);
 
   isLoading = signal(false);
@@ -59,22 +59,9 @@ export class PosComponent implements OnInit {
       this.error.set('Product out of stock');
       return;
     }
-    
+
     const cartProduct: Product = {
-      id: product.id,
-      name: product.name,
-      category: product.category,
-      description: product.description || '',
-      price: product.price,
-      stockQuantity: product.stockQuantity,
-      lowStockThreshold: product.lowStockThreshold,
-      sku: product.sku,
-      status: product.status || 'active',
-      createdAt: product.createdAt || new Date().toISOString(),
-      updatedAt: product.updatedAt || new Date().toISOString(),
-      imageUrl: product.imageUrl,
-      cost: product.cost,
-      // Add the missing properties
+      ...product, // This spreads all BaseProduct properties including $id, $createdAt, $updatedAt
       totalQuantitySold: 0,
       totalRevenue: 0
     };
@@ -83,7 +70,7 @@ export class PosComponent implements OnInit {
   }
 
   getFilteredProducts() {
-    return this.products().filter(product => 
+    return this.products().filter(product =>
       product.name.toLowerCase().includes(this.searchQuery().toLowerCase()) &&
       (this.selectedCategory() === 'all' || product.category === this.selectedCategory())
     );
@@ -114,4 +101,4 @@ export class PosComponent implements OnInit {
       this.isLoading.set(false);
     }
   }
-} 
+}

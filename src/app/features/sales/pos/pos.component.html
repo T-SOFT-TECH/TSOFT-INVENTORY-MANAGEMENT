@@ -1,5 +1,5 @@
 <div class="h-screen flex">
-    <!-- Left Side - Products -->
+    <!-- Left S$ide - Products -->
     <div class="w-2/3 bg-gray-50 dark:bg-surface-dark-primary p-md overflow-y-auto">
       <!-- Search and Filters -->
       <div class="mb-lg space-y-md">
@@ -9,7 +9,7 @@
               type="text"
               [(ngModel)]="searchQuery"
               placeholder="Search products..."
-              class="w-full pl-xl pr-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+              class="w-full pl-xl pr-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
                      bg-white dark:bg-surface-dark-secondary text-gray-900 dark:text-white
                      focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
@@ -17,10 +17,10 @@
               search
             </span>
           </div>
-          
+
           <select
             [(ngModel)]="selectedCategory"
-            class="px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+            class="px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
                    bg-white dark:bg-surface-dark-secondary text-gray-900 dark:text-white
                    focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           >
@@ -29,20 +29,20 @@
           </select>
         </div>
       </div>
-  
-      <!-- Products Grid -->
+
+      <!-- Products Gr$id -->
       @if (isLoading()) {
         <div class="flex justify-center items-center h-64">
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
         </div>
       } @else {
-        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-md">
-          @for (product of getFilteredProducts(); track product.id) {
+        <div class="gr$id gr$id-cols-2 lg:gr$id-cols-3 xl:gr$id-cols-4 gap-md">
+          @for (product of getFilteredProducts(); track product.$id) {
             <button
               (click)="addToCart(product)"
               [disabled]="product.stockQuantity <= 0"
               class="bg-white dark:bg-surface-dark-secondary rounded-lg p-md text-left
-                     hover:shadow-md transition-shadow relative overflow-hidden
+                     hover:shadow-md transition-shadow relative overflow-h$idden
                      disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <!-- Product Image -->
@@ -53,7 +53,7 @@
                   class="object-cover"
                 >
               </div>
-  
+
               <!-- Product Info -->
               <h3 class="font-medium text-gray-900 dark:text-white truncate">
                 {{ product.name }}
@@ -69,7 +69,7 @@
                   Stock: {{ product.stockQuantity }}
                 </span>
               </div>
-  
+
               @if (product.stockQuantity <= 0) {
                 <div class="absolute inset-0 bg-gray-900/50 flex items-center justify-center">
                   <span class="text-white font-medium">Out of Stock</span>
@@ -80,9 +80,9 @@
         </div>
       }
     </div>
-  
-    <!-- Right Side - Cart -->
-    <div class="w-1/3 bg-white dark:bg-surface-dark-secondary border-l border-gray-200 
+
+    <!-- Right S$ide - Cart -->
+    <div class="w-1/3 bg-white dark:bg-surface-dark-secondary border-l border-gray-200
                 dark:border-gray-700 flex flex-col">
       <!-- Cart Header -->
       <div class="p-md border-b border-gray-200 dark:border-gray-700">
@@ -94,7 +94,7 @@
             {{ itemCount() }} items
           </span>
         </div>
-  
+
         <!-- Customer Selection -->
         @if (selectedCustomer()) {
           <div class="flex justify-between items-center p-sm bg-gray-50 dark:bg-surface-dark-primary rounded-lg">
@@ -124,7 +124,7 @@
           </button>
         }
       </div>
-  
+
       <!-- Cart Items -->
       <div class="flex-1 overflow-y-auto p-md space-y-md">
         @if (cart().length === 0) {
@@ -137,7 +137,7 @@
             </p>
           </div>
         } @else {
-          @for (item of cart(); track item.product.id) {
+          @for (item of cart(); track item.product.$id) {
             <div class="flex items-center space-x-md p-sm bg-gray-50 dark:bg-surface-dark-primary rounded-lg">
               <!-- Product Image -->
               <img
@@ -145,7 +145,7 @@
                 [alt]="item.product.name"
                 class="w-16 h-16 object-cover rounded-md"
               >
-              
+
               <!-- Product Info -->
               <div class="flex-1">
                 <h3 class="font-medium text-gray-900 dark:text-white">
@@ -159,19 +159,19 @@
               <!-- Quantity Controls -->
               <div class="flex items-center space-x-sm">
                 <button
-                  (click)="updateQuantity(item.product.id, item.quantity - 1)"
+                  (click)="updateQuantity(item.product.$id, item.quantity - 1)"
                   class="w-8 h-8 rounded-full bg-gray-100 dark:bg-surface-dark-secondary
-                         text-gray-600 dark:text-gray-300 hover:bg-gray-200 
+                         text-gray-600 dark:text-gray-300 hover:bg-gray-200
                          dark:hover:bg-surface-dark-tertiary transition-colors"
                 >
                   -
                 </button>
                 <span class="w-8 text-center">{{ item.quantity }}</span>
                 <button
-                  (click)="updateQuantity(item.product.id, item.quantity + 1)"
+                  (click)="updateQuantity(item.product.$id, item.quantity + 1)"
                   [disabled]="item.quantity >= item.product.stockQuantity"
                   class="w-8 h-8 rounded-full bg-gray-100 dark:bg-surface-dark-secondary
-                         text-gray-600 dark:text-gray-300 hover:bg-gray-200 
+                         text-gray-600 dark:text-gray-300 hover:bg-gray-200
                          dark:hover:bg-surface-dark-tertiary transition-colors
                          disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -181,7 +181,7 @@
 
               <!-- Remove Button -->
               <button
-                (click)="removeFromCart(item.product.id)"
+                (click)="removeFromCart(item.product.$id)"
                 class="text-error-DEFAULT hover:text-error-dark transition-colors"
               >
                 <span class="material-icons">delete</span>
@@ -232,7 +232,7 @@
   @if (showCustomerModal()) {
     <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-xl w-full max-w-2xl
-                  max-h-[80vh] overflow-hidden">
+                  max-h-[80vh] overflow-h$idden">
         <!-- Modal Header -->
         <div class="p-md border-b border-gray-200 dark:border-gray-700">
           <div class="flex justify-between items-center">
@@ -252,10 +252,10 @@
         <div class="p-md overflow-y-auto max-h-[60vh]">
           <div class="space-y-sm">
             @if (customers().length) {
-              @for (customer of customers(); track customer.id) {
+              @for (customer of customers(); track customer.$id) {
                 <button
                   (click)="selectCustomer(customer)"
-                  class="w-full p-md rounded-lg text-left hover:bg-gray-50 
+                  class="w-full p-md rounded-lg text-left hover:bg-gray-50
                          dark:hover:bg-surface-dark-primary transition-colors">
                   <div class="flex justify-between items-center">
                     <div>

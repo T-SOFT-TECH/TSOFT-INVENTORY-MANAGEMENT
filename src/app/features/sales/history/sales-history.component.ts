@@ -22,7 +22,7 @@ export class SalesHistoryComponent {
   sales = toSignal(from(this.salesService.fetchSalesWithDetails()), {
     initialValue: [] as SaleWithDetails[]
   });
-  
+
   customers = toSignal(from(this.customerService.getCustomers()), {
     initialValue: [] as Customer[]
   });
@@ -41,7 +41,7 @@ export class SalesHistoryComponent {
 
   constructor() {
     this.loadInitialData();
-    
+
     // Subscribe to filter changes
     this.filterForm.valueChanges.subscribe(() => {
       this.applyFilters();
@@ -66,7 +66,7 @@ export class SalesHistoryComponent {
     try {
       this.isLoading.set(true);
       const filters = this.filterForm.value;
-      
+
       const queryOptions: SalesQueryOptions = {
         startDate: filters.startDate ? new Date(filters.startDate) : undefined,
         endDate: filters.endDate ? new Date(filters.endDate) : undefined,
@@ -88,7 +88,7 @@ export class SalesHistoryComponent {
       this.selectedSale.set(sale as SaleWithDetails);
     } else {
       // Fetch detailed sale data if needed
-      this.loadSaleDetails(sale.id);
+      this.loadSaleDetails(sale.$id);
     }
   }
 
@@ -106,7 +106,7 @@ export class SalesHistoryComponent {
       this.salesService.generateInvoice(sale as SaleWithDetails);
     } else {
       // Fetch detailed sale data if needed
-      this.loadSaleDetailsAndGenerateInvoice(sale.id);
+      this.loadSaleDetailsAndGenerateInvoice(sale.$id);
     }
   }
 
@@ -147,7 +147,7 @@ export class SalesHistoryComponent {
   }
 
   calculateTotal(sale: SaleWithDetails): number {
-    return sale.products.reduce((sum, item) => 
+    return sale.products.reduce((sum, item) =>
       sum + (item.quantity * item.priceAtSale), 0
     );
   }
@@ -155,4 +155,4 @@ export class SalesHistoryComponent {
   getPaymentStatusOptions(): PaymentStatus[] {
     return ['paid', 'pending', 'failed'];
   }
-} 
+}

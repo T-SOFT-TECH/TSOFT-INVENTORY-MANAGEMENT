@@ -1,145 +1,170 @@
-<div class="p-md">
+<div class="p-6 min-h-screen bg-gray-50 dark:bg-black">
   <!-- Header -->
-  <div class="mb-lg">
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-sm">
-      Dashboard
-    </h1>
-    <p class="text-gray-600 dark:text-gray-400">
-      Welcome back! Here's an overview of your business
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+      Overview of your business metrics
     </p>
   </div>
 
   @if (isLoading()) {
-    <div class="flex justify-center items-center h-64">
+    <div class="flex items-center justify-center h-64">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
     </div>
-  } @else if (error()) {
-    <div class="bg-error-light text-error-dark p-md rounded-lg">
-      {{ error() }}
-    </div>
   } @else {
-    <!-- Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md mb-lg">
-      <!-- Today's Sales -->
-      <div class="bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
+    <!-- Metrics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Revenue Card -->
+      <div class="bg-white dark:bg-[#121212] rounded-xl p-6
+                  border border-primary-500/50 dark:border-primary-500/50
+                  hover:border-primary-500/50 dark:hover:border-primary-500/50
+                  transition-all duration-300 group">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">
-              Today's Sales
-            </p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">
-              {{ summary().todaySales }}
-            </p>
-          </div>
-          <div class="w-12 h-12 bg-primary-50 dark:bg-primary-900/20 rounded-full 
-                      flex items-center justify-center">
-            <span class="material-icons text-primary-500">shopping_cart</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Today's Revenue -->
-      <div class="bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">
               Today's Revenue
             </p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">
-              {{ formatCurrency(summary().todayRevenue) }}
-            </p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">
+              ${{ metrics().todayRevenue.toFixed(2) }}
+            </h3>
+            <div class="flex items-center mt-2 text-emerald-600 dark:text-emerald-500">
+              <span class="material-icons text-sm">arrow_upward</span>
+              <span class="text-sm ml-1">8.2% vs yesterday</span>
+            </div>
           </div>
-          <div class="w-12 h-12 bg-success-50 dark:bg-success-900/20 rounded-full 
-                      flex items-center justify-center">
-            <span class="material-icons text-success-500">payments</span>
-          </div>
+          <span class="material-icons text-gray-400 dark:text-gray-600 text-3xl
+                       group-hover:text-primary-500 dark:group-hover:text-primary-400
+                       transition-colors">
+            payments
+          </span>
         </div>
       </div>
 
-      <!-- Active Customers -->
-      <div class="bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
+      <!-- Orders Card -->
+      <div class="bg-white dark:bg-[#121212] rounded-xl p-6
+                  border border-primary-500/50 dark:border-primary-500/50
+                  hover:border-primary-500/50 dark:hover:border-primary-500/50
+                  transition-all duration-300 group">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">
+              Total Orders
+            </p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">
+              {{ metrics().totalOrders }}
+            </h3>
+            <div class="flex items-center mt-2 text-emerald-600 dark:text-emerald-500">
+              <span class="material-icons text-sm">arrow_upward</span>
+              <span class="text-sm ml-1">12.5% vs yesterday</span>
+            </div>
+          </div>
+          <span class="material-icons text-gray-400 dark:text-gray-600 text-3xl
+                       group-hover:text-primary-500 dark:group-hover:text-primary-400
+                       transition-colors">
+            shopping_cart
+          </span>
+        </div>
+      </div>
+
+      <!-- Customers Card -->
+      <div class="bg-white dark:bg-[#121212] rounded-xl p-6
+                  border border-primary-500/50 dark:border-primary-500/50
+                  hover:border-primary-500/50 dark:hover:border-primary-500/50
+                  transition-all duration-300 group">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">
               Active Customers
             </p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">
-              {{ summary().activeCustomers }}
-            </p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">
+              {{ metrics().activeCustomers }}
+            </h3>
+            <div class="flex items-center mt-2 text-emerald-600 dark:text-emerald-500">
+              <span class="material-icons text-sm">arrow_upward</span>
+              <span class="text-sm ml-1">4.9% vs last week</span>
+            </div>
           </div>
-          <div class="w-12 h-12 bg-info-50 dark:bg-info-900/20 rounded-full 
-                      flex items-center justify-center">
-            <span class="material-icons text-info-500">people</span>
-          </div>
+          <span class="material-icons text-gray-400 dark:text-gray-600 text-3xl
+                       group-hover:text-primary-500 dark:group-hover:text-primary-400
+                       transition-colors">
+            people
+          </span>
         </div>
       </div>
 
-      <!-- Low Stock Items -->
-      <div class="bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
+      <!-- Low Stock Card -->
+      <div class="bg-white dark:bg-[#121212] rounded-xl p-6
+                  border border-primary-500/50 dark:border-primary-500/50
+                  hover:border-primary-500/50 dark:hover:border-primary-500/50
+                  transition-all duration-300 group">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">
               Low Stock Items
             </p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">
-              {{ summary().lowStockItems }}
-            </p>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">
+              {{ metrics().lowStockCount }}
+            </h3>
+            <div class="flex items-center mt-2 text-red-600 dark:text-red-500">
+              <span class="material-icons text-sm">warning</span>
+              <span class="text-sm ml-1">Needs attention</span>
+            </div>
           </div>
-          <div class="w-12 h-12 bg-warning-50 dark:bg-warning-900/20 rounded-full 
-                      flex items-center justify-center">
-            <span class="material-icons text-warning-500">inventory</span>
-          </div>
+          <span class="material-icons text-gray-400 dark:text-gray-600 text-3xl
+                       group-hover:text-primary-500 dark:group-hover:text-primary-400
+                       transition-colors">
+            inventory
+          </span>
         </div>
       </div>
     </div>
 
-    <!-- Main Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
-      <!-- Sales Trend Chart -->
-      <div class="lg:col-span-2 bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-md">
-          Sales Trend
-        </h3>
+    <!-- Charts and Recent Sales Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <!-- Sales Chart -->
+      <div class="lg:col-span-2 bg-white dark:bg-[#121212] rounded-xl p-6
+                  border border-primary-500/50 dark:border-primary-500/50">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Sales Overview</h3>
+          <select class="bg-gray-50 dark:bg-black border border-gray-200 dark:border-gray-800
+                         rounded-lg px-3 py-1.5 text-sm text-gray-600 dark:text-gray-300
+                         focus:outline-none focus:ring-2 focus:ring-primary-500/50">
+            <option>Last 7 days</option>
+            <option>Last 30 days</option>
+            <option>Last 90 days</option>
+          </select>
+        </div>
         <div class="h-80">
-          <canvas id="salesTrendChart"></canvas>
+          <canvas id="salesChart"></canvas>
         </div>
       </div>
 
       <!-- Recent Sales -->
-      <div class="bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
-        <div class="flex items-center justify-between mb-md">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Recent Sales
-          </h3>
-          <a 
-            routerLink="/sales/history"
-            class="text-sm text-primary-500 hover:text-primary-600"
-          >
-            View All
-          </a>
+      <div class="bg-white dark:bg-[#121212] rounded-xl p-6
+                  border border-primary-500/50 dark:border-primary-500/50">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Sales</h3>
+          <button class="text-sm text-primary-500 hover:text-primary-600">View all</button>
         </div>
-        
-        <div class="space-y-sm">
-          @for (sale of summary().recentSales; track sale.id) {
-            <div class="flex items-center justify-between py-sm border-b 
-                        border-gray-100 dark:border-gray-700 last:border-0">
+        <div class="space-y-4">
+          @for (sale of recentSales(); track sale.$id) {
+            <div class="flex items-center justify-between p-4 rounded-lg
+                        bg-gray-50 dark:bg-black/40
+                        hover:bg-gray-100 dark:hover:bg-black/60
+                        transition-colors">
               <div>
-                <p class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ sale.customer.name || 'Walk-in Customer' }}
-                </p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">
-                  {{ formatDate(sale.date) }}
-                </p>
+                <p class="font-medium text-gray-900 dark:text-white">{{ sale.customer.name }}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{{ sale.date | date:'short' }}</p>
               </div>
               <div class="text-right">
-                <p class="text-sm font-medium text-gray-900 dark:text-white">
-                  {{ formatCurrency(sale.totalAmount) }}
-                </p>
-                <span class="inline-flex items-center px-sm py-xs text-xs rounded-full
-                           {{ sale.paymentStatus === 'paid' 
-                              ? 'bg-success-100 text-success-800 dark:bg-success-900/20 dark:text-success-300'
-                              : 'bg-warning-100 text-warning-800 dark:bg-warning-900/20 dark:text-warning-300' }}">
-                  {{ sale.paymentStatus }}
+                <p class="font-medium text-gray-900 dark:text-white">${{ sale.totalAmount.toFixed(2) }}</p>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      [ngClass]="{
+                        'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-400': sale.status === 'completed',
+                        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-400': sale.status === 'pending',
+                        'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400': sale.status === 'cancelled'
+                      }">
+                  {{ sale.status }}
                 </span>
               </div>
             </div>
@@ -148,44 +173,45 @@
       </div>
     </div>
 
-    <!-- Top Products -->
-    <div class="mt-lg bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm p-md">
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-md">
-        Top Products
-      </h3>
+    <!-- Low Stock Products Table -->
+    <div class="bg-white dark:bg-[#121212] rounded-xl p-6
+                border border-primary-500/50 dark:border-primary-500/50">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Low Stock Products</h3>
+        <button class="px-4 py-2 text-sm font-medium text-white
+                     bg-primary-500 hover:bg-primary-600
+                     rounded-lg transition-colors">
+          Restock All
+        </button>
+      </div>
+
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead>
-            <tr>
-              <th class="px-md py-sm text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                Product
-              </th>
-              <th class="px-md py-sm text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                Sold
-              </th>
-              <th class="px-md py-sm text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                Revenue
-              </th>
-            </tr>
+        <table class="min-w-full">
+          <thead class="bg-gray-50 dark:bg-black/40">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Product
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Stock
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Status
+            </th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Action
+            </th>
+          </tr>
           </thead>
-          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-            @for (product of summary().topProducts; track product.id) {
-              <tr>
-                <td class="px-md py-sm whitespace-nowrap">
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+            @for (product of lowStockProducts(); track product.$id) {
+              <tr class="hover:bg-gray-50 dark:hover:bg-black/40 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center">
-                    @if (product.imageUrl) {
-                      <img 
-                        [src]="product.imageUrl" 
-                        class="w-10 h-10 rounded-lg object-cover"
-                        alt="{{ product.name }}"
-                      >
-                    } @else {
-                      <div class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 
-                                flex items-center justify-center">
-                        <span class="material-icons text-gray-400">inventory_2</span>
-                      </div>
-                    }
-                    <div class="ml-md">
+                    <img [src]="product.imageUrl"
+                         class="h-10 w-10 rounded-lg object-cover"
+                         [alt]="product.name">
+                    <div class="ml-4">
                       <p class="text-sm font-medium text-gray-900 dark:text-white">
                         {{ product.name }}
                       </p>
@@ -195,15 +221,21 @@
                     </div>
                   </div>
                 </td>
-                <td class="px-md py-sm whitespace-nowrap">
-                  <p class="text-sm text-gray-900 dark:text-white">
-                    {{ product.totalQuantitySold }} units
-                  </p>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="text-sm text-gray-900 dark:text-white">
+                    {{ product.stockQuantity }}
+                  </span>
                 </td>
-                <td class="px-md py-sm whitespace-nowrap">
-                  <p class="text-sm font-medium text-gray-900 dark:text-white">
-                    {{ formatCurrency(product.totalRevenue) }}
-                  </p>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                              bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400">
+                    Low Stock
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <button class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+                    Restock
+                  </button>
                 </td>
               </tr>
             }
@@ -212,4 +244,4 @@
       </div>
     </div>
   }
-</div> 
+</div>

@@ -19,13 +19,13 @@ export class PosService {
   // Computed values
   cart = computed(() => this.cartItems());
   selectedCustomer = computed(() => this._selectedCustomer());
-  
-  itemCount = computed(() => 
+
+  itemCount = computed(() =>
     this.cartItems().reduce((total, item) => total + item.quantity, 0)
   );
 
-  subtotal = computed(() => 
-    this.cartItems().reduce((total, item) => 
+  subtotal = computed(() =>
+    this.cartItems().reduce((total, item) =>
       total + (item.product.price * item.quantity), 0
     )
   );
@@ -36,10 +36,10 @@ export class PosService {
 
   addToCart(product: Product) {
     const currentCart = this.cartItems();
-    const existingItem = currentCart.find(item => item.product.id === product.id);
+    const existingItem = currentCart.find(item => item.product.$id === product.$id);
 
     if (existingItem) {
-      this.updateQuantity(product.id, existingItem.quantity + 1);
+      this.updateQuantity(product.$id, existingItem.quantity + 1);
     } else {
       this.cartItems.set([...currentCart, { product, quantity: 1 }]);
     }
@@ -52,12 +52,12 @@ export class PosService {
     }
 
     const currentCart = this.cartItems();
-    const item = currentCart.find(item => item.product.id === productId);
-    
+    const item = currentCart.find(item => item.product.$id === productId);
+
     if (item && quantity <= item.product.stockQuantity) {
-      const updatedCart = currentCart.map(item => 
-        item.product.id === productId 
-          ? { ...item, quantity } 
+      const updatedCart = currentCart.map(item =>
+        item.product.$id === productId
+          ? { ...item, quantity }
           : item
       );
       this.cartItems.set(updatedCart);
@@ -67,7 +67,7 @@ export class PosService {
   removeFromCart(productId: string) {
     const currentCart = this.cartItems();
     this.cartItems.set(
-      currentCart.filter(item => item.product.id !== productId)
+      currentCart.filter(item => item.product.$id !== productId)
     );
   }
 
@@ -95,7 +95,7 @@ export class PosService {
       // For now, just clear the cart
       this.clearCart();
       this._selectedCustomer.set(null);
-      
+
       return true;
     } catch (error) {
       console.error('Payment processing failed:', error);
@@ -106,4 +106,4 @@ export class PosService {
   clearCart() {
     this.cartItems.set([]);
   }
-} 
+}

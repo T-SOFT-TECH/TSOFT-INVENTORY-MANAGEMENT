@@ -76,7 +76,7 @@ export class SalesService {
           return {
             ...sale,
             customer: {
-              id: customer.id,
+              id: customer.$id,
               name: customer.name,
               email: customer.email
             }
@@ -97,11 +97,11 @@ async getSaleDetails(saleId: string): Promise<SaleWithDetails> {
       environment.appwrite.collections.sales,
       saleId
     );
-    
+
     // Fetch related product details
     const saleWithDetails = { ...response } as unknown as SaleWithDetails;
     // Add any additional product or customer details fetching logic here
-    
+
     return saleWithDetails;
   } catch (error) {
     console.error('Error fetching sale details:', error);
@@ -110,4 +110,38 @@ async getSaleDetails(saleId: string): Promise<SaleWithDetails> {
 }
 
 
-} 
+// Add fetchRecentSales method
+  async fetchRecentSales(limit: number = 5): Promise<Sale[]> {
+    try {
+      const response = await this.appwrite.database.listDocuments(
+        environment.appwrite.databaseId,
+        environment.appwrite.collections.sales,
+        [
+          Query.orderDesc('date'),
+          Query.limit(limit)
+        ]
+      );
+
+      // Map to include customer details
+      const sales = response.documents as unknown as Sale[];
+      return Promise.all(
+        sales.map(async (sale) => {
+          const customer = await this.customerService.getCustomer(sale.customerId);
+          return {
+            ...sale,
+            customer: {
+              id: customer.$id,
+              name: customer.name,
+              email: customer.email
+            }
+          };
+        })
+      );
+    } catch (error) {
+      console.error('Error fetching recent sales:', error);
+      throw error;
+    }
+  }
+
+
+}

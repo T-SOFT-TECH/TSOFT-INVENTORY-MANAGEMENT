@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SettingsService, Settings } from '../../../core/services/settings.service';
+import {SeedService} from '../../../core/services/seed.service';
 
 type ThemeType = 'light' | 'dark';
 
@@ -20,6 +21,7 @@ interface SettingsTab {
 export class SettingsComponent {
   private fb = inject(FormBuilder);
   private settingsService = inject(SettingsService);
+  private seedService = inject(SeedService);
 
   isLoading = signal(false);
   error = signal<string | null>(null);
@@ -31,7 +33,8 @@ export class SettingsComponent {
     { id: 'company', label: 'Company Information', icon: 'business' },
     { id: 'invoice', label: 'Invoice Settings', icon: 'receipt' },
     { id: 'notifications', label: 'Notifications', icon: 'notifications' },
-    { id: 'users', label: 'User Management', icon: 'people' }
+    { id: 'users', label: 'User Management', icon: 'people' },
+    { id: 'seed', label: 'Seed Settings', icon: 'settings' }
   ];
 
   generalForm = this.fb.nonNullable.group({
@@ -76,7 +79,7 @@ export class SettingsComponent {
     try {
       this.isLoading.set(true);
       const settings = await this.settingsService.getSettings();
-      
+
       // Type-safe form updates
       this.generalForm.patchValue({
         storeName: settings.general.storeName,
@@ -100,7 +103,7 @@ export class SettingsComponent {
     try {
       this.isLoading.set(true);
       this.error.set(null);
-      
+
       let formData: Partial<Settings[keyof Settings]>;
       switch (formType) {
         case 'general':
@@ -121,7 +124,7 @@ export class SettingsComponent {
 
       await this.settingsService.updateSettings(formType, formData);
       this.success.set('Settings saved successfully');
-      
+
       setTimeout(() => this.success.set(null), 3000);
     } catch (err) {
       this.error.set('Failed to save settings');
@@ -148,4 +151,11 @@ export class SettingsComponent {
       this.isLoading.set(false);
     }
   }
-} 
+
+  async seedCategories() {
+    if (confirm('This will create initial categories if they don\'t exist. Continue?')) {
+      await this.seedService.seedCategories();
+    }
+  }
+
+}

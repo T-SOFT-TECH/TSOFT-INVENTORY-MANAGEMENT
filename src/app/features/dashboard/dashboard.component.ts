@@ -1,92 +1,121 @@
+// dashboard.component.ts
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { ProductService } from '../../core/services/product.service';
-import { CustomerService } from '../../core/services/customer.service';
-import { SalesService } from '../../core/services/sales.service';
-import { Sale, Product, Customer, BaseProduct } from '../../core/models/interfaces';
+import { Chart } from 'chart.js/auto';
+import {ProductService} from '../../core/services/product.service';
+import {CustomerService} from '../../core/services/customer.service';
+import {SalesService} from '../../core/services/sales.service';
+import {HotToastService} from '@ngxpert/hot-toast';
+import {Product, Sale} from '../../core/models/interfaces';
 
 interface DashboardMetrics {
   todayRevenue: number;
-  todayOrders: number;
-  totalCustomers: number;
+  totalOrders: number;
+  activeCustomers: number;
   lowStockCount: number;
-}
-
-interface DashboardSummary {
-  todayRevenue: number;
-  todayOrders: number;
-  totalCustomers: number;
-  lowStockCount: number;
-  metrics: DashboardMetrics;
-  recentSales: Sale[];
-  lowStockItems: BaseProduct[];
-  activeCustomers: Customer[];
-  todaySales: Sale[];
-  topProducts: Product[];
 }
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent {
-  private salesService = inject(SalesService);
-  private customerService = inject(CustomerService);
   private productService = inject(ProductService);
+  private customerService = inject(CustomerService);
+  private salesService = inject(SalesService);
+  private toast = inject(HotToastService);
 
   isLoading = signal(false);
-  error = signal<string | null>(null);
-
-
-
-
-  summary = signal<DashboardSummary>({
+  metrics = signal<DashboardMetrics>({
     todayRevenue: 0,
-    todayOrders: 0,
-    totalCustomers: 0,
-    lowStockCount: 0,
-    metrics: {
-      todayRevenue: 0,
-      todayOrders: 0,
-      totalCustomers: 0,
-      lowStockCount: 0
-    },
-    recentSales: [],
-    lowStockItems: [],
-    activeCustomers: [],
-    todaySales: [],
-    topProducts: [] // This will be Product[]
+    totalOrders: 0,
+    activeCustomers: 0,
+    lowStockCount: 0
   });
 
-  constructor() {
+  recentSales = signal<Sale[]>([]);
+  lowStockProducts = signal<Product[]>([]);
+  salesChart: Chart | undefined;
+
+  ngOnInit() {
     this.loadDashboardData();
+    this.initializeCharts();
   }
 
   private async loadDashboardData() {
     try {
       this.isLoading.set(true);
-      const [activeCustomers, lowStockProducts, topProducts] = await Promise.all([
-        this.customerService.getActiveCustomers(),
+      const [sales, lowStockProducts, customers] = await Promise.all([
+        this.salesService.fetchRecentSales(),
         this.productService.getLowStockProducts(),
-        this.productService.getTopProducts() // This now returns Product[]
+        this.customerService.getActiveCustomers()
       ]);
 
-      this.summary.update(current => ({
-        ...current,
-        activeCustomers,
-        lowStockItems: lowStockProducts,
-        topProducts // Now this is Product[]
+      // Transform BaseProduct to Product
+      const productsWithMetrics: Product[] = lowStockProducts.map(product => ({
+        ...product,
+        totalQuantitySold: 0, // You might want to calculate this from sales data
+        totalRevenue: 0       // You might want to calculate this from sales data
       }));
-    } catch (err) {
-      this.error.set('Failed to load dashboard data');
+
+      this.recentSales.set(sales);
+      this.lowStockProducts.set(productsWithMetrics);
+
+      this.metrics.set({
+        todayRevenue: this.calculateTodayRevenue(sales),
+        totalOrders: sales.length,
+        activeCustomers: customers.length,
+        lowStockCount: productsWithMetrics.length
+      });
+    } catch (error) {
+      this.toast.error('Failed to load dashboard data');
     } finally {
       this.isLoading.set(false);
     }
   }
-  
+
+
+  private initializeCharts() {
+    const ctx = document.getElementById('salesChart') as HTMLCanvasElement;
+    if (!ctx) return;
+
+    this.salesChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Sales',
+          data: [12, 19, 3, 5, 2, 3],
+          borderColor: '#22c55e',
+          tension: 0.4,
+          fill: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  private calculateTodayRevenue(sales: Sale[]): number {
+    const today = new Date().toDateString();
+    return sales
+      .filter(sale => new Date(sale.date).toDateString() === today)
+      .reduce((total, sale) => total + sale.totalAmount, 0);
+  }
 
   formatCurrency(amount: number): string {
     return new Intl.NumberFormat('en-US', {
@@ -94,21 +123,4 @@ export class DashboardComponent {
       currency: 'USD'
     }).format(amount);
   }
-
-  formatDate(date: string): string {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  }
-
-  getStatusColor(status: string): string {
-    const statusColors = {
-      'completed': 'text-success-500',
-      'pending': 'text-warning-500',
-      'cancelled': 'text-error-500'
-    };
-    return statusColors[status as keyof typeof statusColors] || 'text-gray-500';
-  }
-} 
+}

@@ -20,11 +20,11 @@
         <input
           type="date"
           formControlName="startDate"
-          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
                  bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white"
         >
       </div>
-      
+
       <div class="space-y-sm">
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
           End Date
@@ -32,7 +32,7 @@
         <input
           type="date"
           formControlName="endDate"
-          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
                  bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white"
         >
       </div>
@@ -44,12 +44,11 @@
         </label>
         <select
           formControlName="customerId"
-          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
-                 bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white"
-        >
+          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white">
           <option value="">All Customers</option>
-          @for (customer of customers(); track customer.id) {
-            <option [value]="customer.id">{{ customer.name }}</option>
+          @for (customer of customers(); track customer.$id) {
+            <option [value]="customer.$id">{{ customer.name }}</option>
           }
         </select>
       </div>
@@ -61,7 +60,7 @@
         </label>
         <select
           formControlName="status"
-          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
+          class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
                  bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white"
         >
           <option value="">All Statuses</option>
@@ -113,7 +112,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-            @for (sale of sales(); track sale.id) {
+            @for (sale of sales(); track sale.$id) {
               <tr class="hover:bg-gray-50 dark:hover:bg-surface-dark-primary transition-colors">
                 <td class="px-md py-sm whitespace-nowrap">
                   @if (sale) {
@@ -141,7 +140,7 @@
                   </span>
                 </td>
                 <td class="px-md py-sm whitespace-nowrap">
-                  <span [class]="'inline-flex items-center px-sm py-xs rounded-full text-xs font-medium ' + 
+                  <span [class]="'inline-flex items-center px-sm py-xs rounded-full text-xs font-medium ' +
                                 'bg-' + getStatusColor(sale.paymentStatus) + '-light ' +
                                 'text-' + getStatusColor(sale.paymentStatus) + '-dark'">
                     {{ sale.paymentStatus }}
@@ -211,7 +210,7 @@
             </h4>
             <div class="space-y-sm">
               @for (item of selectedSale()!.products; track item.productId) {
-                <div class="flex items-center justify-between p-md bg-gray-50 
+                <div class="flex items-center justify-between p-md bg-gray-50
                             dark:bg-surface-dark-primary rounded-lg">
                   <div class="flex items-center space-x-md">
                     <img
@@ -257,4 +256,4 @@
       </div>
     </div>
   }
-</div> 
+</div>

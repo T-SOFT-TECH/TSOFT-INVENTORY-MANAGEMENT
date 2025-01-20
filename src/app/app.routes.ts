@@ -27,6 +27,7 @@ export const routes: Routes = [
             redirectTo: 'pos',
             pathMatch: 'full'
           },
+
           {
             path: 'pos',
             loadComponent: () => import('./features/sales/pos/pos.component')
@@ -86,6 +87,46 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/admin/products/product-form/product-form.component')
                   .then(m => m.ProductFormComponent)
               }
+            ]
+          },
+          {
+            path: 'categories',
+            children: [
+              {
+                path: '',
+                loadComponent: () => import('./features/admin/categories/category-list/category-list.component')
+                  .then(m => m.CategoryListComponent)
+              },
+              {
+                path: 'new',
+                loadComponent: () => import('./features/admin/categories/category-form/category-form.component')
+                  .then(m => m.CategoryFormComponent)
+              },
+              {
+                path: ':id/edit',
+                loadComponent: () => import('./features/admin/categories/category-form/category-form.component')
+                  .then(m => m.CategoryFormComponent)
+              }
+            ]
+          },
+          {
+            path: 'brands',
+            children: [
+              {
+                path: '',
+                loadComponent: () => import('./features/admin/brands/brand-list/brand-list.component')
+                  .then(m => m.BrandListComponent)
+              },
+              {
+                path: 'new',
+                loadComponent: () => import('./features/admin/brands/brand-form/brand-form.component')
+                  .then(m => m.BrandFormComponent)
+              },
+              {
+                path: ':id/edit',
+                loadComponent: () => import('./features/admin/brands/brand-form/brand-form.component')
+                  .then(m => m.BrandFormComponent)
+              },
             ]
           },
           {

@@ -1,3 +1,4 @@
+
 import { Injectable, signal } from '@angular/core';
 
 @Injectable({
@@ -5,7 +6,7 @@ import { Injectable, signal } from '@angular/core';
 })
 export class ThemeService {
   private darkMode = signal<boolean>(this.isDarkModePreferred());
-  
+
   isDarkMode() {
     return this.darkMode;
   }
@@ -31,4 +32,4 @@ export class ThemeService {
       document.documentElement.classList.remove('dark');
     }
   }
-} 
+}

@@ -11,7 +11,7 @@ const databases = new Databases(client);
 async function deploy() {
     try {
         // Create database if it doesn't exist
-        const databaseId = 'pos_system';
+        const databaseId = 'inventory-invoice-db';
         try {
             await databases.create(databaseId, 'POS System');
             console.log('Database created successfully');
@@ -77,4 +77,4 @@ async function deploy() {
     }
 }
 
-deploy(); 
+deploy();

@@ -1,10 +1,12 @@
 // src/app/core/services/product.service.ts
 import { Injectable, Signal, inject, signal } from '@angular/core';
 import { AppwriteService } from './appwrite.service';
-import { BaseProduct, Product } from '../models/interfaces';
+import {BaseProduct, Product, ProductInput} from '../models/interfaces';
 import { Observable, from } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Storage, ID, Query } from 'appwrite';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -88,13 +90,13 @@ export class ProductService {
     }
   }
 
-  async createProduct(data: Omit<Product, 'id'>): Promise<Product> {
+  async createProduct(productData: ProductInput): Promise<Product> {
     try {
       const response = await this.appwrite.database.createDocument(
         environment.appwrite.databaseId,
         environment.appwrite.collections.products,
         ID.unique(),
-        data
+        productData
       );
       return response as unknown as Product;
     } catch (error) {
@@ -103,7 +105,7 @@ export class ProductService {
     }
   }
 
-  async updateProduct(id: string, data: Partial<Product>): Promise<Product> {
+  async updateProduct(id: string, data: Partial<ProductInput>): Promise<Product> {
     try {
       const response = await this.appwrite.database.updateDocument(
         environment.appwrite.databaseId,
@@ -131,7 +133,7 @@ export class ProductService {
       throw error;
     }
   }
-  
+
   async getLowStockProducts(threshold: number = 10): Promise<BaseProduct[]> {
     try {
       const response = await this.appwrite.database.listDocuments(
@@ -151,12 +153,26 @@ export class ProductService {
       const response = await this.appwrite.database.listDocuments(
         environment.appwrite.databaseId,
         environment.appwrite.collections.products,
-        [Query.orderDesc('totalSold'), Query.limit(limit)]
+        [Query.orderDesc('totalQuantitySold'), Query.limit(limit)]
       );
       const baseProducts = response.documents as unknown as BaseProduct[];
       return baseProducts.map(this.transformToProduct);
     } catch (error) {
       console.error('Error fetching top products:', error);
+      throw error;
+    }
+  }
+
+  async getProductById(id: string): Promise<BaseProduct> {
+    try {
+      const response = await this.appwrite.database.getDocument(
+        environment.appwrite.databaseId,
+        environment.appwrite.collections.products,
+        id
+      );
+      return response as unknown as BaseProduct;
+    } catch (error) {
+      console.error('Error fetching product:', error);
       throw error;
     }
   }

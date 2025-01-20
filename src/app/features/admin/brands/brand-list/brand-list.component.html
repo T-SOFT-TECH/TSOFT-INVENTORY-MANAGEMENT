@@ -1,0 +1,100 @@
+
+<div class="p-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Brands</h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Manage product brands and manufacturers
+        </p>
+      </div>
+  
+      <button
+        routerLink="new"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white
+               rounded-lg hover:bg-primary-600 transition-colors">
+        <span class="material-icons">add</span>
+        Add Brand
+      </button>
+    </div>
+  
+    @if (isLoading()) {
+      <div class="flex justify-center items-center h-64">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+      </div>
+    } @else if (brands().length === 0) {
+      <div class="text-center py-16 bg-white dark:bg-[#121212] rounded-xl border border-gray-200/50 dark:border-gray-800">
+        <span class="material-icons text-gray-400 text-5xl mb-4">business</span>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No Brands Yet</h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-6">
+          Get started by adding your first brand
+        </p>
+        <button
+          routerLink="new"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white
+                 rounded-lg hover:bg-primary-600 transition-colors">
+          <span class="material-icons">add</span>
+          Add Brand
+        </button>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (brand of brands(); track brand.$id) {
+          <div class="group bg-white dark:bg-[#121212] rounded-xl border border-gray-200/50 dark:border-gray-800
+                      hover:border-primary-500/50 dark:hover:border-primary-500/50 transition-all duration-300">
+            <div class="p-6">
+              <!-- Brand Logo & Info -->
+              <div class="flex items-center space-x-4 mb-4">
+                <img
+                  [src]="getLogoUrl(brand.logoUrl)"
+                  [alt]="brand.name"
+                  class="w-16 h-16 object-contain rounded-lg bg-gray-50 dark:bg-black/20"
+                >
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-primary-500">
+                    {{ brand.name }}
+                  </h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">
+                    {{ brand.productCount }} Products
+                  </p>
+                </div>
+              </div>
+  
+              <!-- Brand Description -->
+              @if (brand.description) {
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  {{ brand.description }}
+                </p>
+              }
+  
+              <!-- Actions -->
+              <div class="flex items-center justify-end space-x-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  [routerLink]="[brand.$id, 'edit']"
+                  class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500
+                         hover:text-primary-500 transition-colors">
+                  <span class="material-icons">edit</span>
+                </button>
+                <button
+                  (click)="deleteBrand(brand.$id)"
+                  class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500
+                         hover:text-red-500 transition-colors">
+                  <span class="material-icons">delete</span>
+                </button>
+              </div>
+            </div>
+  
+            <!-- Brand Stats -->
+            <div class="px-6 py-4 bg-gray-50 dark:bg-black/20 border-t border-gray-200/50 dark:border-gray-800">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-500 dark:text-gray-400">Status</span>
+                <span [class]="brand.status === 'active' ? 'text-success-500' : 'text-gray-500'">
+                  {{ brand.status | titlecase }}
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>

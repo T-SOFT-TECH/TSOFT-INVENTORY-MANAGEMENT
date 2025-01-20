@@ -1,63 +1,133 @@
-export interface Product {
+// Base Interfaces
+export interface BaseDocument {
+  "$id": string;
+  "$createdAt": string;
+  "$updatedAt": string;
+}
+
+// Product Types & Interfaces
+export type ProductStatus = 'active' | 'inactive' | 'archived';
+
+export interface BaseProductFields {
+  name: string;
+  sku: string;
+  brand: string;
+  price: number;
+  cost: number;
+  stockQuantity: number;
+  lowStockThreshold: number;
+  description: string;
+  imageUrl?: string;
+  status: ProductStatus;
+}
+
+// Specific Product Types
+interface StorageDeviceFields extends BaseProductFields {
+  capacity: number;
+  readSpeed: number;
+  writeSpeed: number;
+  type: 'SSD' | 'HDD' | 'Flash Drive' | 'Memory Card';
+  interface?: 'SATA' | 'NVMe' | 'USB' | 'SD';
+  formFactor?: string;
+}
+
+interface ChargerFields extends BaseProductFields {
+  outputWattage: number;
+  inputVoltage: string;
+  outputVoltage: string;
+  compatibleDevices: string[];
+  cableLength?: number;
+  connectorType: string;
+}
+
+interface ModemFields extends BaseProductFields {
+  wifiStandard: string;
+  maxSpeed: number;
+  bands: string[];
+  ports: {
+    ethernet: number;
+    usb: number;
+  };
+  antennas: number;
+  features: string[];
+}
+
+type ProductFields = BaseProductFields | StorageDeviceFields | ChargerFields | ModemFields;
+
+// Form Field Configuration
+export interface FormFieldConfig {
+  name: string;
+  type: 'text' | 'number' | 'select' | 'multiselect' | 'textarea' | 'radio' | 'checkbox';
+  label: string;
+  required?: boolean;
+  options?: string[];
+  validation?: any[];
+  defaultValue?: any;
+  placeholder?: string;
+  helpText?: string;
+  unit?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  group?: string;
+}
+
+export interface CategoryFormConfig {
   id: string;
   name: string;
+  fields: FormFieldConfig[];
+}
+
+// Main Product Interface
+export interface BaseProduct extends BaseDocument {
+  name: string;
   category: string;
+  brand: string;
   description: string;
   price: number;
-  cost?: number;
+  cost: number;
   stockQuantity: number;
   lowStockThreshold: number;
   sku: string;
-  status: 'active' | 'archived';
+  status: ProductStatus;
   imageUrl?: string;
-  createdAt: string;
-  updatedAt: string;
+  specifications?: Record<string, any>;
+}
+
+export interface Product extends BaseProduct {
   totalQuantitySold: number;
   totalRevenue: number;
 }
 
-// Base product interface for creation/updates
-export interface BaseProduct {
-  id: string;
+export type ProductInput = Omit<BaseProduct, keyof BaseDocument>;
+export type ProductFormData = ProductInput;
+export type CreateProductInput = ProductInput;
+export type UpdateProductInput = Partial<ProductInput>;
+
+// Form Value Types
+export interface ProductFormRawValue {
   name: string;
   category: string;
+  brand: string;
   description: string;
   price: number;
+  cost: number;
   stockQuantity: number;
   lowStockThreshold: number;
   sku: string;
-  status: 'active' | 'archived';
+  status: ProductStatus;
   imageUrl?: string;
-  cost?: number;
-  createdAt: string;
-  updatedAt: string;
+  [key: string]: any; // For dynamic fields
 }
-  
-  // Extended product interface with sales metrics for dashboard
-  export interface Product extends BaseProduct {
-    totalQuantitySold: number;
-    totalRevenue: number;
-  }
-  
-  // Product creation type
-  export type CreateProductInput = Omit<BaseProduct, 'id' | 'createdAt' | 'updatedAt'>;
-  
-  // Product update type
-  export type UpdateProductInput = Partial<CreateProductInput>;
 
-export interface ProductCreateDTO extends Omit<Product, 'id' | 'createdAt' | 'updatedAt'> {}
-export interface ProductUpdateDTO extends Partial<ProductCreateDTO> {}
-
-export interface Customer {
-  id: string;
+// Customer Interfaces
+export interface Customer extends BaseDocument {
   name: string;
   email: string;
   phone: string;
   address: string;
   status: 'active' | 'inactive';
   notes?: string;
-  createdAt: string;
-  updatedAt: string;
   orders?: Array<{
     id: string;
     date: string;
@@ -68,10 +138,10 @@ export interface Customer {
   lastOrderDate?: string;
 }
 
+export type CustomerCreateDTO = Omit<Customer, keyof BaseDocument | 'orders' | 'totalOrders' | 'totalSpent' | 'lastOrderDate'>;
+export type CustomerUpdateDTO = Partial<CustomerCreateDTO>;
 
-export interface CustomerCreateDTO extends Omit<Customer, 'id' | 'createdAt' | 'updatedAt' | 'purchaseHistory' | 'totalOrders' | 'totalSpent' | 'lastOrderDate'> {}
-export interface CustomerUpdateDTO extends Partial<CustomerCreateDTO> {}
-
+// Sales Interfaces
 export interface SaleProduct {
   productId: string;
   product: {
@@ -84,10 +154,11 @@ export interface SaleProduct {
   priceAtSale: number;
 }
 
-export interface Sale {
-  id: string;
+export type PaymentStatus = 'paid' | 'pending' | 'failed';
+
+export interface Sale extends BaseDocument {
   customerId: string;
-  invoiceNumber: string;  // Add this to base Sale interface
+  invoiceNumber: string;
   customer: {
     id: string;
     name: string;
@@ -101,65 +172,12 @@ export interface Sale {
   totalAmount: number;
   date: string;
   status: 'completed' | 'pending' | 'cancelled';
-  paymentStatus: 'paid' | 'pending' | 'failed';
-  createdAt: string;
-  updatedAt: string;
+  paymentStatus: PaymentStatus;
 }
 
-export interface SaleCreateDTO extends Omit<Sale, 'id' | 'createdAt' | 'updatedAt'> {}
-export interface SaleUpdateDTO extends Partial<SaleCreateDTO> {}
+export type SaleCreateDTO = Omit<Sale, keyof BaseDocument>;
+export type SaleUpdateDTO = Partial<SaleCreateDTO>;
 
-export interface SalesQueryOptions {
-  startDate?: Date;
-  endDate?: Date;
-  customerId?: string;
-  status?: PaymentStatus;
-}
-
-export type PaymentStatus = 'paid' | 'pending' | 'failed';
-
-export interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  parentId?: string;
-  description?: string;
-  children?: Category[];
-  level: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CategoryCreateDTO extends Omit<Category, 'id' | 'createdAt' | 'updatedAt' | 'children'> {}
-export interface CategoryUpdateDTO extends Partial<CategoryCreateDTO> {}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'admin' | 'sales_rep';
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  lastLogin?: string;
-  preferences?: UserPreferences;
-}
-
-export interface UserCreateDTO extends Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'lastLogin'> {}
-export interface UserUpdateDTO extends Partial<UserCreateDTO> {}
-
-export interface UserPreferences {
-  theme: 'light' | 'dark' | 'system';
-  language: string;
-  notifications: {
-    email: boolean;
-    push: boolean;
-    sales: boolean;
-    inventory: boolean;
-  };
-}
-
-// Update interface in interfaces.ts
 export interface SaleWithDetails extends Sale {
   customer: {
     id: string;
@@ -179,13 +197,60 @@ export interface SaleWithDetails extends Sale {
   }[];
 }
 
-export interface Settings {
-  company: CompanySettings;
-  invoice: InvoiceSettings;
-  notifications: NotificationSettings;
-  system: SystemSettings;
+export interface SalesQueryOptions {
+  startDate?: Date;
+  endDate?: Date;
+  customerId?: string;
+  status?: PaymentStatus;
 }
 
+// Category Interfaces
+export interface Category extends BaseDocument {
+  name: string;
+  slug: string;
+  parentId?: string;
+  description?: string;
+  children?: Category[];
+  level: number;
+  order: number;
+}
+
+export interface CategoryCreateDTO {
+  name: string;
+  description?: string;
+  parentId?: string;
+  level: number;
+  order?: number;  // Make order optional
+  slug?: string;   // Make slug optional as it will be generated in service
+}
+
+export type CategoryUpdateDTO = Partial<CategoryCreateDTO>;
+
+// User Interfaces
+export interface UserPreferences {
+  theme: 'light' | 'dark' | 'system';
+  language: string;
+  notifications: {
+    email: boolean;
+    push: boolean;
+    sales: boolean;
+    inventory: boolean;
+  };
+}
+
+export interface User extends BaseDocument {
+  name: string;
+  email: string;
+  role: 'admin' | 'sales_rep';
+  isActive: boolean;
+  lastLogin?: string;
+  preferences?: UserPreferences;
+}
+
+export type UserCreateDTO = Omit<User, keyof BaseDocument | 'lastLogin'>;
+export type UserUpdateDTO = Partial<UserCreateDTO>;
+
+// Settings Interfaces
 export interface CompanySettings {
   name: string;
   address: string;
@@ -196,7 +261,7 @@ export interface CompanySettings {
   logo?: string;
 }
 
-export interface InvoiceSettings {
+export interface InvoiceSettings extends BaseDocument {
   prefix: string;
   nextNumber: number;
   terms?: string;
@@ -220,6 +285,14 @@ export interface SystemSettings {
   theme: 'light' | 'dark' | 'system';
 }
 
+export interface Settings extends BaseDocument {
+  company: CompanySettings;
+  invoice: InvoiceSettings;
+  notifications: NotificationSettings;
+  system: SystemSettings;
+}
+
+// Dashboard Interfaces
 export interface DashboardSummary {
   todayRevenue: number;
   todayOrders: number;
@@ -235,9 +308,8 @@ export interface DashboardSummary {
   lowStockItems: BaseProduct[];
   activeCustomers: Customer[];
   todaySales: Sale[];
-  topProducts: Product[]; // Keep as Product[] since we need the sales metrics
+  topProducts: Product[];
 }
-
 
 export interface TopProduct {
   product: {
@@ -255,3 +327,21 @@ export interface SalesTrend {
   count: number;
 }
 
+// Brand Interfaces
+export interface Brand extends BaseDocument {
+  name: string;
+  slug: string;
+  description?: string;
+  logoUrl?: string;
+  status: 'active' | 'inactive';
+  websiteUrl?: string;
+  productCount?: number;
+}
+
+export type BrandInput = Omit<Brand, keyof BaseDocument | 'productCount'>;
+
+// Cart Interface
+export interface CartItem {
+  product: Product;
+  quantity: number;
+}

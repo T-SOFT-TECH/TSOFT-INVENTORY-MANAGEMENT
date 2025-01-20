@@ -1,11 +1,16 @@
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+<div class="min-h-screen bg-surface-light-primary dark:bg-surface-dark-primary text-text-light-primary dark:text-text-dark-primary transition-colors duration-200">
+  <!-- Header -->
   <app-header />
-  
-  <div class="flex">
-    <app-sidebar />
-    
-    <main class="flex-1 p-4 md:p-6 ml-[80px] md:ml-64 mt-16">
-      <router-outlet />
+  <app-sidebar  /> <!-- positioned relative to header -->
+  <div class="flex min-h-screen pt-16"> <!-- Added pt-16 to account for fixed header height -->
+    <!-- Sidebar -->
+
+
+    <!-- Main Content -->
+    <main class="flex-1 w-full md:ml-48 p-4 md:p-6"> <!-- Adjusted margins and padding -->
+      <div class=" max-w-7xl mx-auto">
+        <router-outlet />
+      </div>
     </main>
   </div>
-</div> 
+</div>

@@ -1,355 +1,198 @@
 {
-  "projectId": "tsoftmart-inventory-invoice-system",
-  "databases": [
-    {
-      "id": "inventory-invoice-db",
-      "name": "Inventory Invoice DB",
-      "collections": [
-        {
-          "id": "products",
-          "name": "Products",
-          "permissions": ["read(\"any\")", "write(\"team:admin\")"],
-          "attributes": [
-            {
-              "key": "name",
-              "type": "string",
-              "size": 255,
-              "required": true
-            },
-            {
-              "key": "category",
-              "type": "string",
-              "size": 100,
-              "required": true
-            },
-            {
-              "key": "description",
-              "type": "string",
-              "size": 65535,
-              "required": false
-            },
-            {
-              "key": "price",
-              "type": "double",
-              "required": true
-            },
-            {
-              "key": "cost",
-              "type": "double",
-              "required": false
-            },
-            {
-              "key": "stockQuantity",
-              "type": "integer",
-              "required": true,
-              "min": 0
-            },
-            {
-              "key": "lowStockThreshold",
-              "type": "integer",
-              "required": true,
-              "min": 0,
-              "default": 10
-            },
-            {
-              "key": "sku",
-              "type": "string",
-              "size": 50,
-              "required": true
-            },
-            {
-              "key": "status",
-              "type": "string",
-              "size": 20,
-              "required": true,
-              "array": false,
-              "elements": ["active", "archived"]
-            },
-            {
-              "key": "imageUrl",
-              "type": "string",
-              "size": 255,
-              "required": false
-            },
-            {
-              "key": "totalQuantitySold",
-              "type": "integer",
-              "required": true,
-              "min": 0,
-              "default": 0
-            },
-            {
-              "key": "totalRevenue",
-              "type": "double",
-              "required": true,
-              "default": 0
-            }
-          ],
-          "indexes": [
-            {
-              "key": "sku",
-              "type": "unique",
-              "attributes": ["sku"]
-            },
-            {
-              "key": "category",
-              "type": "key",
-              "attributes": ["category"]
-            },
-            {
-              "key": "status",
-              "type": "key",
-              "attributes": ["status"]
-            }
-          ]
+    "projectId": "tsoftmart-inventory-invoice-system",
+    "projectName": "TSOFT-MART INVENTORY/INVOICE SYSTEM",
+    "settings": {
+        "services": {
+            "account": true,
+            "avatars": true,
+            "databases": true,
+            "locale": true,
+            "health": true,
+            "storage": true,
+            "teams": true,
+            "users": true,
+            "functions": true,
+            "graphql": true,
+            "messaging": true
         },
-        {
-          "id": "customers",
-          "name": "Customers",
-          "permissions": ["read(\"any\")", "write(\"team:admin\")"],
-          "attributes": [
-            {
-              "key": "name",
-              "type": "string",
-              "size": 255,
-              "required": true
+        "auth": {
+            "methods": {
+                "jwt": true,
+                "phone": true,
+                "invites": true,
+                "anonymous": true,
+                "email-otp": true,
+                "magic-url": true,
+                "email-password": true
             },
-            {
-              "key": "email",
-              "type": "string",
-              "size": 255,
-              "required": true
-            },
-            {
-              "key": "phone",
-              "type": "string",
-              "size": 50,
-              "required": false
-            },
-            {
-              "key": "address",
-              "type": "string",
-              "size": 500,
-              "required": false
-            },
-            {
-              "key": "status",
-              "type": "string",
-              "size": 20,
-              "required": true,
-              "array": false,
-              "elements": ["active", "inactive"]
-            },
-            {
-              "key": "notes",
-              "type": "string",
-              "size": 65535,
-              "required": false
-            },
-            {
-              "key": "totalOrders",
-              "type": "integer",
-              "required": false,
-              "min": 0,
-              "default": 0
-            },
-            {
-              "key": "totalSpent",
-              "type": "double",
-              "required": false,
-              "default": 0
-            },
-            {
-              "key": "lastOrderDate",
-              "type": "datetime",
-              "required": false
+            "security": {
+                "duration": 31536000,
+                "limit": 0,
+                "sessionsLimit": 10,
+                "passwordHistory": 0,
+                "passwordDictionary": false,
+                "personalDataCheck": false,
+                "sessionAlerts": false,
+                "mockNumbers": []
             }
-          ],
-          "indexes": [
-            {
-              "key": "email",
-              "type": "unique",
-              "attributes": ["email"]
-            },
-            {
-              "key": "status",
-              "type": "key",
-              "attributes": ["status"]
-            }
-          ]
-        },
-        {
-          "id": "sales",
-          "name": "Sales",
-          "permissions": ["read(\"any\")", "write(\"team:admin\")"],
-          "attributes": [
-            {
-              "key": "customerId",
-              "type": "string",
-              "size": 255,
-              "required": true
-            },
-            {
-              "key": "invoiceNumber",
-              "type": "string",
-              "size": 50,
-              "required": true
-            },
-            {
-              "key": "products",
-              "type": "string",
-              "size": 65535,
-              "required": true
-            },
-            {
-              "key": "totalAmount",
-              "type": "double",
-              "required": true,
-              "min": 0
-            },
-            {
-              "key": "date",
-              "type": "datetime",
-              "required": true
-            },
-            {
-              "key": "status",
-              "type": "string",
-              "size": 20,
-              "required": true,
-              "array": false,
-              "elements": ["completed", "pending", "cancelled"]
-            },
-            {
-              "key": "paymentStatus",
-              "type": "string",
-              "size": 20,
-              "required": true,
-              "array": false,
-              "elements": ["paid", "pending", "failed"]
-            }
-          ],
-          "indexes": [
-            {
-              "key": "customerId",
-              "type": "key",
-              "attributes": ["customerId"]
-            },
-            {
-              "key": "invoiceNumber",
-              "type": "unique",
-              "attributes": ["invoiceNumber"]
-            },
-            {
-              "key": "date",
-              "type": "key",
-              "attributes": ["date"]
-            },
-            {
-              "key": "status",
-              "type": "key",
-              "attributes": ["status"]
-            }
-          ]
-        },
-        {
-          "id": "settings",
-          "name": "Settings",
-          "permissions": ["read(\"any\")", "write(\"team:admin\")"],
-          "attributes": [
-            {
-              "key": "general",
-              "type": "string",
-              "size": 65535,
-              "required": true
-            },
-            {
-              "key": "company",
-              "type": "string",
-              "size": 65535,
-              "required": true
-            },
-            {
-              "key": "invoice",
-              "type": "string",
-              "size": 65535,
-              "required": true
-            },
-            {
-              "key": "notifications",
-              "type": "string",
-              "size": 65535,
-              "required": true
-            }
-          ]
-        },
-        {
-          "id": "categories",
-          "name": "Categories",
-          "permissions": ["read(\"any\")", "write(\"team:admin\")"],
-          "attributes": [
-            {
-              "key": "name",
-              "type": "string",
-              "size": 255,
-              "required": true
-            },
-            {
-              "key": "slug",
-              "type": "string",
-              "size": 255,
-              "required": true
-            },
-            {
-              "key": "parentId",
-              "type": "string",
-              "size": 255,
-              "required": false
-            },
-            {
-              "key": "description",
-              "type": "string",
-              "size": 65535,
-              "required": false
-            },
-            {
-              "key": "level",
-              "type": "integer",
-              "required": true,
-              "min": 0,
-              "default": 0
-            }
-          ],
-          "indexes": [
-            {
-              "key": "slug",
-              "type": "unique",
-              "attributes": ["slug"]
-            },
-            {
-              "key": "parentId",
-              "type": "key",
-              "attributes": ["parentId"]
-            }
-          ]
         }
-      ]
-    }
-  ],
-  "buckets": [
-    {
-      "id": "product_images",
-      "name": "Product Images",
-      "permissions": ["read(\"any\")", "write(\"team:admin\")"],
-      "fileSizeLimit": 5242880,
-      "allowedFileExtensions": ["jpg", "jpeg", "png", "webp"]
     },
-    {
-      "id": "company_logos",
-      "name": "Company Logos",
-      "permissions": ["read(\"any\")", "write(\"team:admin\")"],
-      "fileSizeLimit": 2097152,
-      "allowedFileExtensions": ["jpg", "jpeg", "png", "webp"]
-    }
-  ]
-} 
+    "databases": [
+        {
+            "$id": "inventory-invoice-db",
+            "name": "Inventory-Invoice DB",
+            "enabled": true
+        }
+    ],
+    "collections": [
+        {
+            "$id": "products",
+            "$permissions": [
+                "read(\"any\")",
+                "update(\"any\")",
+                "create(\"label:admin\")",
+                "read(\"label:admin\")",
+                "update(\"label:admin\")",
+                "delete(\"label:admin\")"
+            ],
+            "databaseId": "inventory-invoice-db",
+            "name": "Products",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "name",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "category",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "description",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 65535,
+                    "default": null
+                },
+                {
+                    "key": "price",
+                    "type": "double",
+                    "required": true,
+                    "array": false,
+                    "default": null,
+                    "min": 0
+                },
+                {
+                    "key": "cost",
+                    "type": "double",
+                    "required": false,
+                    "array": false,
+                    "default": null,
+                    "min": 0
+                },
+                {
+                    "key": "stockQuantity",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "default": 0,
+                    "min": 0
+                },
+                {
+                    "key": "lowStockThreshold",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "default": 10,
+                    "min": 0
+                },
+                {
+                    "key": "sku",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "status",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 20,
+                    "default": "active",
+                    "elements": [
+                        "active",
+                        "archived"
+                    ]
+                },
+                {
+                    "key": "imageUrl",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "totalQuantitySold",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "default": 0,
+                    "min": 0
+                },
+                {
+                    "key": "totalRevenue",
+                    "type": "double",
+                    "required": true,
+                    "array": false,
+                    "default": 0,
+                    "min": 0
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "sku",
+                    "type": "unique",
+                    "attributes": [
+                        "sku"
+                    ]
+                },
+                {
+                    "key": "category",
+                    "type": "key",
+                    "attributes": [
+                        "category"
+                    ]
+                },
+                {
+                    "key": "status",
+                    "type": "key",
+                    "attributes": [
+                        "status"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "inventory-invoice-db",
+            "databaseId": "inventory-invoice-db",
+            "name": "Inventory/Invoice Database",
+            "documentSecurity": false,
+            "attributes": [],
+            "indexes": [],
+            "enabled": true
+        }
+    ]
+}

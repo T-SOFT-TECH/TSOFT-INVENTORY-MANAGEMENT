@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  
+
   // API Configuration
   api: {
     baseUrl: 'http://localhost:3000/api',
@@ -13,16 +13,18 @@ export const environment = {
     projectId: 'tsoftmart-inventory-invoice-system',
     databaseId: 'inventory-invoice-db',
     collections: {
-      products: 'products-collection-id',
-      customers: 'customers-collection-id',
-      sales: 'sales-collection-id',
-      invoices: 'invoices-collection-id',
-      settings: 'settings-collection-id',
-      categories: 'categories-collection-id'
+      products: 'products',
+      customers: 'customers',
+      sales: 'sales',
+      invoices: 'invoices',
+      settings: 'settings',
+      categories: 'categories',
+      brands: 'brands'
     },
     buckets: {
-      productImages: 'your-product-images-bucket-id',
-      companyLogos: 'your-company-logos-bucket-id'
+      productImages: 'productImages',
+      companyLogos: 'company-logo',
+      brandLogos: 'brand-logos'
     }
   },
 
@@ -39,11 +41,11 @@ export const environment = {
 
   // Default Settings
   defaults: {
-    currency: 'USD',
+    currency: 'NGN',
     dateFormat: 'MM/DD/YYYY',
     timezone: 'UTC',
     language: 'en',
-    theme: 'light',
+    theme: 'dark',
     itemsPerPage: 10,
     taxRate: 10,
     invoicePrefix: 'INV-',
@@ -79,4 +81,4 @@ export const environment = {
     allowedImageTypes: ['image/jpeg', 'image/png', 'image/webp'],
     maxImageDimension: 2048
   }
-}; 
+};

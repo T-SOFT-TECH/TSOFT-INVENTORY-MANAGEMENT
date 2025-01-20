@@ -1,23 +1,77 @@
-<header class="bg-primary-500 text-white p-md fixed w-full top-0 z-50">
-  <div class="container mx-auto flex justify-between items-center">
-    <div class="flex items-center">
-      <h1 class="text-xl font-bold">Tech Shop Manager</h1>
-    </div>
-    
-    <div class="flex items-center space-x-md">
-      <button 
-        (click)="toggleTheme()"
-        class="p-sm rounded-md bg-primary-600 hover:bg-primary-700 transition-colors">
-        {{ isDarkMode() ? '☀️' : '🌙' }}
-      </button>
-      
-      <!-- User Profile -->
-      <div class="relative">
-        <button class="flex items-center space-x-sm p-sm rounded-md hover:bg-primary-600">
-          <span>John Doe</span>
-          <span class="material-icons">arrow_drop_down</span>
+<!-- header.component.html -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface-light-primary dark:bg-surface-dark-primary border-b border-gray-200 dark:border-gray-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16">
+      <!-- Logo -->
+      <div class="flex-shrink-0 flex items-center">
+
+      </div>
+
+      <!-- Right Section -->
+      <div class="flex items-center space-x-4">
+        <!-- Theme Toggle -->
+        <button
+          (click)="toggleTheme()"
+          class="relative w-10 h-10 rounded-lg flex items-center justify-center hover:bg-surface-light-tertiary dark:hover:bg-surface-dark-tertiary transition-colors"
+          [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
+        >
+          <!-- Theme toggle icons remain the same -->
+          <div class="relative w-5 h-5">
+            <!-- Sun and Moon icons remain the same -->
+          </div>
         </button>
+
+        <!-- Notification Button -->
+        <button
+          (click)="toggleNotifications()"
+          class="relative w-10 h-10 rounded-lg flex items-center justify-center hover:bg-surface-light-tertiary dark:hover:bg-surface-dark-tertiary transition-colors"
+        >
+          <span class="material-icons">notifications</span>
+        </button>
+
+        <!-- Profile Dropdown -->
+        <div class="relative">
+          <button
+            (click)="toggleProfileMenu()"
+            class="flex items-center space-x-2 p-1.5 rounded-lg hover:bg-surface-light-tertiary dark:hover:bg-surface-dark-tertiary transition-colors"
+          >
+            <div class="h-8 w-8 rounded-full bg-primary-500 flex items-center justify-center">
+              <span class="text-sm font-medium text-white">
+                {{ currentUser()?.name?.charAt(0)?.toUpperCase() }}
+              </span>
+            </div>
+            <span class="hidden md:block text-sm font-medium text-text-light-primary dark:text-text-dark-primary">
+              {{ currentUser()?.name }}
+            </span>
+          </button>
+
+          @if (showProfileMenu()) {
+            <div
+              class="origin-top-right absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-surface-light-secondary dark:bg-surface-dark-secondary ring-1 ring-black ring-opacity-5"
+              (clickOutside)="showProfileMenu.set(false)"
+            >
+              <div class="py-1">
+                <a routerLink="/profile"
+                   class="block px-4 py-2 text-sm text-text-light-secondary dark:text-text-dark-secondary hover:bg-surface-light-tertiary dark:hover:bg-surface-dark-tertiary">
+                  Your Profile
+                </a>
+                <a routerLink="/settings"
+                   class="block px-4 py-2 text-sm text-text-light-secondary dark:text-text-dark-secondary hover:bg-surface-light-tertiary dark:hover:bg-surface-dark-tertiary">
+                  Settings
+                </a>
+                <button
+                  (click)="logout()"
+                  class="block w-full text-left px-4 py-2 text-sm text-error-500 hover:bg-surface-light-tertiary dark:hover:bg-surface-dark-tertiary">
+                  Sign out
+                </button>
+              </div>
+            </div>
+          }
+        </div>
       </div>
     </div>
   </div>
-</header> 
+</header>
+
+<!-- Spacer -->
+<div class="h-16"></div>
