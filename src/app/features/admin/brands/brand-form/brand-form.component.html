@@ -1,178 +1,226 @@
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6">
+  <div class="max-w-3xl mx-auto">
+    <!-- Header Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8">
+      <div class="flex items-center justify-between">
+        <!-- Back Button -->
+        <button
+          routerLink="/admin/brands"
+          class="flex items-center gap-2 px-4 py-2 rounded-xl
+                 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700
+                 transition-all duration-300">
+          <span class="material-icons">arrow_back</span>
+          Back
+        </button>
 
-<div class="p-6">
-    <div class="max-w-2xl mx-auto">
-      <!-- Header -->
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        <!-- Title -->
+        <div class="text-center">
+          <h1 class="text-2xl font-bold bg-clip-text text-transparent
+                     bg-gradient-to-r from-primary-500 to-primary-600">
             {{ isEditMode() ? 'Edit Brand' : 'New Brand' }}
           </h1>
-          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ isEditMode() ? 'Update brand details' : 'Create a new brand' }}
           </p>
         </div>
-  
-        <button
-          routerLink="/admin/brands"
-          class="flex items-center gap-2 px-4 py-2 text-gray-500 dark:text-gray-400
-                 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
-          <span class="material-icons">arrow_back</span>
-          Back to Brands
-        </button>
+
+        <!-- Spacer for alignment -->
+        <div class="w-24"></div>
       </div>
-  
-      <!-- Form Card -->
-      <div class="bg-white dark:bg-[#121212] rounded-xl border border-gray-200/50 dark:border-gray-800 p-6">
-        <form [formGroup]="brandForm" (ngSubmit)="onSubmit()" class="space-y-6">
-          <!-- Name Field -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Brand Name *
-            </label>
-            <input
-              type="text"
-              formControlName="name"
-              (blur)="generateSlug()"
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
-                     bg-white dark:bg-black text-gray-900 dark:text-white
-                     focus:ring-2 focus:ring-primary-500 focus:border-transparent
-                     transition-colors"
-              placeholder="Enter brand name"
-            >
-            @if (isFieldInvalid('name')) {
-              <p class="mt-1 text-sm text-red-500">{{ getErrorMessage('name') }}</p>
-            }
-          </div>
-  
-          <!-- Slug Field -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Slug *
-            </label>
-            <input
-              type="text"
-              formControlName="slug"
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
-                     bg-gray-50 dark:bg-black text-gray-900 dark:text-white
-                     focus:ring-2 focus:ring-primary-500 focus:border-transparent
-                     transition-colors"
-              placeholder="brand-slug"
-            >
-            @if (isFieldInvalid('slug')) {
-              <p class="mt-1 text-sm text-red-500">{{ getErrorMessage('slug') }}</p>
-            }
-          </div>
-  
-          <!-- Logo Upload -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Brand Logo
-            </label>
-            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600
-                        border-dashed rounded-lg hover:border-primary-500 dark:hover:border-primary-500
-                        transition-colors">
-              <div class="space-y-1 text-center">
-                @if (imagePreview()) {
-                  <img
-                    [src]="imagePreview()"
-                    alt="Logo Preview"
-                    class="mx-auto h-32 w-32 object-contain rounded-lg mb-4"
-                  >
-                } @else {
-                  <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                }
-                <div class="flex text-sm text-gray-600 dark:text-gray-400">
-                  <label class="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-medium
-                              text-primary-500 hover:text-primary-600 focus-within:outline-none">
-                    <span>Upload a logo</span>
-                    <input type="file" class="sr-only" (change)="onLogoSelected($event)" accept="image/*">
-                  </label>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
+      <form [formGroup]="brandForm" (ngSubmit)="onSubmit()" class="space-y-8 p-8">
+        <!-- Logo Upload Section -->
+        <div class="flex justify-center">
+          <div class="relative group">
+            <div class="w-32 h-32 rounded-2xl overflow-hidden
+                        bg-gray-50 dark:bg-gray-900/50
+                        border-2 border-dashed border-gray-300 dark:border-gray-600
+                        hover:border-primary-500 dark:hover:border-primary-500
+                        transition-all duration-300">
+              @if (imagePreview()) {
+                <img
+                  [src]="imagePreview()"
+                  alt="Logo Preview"
+                  class="w-full h-full object-contain p-2"
+                >
+              } @else {
+                <div class="flex flex-col items-center justify-center h-full">
+                  <span class="material-icons text-gray-400 text-3xl mb-2">cloud_upload</span>
+                  <span class="text-sm text-gray-500 dark:text-gray-400">Upload Logo</span>
                 </div>
-                <p class="text-xs text-gray-500 dark:text-gray-400">
-                  PNG, JPG, GIF up to 2MB
-                </p>
+              }
+
+              <!-- Overlay on hover -->
+              <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100
+                          flex items-center justify-center transition-opacity">
+                <label class="cursor-pointer text-white text-sm">
+                  Change Logo
+                  <input type="file" class="hidden" (change)="onLogoSelected($event)" accept="image/*">
+                </label>
               </div>
             </div>
           </div>
-  
-          <!-- Website URL -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Website URL
-            </label>
-            <input
-              type="url"
-              formControlName="websiteUrl"
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
-                     bg-white dark:bg-black text-gray-900 dark:text-white
-                     focus:ring-2 focus:ring-primary-500 focus:border-transparent
-                     transition-colors"
-              placeholder="https://example.com"
-            >
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Left Column -->
+          <div class="space-y-6">
+            <!-- Name Field -->
+            <div class="form-group">
+              <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Brand Name <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <span class="material-icons text-xl">business</span>
+                </span>
+                <input
+                  type="text"
+                  formControlName="name"
+                  (blur)="generateSlug()"
+                  class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600
+                         bg-white dark:bg-gray-900 text-gray-900 dark:text-white
+                         focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                         transition-all duration-300"
+                  placeholder="Enter brand name"
+                >
+              </div>
+              @if (isFieldInvalid('name')) {
+                <p class="mt-1 text-sm text-red-500 flex items-center gap-1">
+                  <span class="material-icons text-sm">error</span>
+                  {{ getErrorMessage('name') }}
+                </p>
+              }
+            </div>
+
+            <!-- Slug Field -->
+            <div class="form-group">
+              <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Slug <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <span class="material-icons text-xl">link</span>
+                </span>
+                <input
+                  type="text"
+                  formControlName="slug"
+                  class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600
+                         bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white
+                         focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                         transition-all duration-300"
+                  placeholder="brand-slug"
+                >
+              </div>
+              @if (isFieldInvalid('slug')) {
+                <p class="mt-1 text-sm text-red-500 flex items-center gap-1">
+                  <span class="material-icons text-sm">error</span>
+                  {{ getErrorMessage('slug') }}
+                </p>
+              }
+            </div>
           </div>
-  
-          <!-- Description Field -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Description
-            </label>
+
+          <!-- Right Column -->
+          <div class="space-y-6">
+            <!-- Website URL -->
+            <div class="form-group">
+              <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Website URL
+              </label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <span class="material-icons text-xl">language</span>
+                </span>
+                <input
+                  type="url"
+                  formControlName="websiteUrl"
+                  class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600
+                         bg-white dark:bg-gray-900 text-gray-900 dark:text-white
+                         focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                         transition-all duration-300"
+                  placeholder="https://example.com"
+                >
+              </div>
+            </div>
+
+            <!-- Status Field -->
+            <div class="form-group">
+              <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Status
+              </label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <span class="material-icons text-xl">toggle_on</span>
+                </span>
+                <select
+                  formControlName="status"
+                  class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600
+                         bg-white dark:bg-gray-900 text-gray-900 dark:text-white
+                         focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                         transition-all duration-300 appearance-none"
+                >
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                  <span class="material-icons">expand_more</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description Field (Full Width) -->
+        <div class="form-group">
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            Description
+          </label>
+          <div class="relative">
             <textarea
               formControlName="description"
               rows="4"
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
-                     bg-white dark:bg-black text-gray-900 dark:text-white
+              class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600
+                     bg-white dark:bg-gray-900 text-gray-900 dark:text-white
                      focus:ring-2 focus:ring-primary-500 focus:border-transparent
-                     transition-colors"
+                     transition-all duration-300 resize-none"
               placeholder="Enter brand description"
             ></textarea>
           </div>
-  
-          <!-- Status Field -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Status
-            </label>
-            <select
-  formControlName="status"
-  class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
-         bg-white dark:bg-black text-gray-900 dark:text-white
-         focus:ring-2 focus:ring-primary-500 focus:border-transparent
-         transition-colors"
->
-  <option [value]="'active'">Active</option>
-  <option [value]="'inactive'">Inactive</option>
-</select>
-          </div>
-  
-          <!-- Form Actions -->
-          <div class="flex items-center justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-800">
-            <button
-              type="button"
-              routerLink="/admin/brands"
-              class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900
-                     dark:hover:text-white transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              [disabled]="brandForm.invalid || isLoading()"
-              class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600
-                     disabled:opacity-50 disabled:cursor-not-allowed
-                     transition-colors flex items-center gap-2"
-            >
-              @if (isLoading()) {
-                <span class="material-icons animate-spin">refresh</span>
-                {{ isEditMode() ? 'Updating...' : 'Creating...' }}
-              } @else {
-                {{ isEditMode() ? 'Update Brand' : 'Create Brand' }}
-              }
-            </button>
-          </div>
-        </form>
-      </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex items-center justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <button
+            type="button"
+            routerLink="/admin/brands"
+            class="px-6 py-3 rounded-xl text-gray-700 dark:text-gray-300
+                   hover:bg-gray-100 dark:hover:bg-gray-700
+                   transition-all duration-300"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="brandForm.invalid || isLoading()"
+            class="px-6 py-3 rounded-xl bg-primary-500 text-white
+                   hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed
+                   transition-all duration-300 flex items-center gap-2
+                   shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40"
+          >
+            @if (isLoading()) {
+              <span class="material-icons animate-spin">refresh</span>
+              {{ isEditMode() ? 'Updating...' : 'Creating...' }}
+            } @else {
+              <span class="material-icons">{{ isEditMode() ? 'save' : 'add' }}</span>
+              {{ isEditMode() ? 'Update Brand' : 'Create Brand' }}
+            }
+          </button>
+        </div>
+      </form>
     </div>
   </div>
+</div>

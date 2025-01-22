@@ -3,7 +3,7 @@ import {Injectable, inject, signal} from '@angular/core';
 import { AppwriteService } from './appwrite.service';
 import {Category, CategoryCreateDTO} from '../models/interfaces';
 import { environment } from '../../../environments/environment';
-import { ID } from 'appwrite';
+import {ID, Query} from 'appwrite';
 
 @Injectable({
   providedIn: 'root'
@@ -63,13 +63,37 @@ export class CategoryService {
 
   async getCategories(): Promise<Category[]> {
     try {
-      const response = await this.appwrite.database.listDocuments(
-        environment.appwrite.databaseId,
-        environment.appwrite.collections.categories
-      );
-      const categories = response.documents as unknown as Category[];
-      this.categories.set(categories);
-      return categories;
+      let allCategories: Category[] = [];
+      let offset = 0;
+      const limit = 100;
+
+      while (true) {
+        console.log(`Fetching categories: offset ${offset}, limit ${limit}`);
+
+        const response = await this.appwrite.database.listDocuments(
+          environment.appwrite.databaseId,
+          environment.appwrite.collections.categories,
+          [
+            Query.limit(limit),
+            Query.offset(offset)
+          ]
+        );
+
+        const categories = response.documents as unknown as Category[];
+        console.log(`Fetched ${categories.length} categories`);
+
+        allCategories = [...allCategories, ...categories];
+
+        if (categories.length < limit) {
+          break;
+        }
+
+        offset += limit;
+      }
+
+      console.log(`Total categories fetched: ${allCategories.length}`);
+      this.categories.set(allCategories);
+      return allCategories;
     } catch (error) {
       console.error('Error fetching categories:', error);
       throw error;

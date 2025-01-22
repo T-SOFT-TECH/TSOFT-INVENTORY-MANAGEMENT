@@ -30,7 +30,7 @@ const colors = {
   // Text Colors
   text: {
     dark: {
-      primary: '#ffffff',
+      primary: '#222222',
       secondary: '#94a3b8',
       tertiary: '#64748b',
     },

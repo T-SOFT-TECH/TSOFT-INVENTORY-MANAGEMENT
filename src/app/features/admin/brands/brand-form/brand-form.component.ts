@@ -111,14 +111,17 @@ export class BrandFormComponent implements OnInit {
         this.toast.success('Brand created successfully');
       }
 
-      this.router.navigate(['/admin/brands']);
+      // Preserve query parameters when navigating back
+      this.router.navigate(['/admin/brands'], {
+        queryParamsHandling: 'preserve'
+      });
+      
     } catch (error) {
       this.toast.error(this.isEditMode() ? 'Failed to update brand' : 'Failed to create brand');
     } finally {
       this.isLoading.set(false);
     }
   }
-
   generateSlug() {
     const name = this.brandForm.get('name')?.value;
     if (name) {
@@ -167,4 +170,9 @@ export class BrandFormComponent implements OnInit {
     }
     return '';
   }
+
+
+
+
+
 }

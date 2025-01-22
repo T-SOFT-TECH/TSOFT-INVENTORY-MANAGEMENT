@@ -1,7 +1,7 @@
-// src/app/core/configs/product-forms/product-form.types.ts
+
 export interface FormFieldConfig {
   name: string;
-  type: 'text' | 'number' | 'select' | 'multiselect' | 'textarea' | 'radio' | 'checkbox';
+  type: 'text' | 'number' | 'select' | 'multiselect'  | 'textarea' | 'radio' | 'checkbox';
   label: string;
   required?: boolean;
   options?: string[];

@@ -28,6 +28,9 @@ export class SettingsComponent {
   success = signal<string | null>(null);
   activeTab = signal<string>('general');
 
+  seedProgress = this.seedService.seedProgress;
+
+
   tabs: SettingsTab[] = [
     { id: 'general', label: 'General Settings', icon: 'settings' },
     { id: 'company', label: 'Company Information', icon: 'business' },
@@ -156,6 +159,10 @@ export class SettingsComponent {
     if (confirm('This will create initial categories if they don\'t exist. Continue?')) {
       await this.seedService.seedCategories();
     }
+  }
+
+  getProgressPercentage(): number {
+    return this.seedService.getProgressPercentage();
   }
 
 }

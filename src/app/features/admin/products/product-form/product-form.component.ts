@@ -1,21 +1,42 @@
-// product-form.component.ts
+
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../../../core/services/product.service';
 import { CategoryService } from '../../../../core/services/category.service';
 import { BrandService } from '../../../../core/services/brand.service';
-import { ProductFormConfigService, CategoryFormConfig, FormFieldConfig } from '../../../../core/services/product-form-config.service';
+import {
+  ProductFormConfigService,
+  CategoryFormConfig,
+  FormFieldConfig
+} from '../../../../core/services/product-form-config.service';
 import { HotToastService } from '@ngxpert/hot-toast';
 import {
   Category,
   Brand,
   Product,
   ProductInput,
-  ProductFormData,
   ProductFormRawValue
 } from '../../../../core/models/interfaces';
+
+
+interface CategoryOption {
+  $id: string;
+  name: string;
+  level: number;
+  children?: CategoryOption[];
+  parent?: CategoryOption;
+}
+
+interface CategoryNode {
+  $id: string;
+  name: string;
+  level: number;
+  children?: CategoryNode[];
+  parent?: CategoryNode;
+}
+
 
 @Component({
   selector: 'app-product-form',
@@ -50,8 +71,15 @@ export class ProductFormComponent implements OnInit {
   formConfig = signal<CategoryFormConfig | null>(null);
   groupedFields = signal<{ [key: string]: FormFieldConfig[] }>({});
 
+  subCategories = signal<CategoryNode[]>([]);
+
+
   // Form
-  productForm = this.fb.group({});
+  productForm: FormGroup = this.fb.group({});
+
+  parentCategories = signal<CategoryOption[]>([]);
+  selectedParentCategory = signal<CategoryOption | null>(null);
+
 
   ngOnInit() {
     this.loadInitialData();
@@ -65,24 +93,81 @@ export class ProductFormComponent implements OnInit {
   private async loadInitialData() {
     try {
       this.isLoading.set(true);
-      const [categories, brands] = await Promise.all([
-        this.categoryService.getCategories(),
-        this.brandService.getBrands()
-      ]);
+    const [categories, brands] = await Promise.all([
+      this.categoryService.getCategories(),
+      this.brandService.getBrands()
+    ]);
+
+    this.parentCategories.set(this.buildCategoryTree(categories));
+    this.brands.set(brands);
 
       this.categories.set(categories);
       this.brands.set(brands);
 
-      // Update brand options in form config
       this.formConfigService.updateBrandOptions(
-        brands.map(b => b.name)
+        brands.map(b => b.$id)
       );
     } catch (error) {
+      console.error('Error loading initial data:', error);
       this.toast.error('Failed to load initial data');
     } finally {
       this.isLoading.set(false);
     }
   }
+
+
+  private buildCategoryTree(categories: Category[]): CategoryOption[] {
+    const categoryMap = new Map<string, CategoryOption>();
+    const roots: CategoryOption[] = [];
+
+    // First pass: Create category options
+    categories.forEach(cat => {
+      categoryMap.set(cat.$id, {
+        $id: cat.$id,
+        name: cat.name,
+        level: cat.level,
+        children: []
+      });
+    });
+
+    // Second pass: Build tree structure
+    categories.forEach(cat => {
+      const category = categoryMap.get(cat.$id)!;
+      if (cat.parentId) {
+        const parent = categoryMap.get(cat.parentId);
+        if (parent) {
+          parent.children = parent.children || [];
+          parent.children.push(category);
+          category.parent = parent;
+        }
+      } else {
+        roots.push(category);
+      }
+    });
+
+    return roots;
+  }
+
+  onParentCategorySelect(category: CategoryOption) {
+    this.selectedParentCategory.set(category);
+    this.subCategories.set(category.children || []);
+    this.selectedCategory.set(null);
+  }
+
+  onSubCategorySelect(categoryId: string) {
+    this.selectedCategory.set(categoryId);
+    const config = this.formConfigService.getFormConfig(categoryId);
+    if (config) {
+      this.formConfig.set(config);
+      this.rebuildForm(config);
+      this.groupFieldsByCategory(config.fields);
+    }
+  }
+
+
+
+
+
 
   onCategoryChange(categoryId: string) {
     this.selectedCategory.set(categoryId);
@@ -95,22 +180,22 @@ export class ProductFormComponent implements OnInit {
   }
 
   private groupFieldsByCategory(fields: FormFieldConfig[]) {
-    const grouped = fields.reduce((acc, field) => {
+    const grouped = fields.reduce<{ [key: string]: FormFieldConfig[] }>((acc, field) => {
       const group = field.group || 'other';
       if (!acc[group]) {
         acc[group] = [];
       }
       acc[group].push(field);
       return acc;
-    }, {} as { [key: string]: FormFieldConfig[] });
+    }, {});
 
     this.groupedFields.set(grouped);
   }
 
   private rebuildForm(config: CategoryFormConfig) {
-    const formGroup: any = {};
+    const formGroup: Record<string, any> = {};
 
-    config.fields.forEach(field => {
+    config.fields.forEach((field: FormFieldConfig) => {
       const validators = [];
       if (field.required) validators.push(Validators.required);
       if (field.type === 'number') {
@@ -118,7 +203,7 @@ export class ProductFormComponent implements OnInit {
         if (field.max !== undefined) validators.push(Validators.max(field.max));
       }
 
-      formGroup[field.name] = [field.defaultValue || '', validators];
+      formGroup[field.name] = [field.defaultValue ?? '', validators];
     });
 
     this.productForm = this.fb.group(formGroup);
@@ -129,9 +214,7 @@ export class ProductFormComponent implements OnInit {
       this.isLoading.set(true);
       const product = await this.productService.getProductById(id);
       if (product) {
-        // First set the category and rebuild form
-        this.onCategoryChange(product.category); // Changed from categoryId to category
-        // Then patch the values
+        this.onCategoryChange(product.category);
         this.productForm.patchValue({
           ...product,
           specifications: product.specifications || {}
@@ -144,12 +227,12 @@ export class ProductFormComponent implements OnInit {
         }
       }
     } catch (error) {
+      console.error('Error loading product:', error);
       this.toast.error('Failed to load product');
     } finally {
       this.isLoading.set(false);
     }
   }
-
 
   async handleImageUpload(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
@@ -166,6 +249,7 @@ export class ProductFormComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     } catch (error) {
+      console.error('Error uploading image:', error);
       this.toast.error('Failed to upload image');
     } finally {
       this.isLoading.set(false);
@@ -216,7 +300,6 @@ export class ProductFormComponent implements OnInit {
         return;
       }
 
-      // Create base product data
       const productData: ProductInput = {
         name: formValues.name,
         description: formValues.description,
@@ -232,16 +315,15 @@ export class ProductFormComponent implements OnInit {
         specifications: {}
       };
 
-      // Add category-specific fields to specifications
       const config = this.formConfig();
       if (config) {
-        const specFields = config.fields.filter(f => f.group === 'specifications');
-        const specifications = specFields.reduce((acc, field) => {
-          if (formValues[field.name] !== undefined && formValues[field.name] !== null) {
+        const specFields = config.fields.filter(field => field.group === 'specifications');
+        const specifications = specFields.reduce<Record<string, any>>((acc, field) => {
+          if (formValues[field.name] != null) {
             acc[field.name] = formValues[field.name];
           }
           return acc;
-        }, {} as Record<string, any>);
+        }, {});
 
         if (Object.keys(specifications).length > 0) {
           productData.specifications = specifications;
@@ -261,10 +343,11 @@ export class ProductFormComponent implements OnInit {
 
       this.router.navigate(['/admin/products']);
     } catch (error) {
+      console.error('Form submission error:', error);
       this.toast.error(
         this.isEditMode()
-          ? 'Failed to update product'
-          : 'Failed to create product'
+          ? 'Failed to update product: ' + (error instanceof Error ? error.message : 'Unknown error')
+          : 'Failed to create product: ' + (error instanceof Error ? error.message : 'Unknown error')
       );
     } finally {
       this.isLoading.set(false);
@@ -273,9 +356,87 @@ export class ProductFormComponent implements OnInit {
 
   readonly objectKeys = Object.keys;
 
-// Add method to handle undefined min/max
   getNumericValue(value: number | undefined): number | null {
     return value ?? null;
   }
+
+
+  getGroupIcon(group: string): string {
+    const icons: Record<string, string> = {
+      basic: 'info',
+      pricing: 'payments',
+      specifications: 'settings',
+      inventory: 'inventory',
+      features: 'featured_play_list',
+      dimensions: 'straighten',
+      technical: 'memory',
+      connectivity: 'wifi',
+      display: 'desktop_windows',
+      power: 'power',
+      storage: 'storage',
+      audio: 'headphones',
+      other: 'more_horiz'
+    };
+    return icons[group.toLowerCase()] || 'label';
+  }
+
+  getFieldIcon(field: FormFieldConfig): string {
+    const icons: Record<string, string> = {
+      name: 'label',
+      price: 'attach_money',
+      cost: 'money',
+      sku: 'qr_code',
+      brand: 'business',
+      stockQuantity: 'inventory_2',
+      lowStockThreshold: 'warning',
+      description: 'description',
+      status: 'toggle_on',
+      weight: 'scale',
+      dimensions: 'square_foot',
+      capacity: 'sd_storage',
+      power: 'bolt',
+      speed: 'speed',
+      resolution: 'hd',
+      size: 'straighten',
+      type: 'category',
+      color: 'palette',
+      material: 'format_paint',
+      warranty: 'verified',
+      connectivity: 'wifi',
+      features: 'featured_play_list'
+    };
+
+    // Try to find an icon based on the field name or type
+    for (const [key, value] of Object.entries(icons)) {
+      if (field.name.toLowerCase().includes(key.toLowerCase())) {
+        return value;
+      }
+    }
+
+    // Default icons based on field type
+    const typeIcons: Record<string, string> = {
+      text: 'text_fields',
+      number: 'numbers',
+      select: 'list',
+      multiselect: 'checklist',
+      textarea: 'notes',
+      checkbox: 'check_box',
+      radio: 'radio_button_checked',
+      date: 'calendar_today',
+      email: 'email',
+      url: 'link',
+      tel: 'phone',
+      password: 'lock'
+    };
+
+    return typeIcons[field.type] || 'label';
+  }
+
+  getSelectedSubCategoryName(): string {
+    return this.subCategories()
+      .find((category: CategoryNode) => category.$id === this.selectedCategory())
+      ?.name || '';
+  }
+
 
 }

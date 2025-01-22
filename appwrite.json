@@ -194,5 +194,45 @@
             "indexes": [],
             "enabled": true
         }
+    ],
+    "functions": [
+        {
+            "$id": "adding-attributes",
+            "name": "Adding Attributes",
+            "runtime": "node-16.0",
+            "execute": [
+                "any"
+            ],
+            "events": [],
+            "scopes": [
+                "users.read"
+            ],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "path": "functions/Adding Attributes"
+        },
+        {
+            "$id": "678f02210010316494f9",
+            "name": "Attributes adding",
+            "runtime": "node-16.0",
+            "execute": [
+                "any"
+            ],
+            "events": [],
+            "scopes": [
+                "users.read"
+            ],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "path": "functions/Attributes adding"
+        }
     ]
 }

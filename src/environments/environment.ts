@@ -24,7 +24,7 @@ export const environment = {
     buckets: {
       productImages: 'productImages',
       companyLogos: 'company-logo',
-      brandLogos: 'brand-logos'
+      brandLogos: 'brand-logo'
     }
   },
 

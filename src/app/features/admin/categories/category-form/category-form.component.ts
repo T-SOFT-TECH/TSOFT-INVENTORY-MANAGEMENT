@@ -1,4 +1,4 @@
-// category-form.component.ts
+
 import {Component, ElementRef, OnDestroy, ViewChild, inject, signal, computed} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -113,6 +113,7 @@ export class CategoryFormComponent implements OnDestroy {
       }
     });
   }
+
 
   private onClickOutside(event: MouseEvent) {
     if (

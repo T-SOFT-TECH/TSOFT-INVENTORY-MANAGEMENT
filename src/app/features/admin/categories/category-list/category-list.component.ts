@@ -54,10 +54,10 @@ export class CategoryListComponent implements OnInit {
     return {
       expandable: !!node.children && node.children.length > 0,
       name: node.name,
-      level: level,
+      level: node.level || level, // Use the category's own level if available
       id: node.$id,
       parentId: node.parentId,
-      order: node.order
+      order: node.order || 0
     };
   };
 
@@ -78,8 +78,14 @@ export class CategoryListComponent implements OnInit {
     try {
       this.isLoading.set(true);
       const categories = await this.categoryService.getCategories();
-      this.dataSource.data = this.buildTree(categories);
+      console.log('Raw categories:', categories);
+
+      const treeStructure = this.buildTree(categories);
+      console.log('Tree structure:', treeStructure);
+
+      this.dataSource.data = treeStructure;
     } catch (error) {
+      console.error('Error loading categories:', error);
       this.toast.error('Failed to load categories');
     } finally {
       this.isLoading.set(false);
@@ -87,27 +93,40 @@ export class CategoryListComponent implements OnInit {
   }
 
   private buildTree(categories: Category[]): Category[] {
+    // Sort categories by level first to ensure parents are processed before children
+    const sortedCategories = [...categories].sort((a, b) => a.level - b.level);
+
     const categoryMap = new Map<string, Category>();
     const rootCategories: Category[] = [];
 
-    // First pass: Create map of categories
-    categories.forEach(category => {
-      categoryMap.set(category.$id, { ...category, children: [] });
+    // First pass: Create map of categories with empty children arrays
+    sortedCategories.forEach(category => {
+      categoryMap.set(category.$id, {
+        ...category,
+        children: []
+      });
     });
 
     // Second pass: Build tree structure
-    categories.forEach(category => {
+    sortedCategories.forEach(category => {
       const currentCategory = categoryMap.get(category.$id)!;
-      if (category.parentId) {
-        const parent = categoryMap.get(category.parentId);
-        if (parent) {
-          parent.children = parent.children || [];
-          parent.children.push(currentCategory);
-        }
-      } else {
+
+      if (category.parentId && categoryMap.has(category.parentId)) {
+        // If category has a parent and parent exists in map
+        const parent = categoryMap.get(category.parentId)!;
+        parent.children = parent.children || [];
+        parent.children.push(currentCategory);
+
+        // Sort children by order if available
+        parent.children.sort((a, b) => (a.order || 0) - (b.order || 0));
+      } else if (!category.parentId) {
+        // If it's a root category
         rootCategories.push(currentCategory);
       }
     });
+
+    // Sort root categories by order
+    rootCategories.sort((a, b) => (a.order || 0) - (b.order || 0));
 
     return rootCategories;
   }

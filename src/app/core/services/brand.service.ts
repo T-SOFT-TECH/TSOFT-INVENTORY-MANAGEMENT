@@ -20,27 +20,14 @@ export class BrandService {
     try {
       const response = await this.appwrite.database.listDocuments(
         environment.appwrite.databaseId,
-        'brands' // Add this to environment.ts collections
+        environment.appwrite.collections.brands,
+        [
+          Query.limit(100) // Increase limit to get more records
+        ]
       );
       const brands = response.documents as unknown as Brand[];
-      
-      // Calculate product count for each brand
-      const brandsWithCount = await Promise.all(
-        brands.map(async (brand) => {
-          const products = await this.appwrite.database.listDocuments(
-            environment.appwrite.databaseId,
-            environment.appwrite.collections.products,
-            [Query.equal('brandId', brand.$id)]
-          );
-          return {
-            ...brand,
-            productCount: products.total
-          };
-        })
-      );
-
-      this.brands.set(brandsWithCount);
-      return brandsWithCount;
+      this.brands.set(brands);
+      return brands;
     } catch (error) {
       console.error('Error fetching brands:', error);
       throw error;
@@ -122,9 +109,11 @@ export class BrandService {
   }
 
   getLogoUrl(fileId: string): string {
-    return this.storage.getFilePreview(
+    const result =  this.storage.getFileView(
       environment.appwrite.buckets.brandLogos,
-      fileId
-    );
+      fileId,
+    )
+
+    return result
   }
 }
