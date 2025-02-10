@@ -5,8 +5,7 @@ import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from '@angula
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { CategoryService } from '../../../../core/services/category.service';
 import { HotToastService } from '@ngxpert/hot-toast';
-import {Category, CategoryCreateDTO} from '../../../../core/models/interfaces';
-
+import {Category, CategoryCreateDTO} from '../../../../core/interfaces/category/category.interfaces';
 interface TreeSelectOption {
   $id: string;
   name: string;

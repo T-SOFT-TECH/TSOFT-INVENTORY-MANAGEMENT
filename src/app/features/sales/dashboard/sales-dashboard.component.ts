@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { CustomerService } from '../../../core/services/customer.service';
 import { ProductService } from '../../../core/services/product.service';
 import { SalesService } from '../../../core/services/sales.service';
-import { BaseProduct, Customer, Sale } from '../../../core/models/interfaces';
+import {Sale} from '../../../core/interfaces/sales/sales.interfaces';
+import {BaseProduct} from '../../../core/interfaces/product/product.interfaces';
 
 interface SalesDashboardSummary {
   totalSales: number;

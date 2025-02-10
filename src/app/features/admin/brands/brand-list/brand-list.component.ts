@@ -1,9 +1,8 @@
-// src/app/features/admin/brands/brand-list/brand-list.component.ts
+
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BrandService } from '../../../../core/services/brand.service';
-import { Brand } from '../../../../core/models/interfaces';
 import { HotToastService } from '@ngxpert/hot-toast';
 import {FormsModule, NgModel} from '@angular/forms';
 import {AutoAnimationDirective} from '../../../../core/Directives/auto-Animate.directive';
@@ -15,7 +14,7 @@ import {AutoAnimationDirective} from '../../../../core/Directives/auto-Animate.d
   templateUrl: './brand-list.component.html'
 })
 export class BrandListComponent implements OnInit {
-  readonly Math = Math; 
+  readonly Math = Math;
 
 
   private brandService = inject(BrandService);
@@ -74,7 +73,7 @@ export class BrandListComponent implements OnInit {
     }
   }
 
-  totalPages = computed(() => 
+  totalPages = computed(() =>
     Math.ceil(this.filteredBrands().length / this.pageSize)
   );
 

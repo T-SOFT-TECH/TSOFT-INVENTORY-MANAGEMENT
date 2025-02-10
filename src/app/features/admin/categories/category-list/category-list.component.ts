@@ -10,8 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CategoryService } from '../../../../core/services/category.service';
-import { Category } from '../../../../core/models/interfaces';
 import { HotToastService } from '@ngxpert/hot-toast';
+import {Category} from '../../../../core/interfaces/category/category.interfaces';
 
 interface FlatNode {
   expandable: boolean;

@@ -148,7 +148,7 @@
                   </h3>
                   <div class="flex items-center gap-2">
                     <span class="text-sm text-gray-500 dark:text-gray-400">
-                      {{ brand.productCount }} Products
+                      {{ brand.products?.length }} Products
                     </span>
                     <span [class]="getBadgeClass(brand.status)">
                       {{ brand.status }}
@@ -206,13 +206,13 @@
           [class.opacity-50]="currentPage() === 0">
           <span class="material-icons">chevron_left</span>
         </button>
-      
+
         <!-- Page Numbers -->
         <div class="flex gap-2">
           @for (page of getPageNumbers(); track page) {
             @if (
-              page === 0 || 
-              page === totalPages() - 1 || 
+              page === 0 ||
+              page === totalPages() - 1 ||
               (page >= currentPage() - 1 && page <= currentPage() + 1)
             ) {
               <button
@@ -222,14 +222,14 @@
                 {{ page + 1 }}
               </button>
             } @else if (
-              page === currentPage() - 2 || 
+              page === currentPage() - 2 ||
               page === currentPage() + 2
             ) {
               <span class="px-4 py-2">...</span>
             }
           }
         </div>
-      
+
         <!-- Next Page -->
         <button
           (click)="setPage(currentPage() + 1)"
@@ -242,7 +242,7 @@
 
       <!-- Add page info -->
 <div class="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
-  Showing {{ currentPage() * pageSize + 1 }} to 
+  Showing {{ currentPage() * pageSize + 1 }} to
   {{ Math.min((currentPage() + 1) * pageSize, filteredBrands().length) }}
   of {{ filteredBrands().length }} brands
 </div>

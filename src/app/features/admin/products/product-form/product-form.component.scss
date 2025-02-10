@@ -1,0 +1,16 @@
+/* Ensure the Quill editor container spans full width */
+.quill-editor-container {
+  width: 100%;
+}
+
+/* Target the Quill editor itself */
+.ql-container {
+  width: 100%;
+}
+
+/* Optional: Ensure the toolbar also spans full width */
+.ql-toolbar {
+  width: 100%;
+}
+
+

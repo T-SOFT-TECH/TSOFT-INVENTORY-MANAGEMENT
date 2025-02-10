@@ -1,7 +1,10 @@
 import { Injectable, computed, signal } from '@angular/core';
+import {Customer} from '../interfaces/customer/customer.interfaces';
+import {Product} from '../interfaces/product/product.interfaces';
+import {ProductStatus} from "../interfaces/base/base.interfaces";
+import {Category} from '../interfaces/category/category.interfaces';
 
 
-import { Customer, Product } from '../models/interfaces';
 
 interface CartItem {
   product: Product;
@@ -34,7 +37,25 @@ export class PosService {
 
   total = computed(() => this.subtotal() + this.tax());
 
-  addToCart(product: Product) {
+  addToCart(product: {
+    name: string;
+    category: Category;
+    brand: string;
+    description: string;
+    price: number;
+    cost: number;
+    stockQuantity: number;
+    lowStockThreshold: number;
+    sku: string;
+    status: ProductStatus;
+    imageUrl?: string;
+    specifications?: Record<string, any>;
+    $id: string;
+    $createdAt: string;
+    $updatedAt: string;
+    totalQuantitySold: number;
+    totalRevenue: number
+  }) {
     const currentCart = this.cartItems();
     const existingItem = currentCart.find(item => item.product.$id === product.$id);
 

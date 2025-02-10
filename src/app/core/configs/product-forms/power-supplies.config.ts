@@ -1,10 +1,9 @@
-import {CategoryFormConfig, commonFields} from './product-form.types';
+import { CategoryFormConfig } from './product-form.types';
 
-export const powerSupplyConfig: CategoryFormConfig = {
+export const powerSuppliesConfig: CategoryFormConfig = {
   id: 'power-supplies-psus',
   name: 'Power Supplies',
   fields: [
-    ...commonFields,
     {
       name: 'wattage',
       type: 'number',
@@ -29,44 +28,177 @@ export const powerSupplyConfig: CategoryFormConfig = {
       group: 'specifications'
     },
     {
-      name: 'modularity',
-      type: 'select',
-      label: 'Modularity',
-      required: true,
-      options: ['Full Modular', 'Semi-Modular', 'Non-Modular'],
-      group: 'specifications'
-    },
-    {
       name: 'formFactor',
       type: 'select',
       label: 'Form Factor',
       required: true,
-      options: ['ATX', 'SFX', 'SFX-L', 'TFX'],
+      options: [
+        'ATX',
+        'SFX',
+        'SFX-L',
+        'TFX',
+        'Flex ATX'
+      ],
+      group: 'physical'
+    },
+    {
+      name: 'modularity',
+      type: 'select',
+      label: 'Modularity',
+      required: true,
+      options: [
+        'Full Modular',
+        'Semi-Modular',
+        'Non-Modular'
+      ],
+      group: 'features'
+    },
+    {
+      name: 'mainConnector',
+      type: 'select',
+      label: 'Main Power Connector',
+      required: true,
+      options: [
+        '20+4 Pin',
+        '24 Pin'
+      ],
+      group: 'connectivity'
+    },
+    {
+      name: 'cpuConnectors',
+      type: 'multiselect',
+      label: 'CPU Power Connectors',
+      required: true,
+      options: [
+        '4+4 Pin',
+        '8 Pin',
+        '8+4 Pin',
+        '8+8 Pin'
+      ],
+      group: 'connectivity'
+    },
+    {
+      name: 'pciePowerConnectors',
+      type: 'multiselect',
+      label: 'PCIe Power Connectors',
+      required: true,
+      options: [
+        '6 Pin',
+        '6+2 Pin',
+        '12VHPWR',
+        '16 Pin'
+      ],
+      group: 'connectivity'
+    },
+    {
+      name: 'sataConnectors',
+      type: 'number',
+      label: 'SATA Connectors',
+      required: true,
+      min: 0,
+      group: 'connectivity'
+    },
+    {
+      name: 'molex4Pin',
+      type: 'number',
+      label: 'Molex 4-Pin Connectors',
+      required: true,
+      min: 0,
+      group: 'connectivity'
+    },
+    {
+      name: 'fanSize',
+      type: 'number',
+      label: 'Fan Size',
+      required: true,
+      unit: 'mm',
+      group: 'cooling'
+    },
+    {
+      name: 'fanBearing',
+      type: 'select',
+      label: 'Fan Bearing Type',
+      options: [
+        'Fluid Dynamic',
+        'Ball Bearing',
+        'Rifle Bearing',
+        'Sleeve Bearing'
+      ],
+      group: 'cooling'
+    },
+    {
+      name: 'fanControl',
+      type: 'select',
+      label: 'Fan Control',
+      options: [
+        'PWM',
+        'Semi-Passive',
+        'Always On'
+      ],
+      group: 'cooling'
+    },
+    {
+      name: 'protectionFeatures',
+      type: 'multiselect',
+      label: 'Protection Features',
+      required: true,
+      options: [
+        'OVP (Over Voltage)',
+        'UVP (Under Voltage)',
+        'OCP (Over Current)',
+        'OPP (Over Power)',
+        'SCP (Short Circuit)',
+        'OTP (Over Temperature)'
+      ],
+      group: 'protection'
+    },
+    {
+      name: 'dcOutput',
+      type: 'number',
+      label: 'DC Output (+12V)',
+      required: true,
+      unit: 'A',
       group: 'specifications'
     },
     {
-      name: 'connectors',
-      type: 'multiselect',
-      label: 'Connectors',
+      name: 'railDesign',
+      type: 'select',
+      label: '+12V Rail Design',
       required: true,
       options: [
-        '24-pin ATX',
-        '8-pin EPS',
-        '8-pin PCIe',
-        '6-pin PCIe',
-        'SATA',
-        'Molex',
-        '12VHPWR'
+        'Single Rail',
+        'Multi Rail'
       ],
       group: 'specifications'
     },
     {
-      name: 'cooling',
-      type: 'select',
-      label: 'Cooling',
+      name: 'certification',
+      type: 'multiselect',
+      label: 'Certifications',
+      options: [
+        'CE',
+        'UL',
+        'TUV',
+        'FCC',
+        'RoHS'
+      ],
+      group: 'certifications'
+    },
+    {
+      name: 'warranty',
+      type: 'number',
+      label: 'Warranty',
       required: true,
-      options: ['120mm Fan', '135mm Fan', '140mm Fan'],
-      group: 'specifications'
+      unit: 'years',
+      group: 'support'
+    },
+    {
+      name: 'depth',
+      type: 'number',
+      label: 'PSU Length',
+      required: true,
+      unit: 'mm',
+      group: 'physical'
     }
   ]
 };

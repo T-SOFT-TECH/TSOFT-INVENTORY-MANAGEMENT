@@ -6,6 +6,7 @@ import { provideHotToastConfig } from '@ngxpert/hot-toast';
 import {provideAnimations} from "@angular/platform-browser/animations";
 import { provideHttpClient } from '@angular/common/http';
 import {ThemeService} from './core/services/theme.service';
+import {provideQuillConfig} from 'ngx-quill';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,7 +15,13 @@ export const appConfig: ApplicationConfig = {
     provideHotToastConfig(),
     provideAnimations(),
     provideHttpClient(),
-    ThemeService
+    ThemeService,
+    provideQuillConfig({
+      modules: {
+        syntax: true,
+        toolbar: true,
+      }
+    })
 
 
   ]

@@ -4,9 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { PosService } from '../../../core/services/pos.service';
-import { BaseProduct, Customer, Product } from '../../../core/models/interfaces';
 import { ProductService } from '../../../core/services/product.service';
 import { CustomerService } from '../../../core/services/customer.service';
+import {BaseProduct, Product} from '../../../core/interfaces/product/product.interfaces';
+import {Customer} from '../../../core/interfaces/customer/customer.interfaces';
+import {ProductStatus} from '../../../core/interfaces/base/base.interfaces';
+import {Category} from '../../../core/interfaces/category/category.interfaces';
 
 @Component({
   selector: 'app-pos',
@@ -60,7 +63,25 @@ export class PosComponent implements OnInit {
       return;
     }
 
-    const cartProduct: Product = {
+    const cartProduct: {
+      name: string;
+      category: Category;
+      brand: string;
+      description: string;
+      price: number;
+      cost: number;
+      stockQuantity: number;
+      lowStockThreshold: number;
+      sku: string;
+      status: ProductStatus;
+      imageUrl?: string;
+      specifications?: Record<string, any>;
+      $id: string;
+      $createdAt: string;
+      $updatedAt: string;
+      totalQuantitySold: number;
+      totalRevenue: number
+    } = {
       ...product, // This spreads all BaseProduct properties including $id, $createdAt, $updatedAt
       totalQuantitySold: 0,
       totalRevenue: 0
@@ -72,7 +93,7 @@ export class PosComponent implements OnInit {
   getFilteredProducts() {
     return this.products().filter(product =>
       product.name.toLowerCase().includes(this.searchQuery().toLowerCase()) &&
-      (this.selectedCategory() === 'all' || product.category === this.selectedCategory())
+      (this.selectedCategory() === 'all' || product.category.name === this.selectedCategory())
     );
   }
 

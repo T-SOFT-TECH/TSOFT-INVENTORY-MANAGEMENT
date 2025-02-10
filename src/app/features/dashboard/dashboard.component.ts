@@ -6,7 +6,8 @@ import {ProductService} from '../../core/services/product.service';
 import {CustomerService} from '../../core/services/customer.service';
 import {SalesService} from '../../core/services/sales.service';
 import {HotToastService} from '@ngxpert/hot-toast';
-import {Product, Sale} from '../../core/models/interfaces';
+import {Sale} from '../../core/interfaces/sales/sales.interfaces';
+import {Product} from '../../core/interfaces/product/product.interfaces';
 
 interface DashboardMetrics {
   todayRevenue: number;

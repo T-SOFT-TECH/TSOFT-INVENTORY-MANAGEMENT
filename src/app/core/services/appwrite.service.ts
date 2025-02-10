@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Client, Account, Databases } from 'appwrite';
+import {Client, Account, Databases, Functions} from 'appwrite';
 import { environment } from '../../../environments/environment';
 
 
@@ -10,6 +10,7 @@ export class AppwriteService {
   readonly client: Client;
   public account: Account;
   public database: Databases;
+  public functions: Functions;
 
   constructor() {
     this.client = new Client()
@@ -18,6 +19,7 @@ export class AppwriteService {
 
     this.account = new Account(this.client);
     this.database = new Databases(this.client);
+    this.functions = new Functions(this.client);
   }
 
   // Authentication methods
@@ -44,4 +46,4 @@ export class AppwriteService {
       throw error;
     }
   }
-} 
+}

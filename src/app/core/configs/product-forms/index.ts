@@ -1,229 +1,381 @@
 import { CategoryFormConfig } from './product-form.types';
 
 // Computer & Components
-import { laptopsConfig } from './laptops.config';
-import { desktopsConfig } from './desktops.config';
-import { processorsConfig } from './processors.config';
+import { twoInOneLaptopsConfig } from './2-in-1-laptops.config';
+import { allInOnePcsConfig } from './all-in-one-pcs.config';
+import { businessLaptopsConfig } from './business-laptops.config';
+import { gamingDesktopsConfig } from './gaming-desktops.config';
+import { gamingLaptopsConfig } from './gaming-laptops.config';
+import { miniPcsConfig } from './mini-pcs.config';
+import { ultrabooksConfig } from './ultrabooks.config';
+import { workstationsConfig } from './workstations.config';
+import { processorsCpusConfig } from './processors-cpus.config';
 import { graphicsCardsConfig } from './graphics-cards.config';
-import { motherboardConfig } from './motherboards.config';
-import { memoryConfig } from './memory.config';
+import { motherboardsConfig } from './motherboards.config';
+import { ramMemoryConfig } from './ram-memory.config';
 import { storageDevicesConfig } from './storage-devices.config';
-import { powerSupplyConfig } from './power-supplies.config';
-import { caseConfig } from './cases.config';
-import { coolingConfig } from './cooling.config';
+import { powerSuppliesConfig } from './power-supplies.config';
+import { pcCasesConfig } from './pc-cases.config';
+import { coolingSystemsConfig } from './cooling-systems.config';
 
 // Peripherals
-import { monitorConfig } from './monitors.config';
-import { keyboardConfig } from './keyboards.config';
+import { monitorsConfig } from './monitors.config';
+import { keyboardsConfig } from './keyboards.config';
 import { miceConfig } from './mice.config';
 import { printersConfig } from './printers.config';
-
+import { scannersConfig } from './scanners.config';
+import { projectorsConfig } from './projectors.config';
+import { interactiveDisplaysConfig } from './interactive-displays.config';
+import { documentCamerasConfig } from './document-cameras.config';
+import { documentScannersConfig } from './document-scanners.config';
+import { labelPrintersConfig } from './label-printers.config';
+import { paperShreddersConfig } from './paper-shredders.config';
 
 // Networking
 import { routersConfig } from './routers.config';
 import { networkSwitchesConfig } from './network-switches.config';
+import { enterpriseSwitchesConfig } from './enterprise-switches.config';
 import { networkCardsConfig } from './network-cards.config';
-import { networkingConfig } from './networking.config';
+import { networkSecurityConfig } from './network-security.config';
+import { ethernetCablesConfig } from './ethernet-cables.config';
+import { fiberOpticCablesConfig } from './fiber-optic-cables.config';
+import { hdmiCablesConfig } from './hdmi-cables.config';
+import { displayPortCablesConfig } from './displayport-cables.config';
+import { usbCCablesConfig } from './usb-c-cables.config';
+import { lightningCablesConfig } from './lightning-cables.config';
 
 // Audio/Video
-import { audioConfig } from './audio.config';
-import { camerasConfig } from './cameras.config';
-
+import { audioInterfaceConfig } from './audio-interface.config';
+import { speakersConfig } from './speakers.config';
+import { headphonesConfig } from './headphones.config';
+import { microphonesConfig } from './microphones.config';
+import { webcamsConfig } from './webcams.config';
+import { securityCamerasConfig } from './security-cameras.config';
+import { conferenceSystemsConfig } from './conference-systems.config';
+import { studentResponseSystemsConfig } from './student-response-systems.config';
 
 // Mobile & Wearables
 import { smartphonesConfig } from './smartphones.config';
 import { tabletsConfig } from './tablets.config';
-import { wearablesConfig } from './wearables.config';
+import { educationalTabletsConfig } from './educational-tablets.config';
+import { eReadersConfig } from './e-readers.config';
+import { smartwatchesConfig } from './smartwatches.config';
+import { smartBandsConfig } from './smart-bands.config';
+import { watchBandsConfig } from './watch-bands.config';
+import { watchChargersConfig } from './watch-chargers.config';
+import { watchProtectorsConfig } from './watch-protectors.config';
 
 // Smart Home
-import { smartSecurityConfig } from './smart-security.config';
-import { smartControlsConfig } from './smart-controls.config';
 import { smartAppliancesConfig } from './smart-appliances.config';
+import { smartDoorbellsConfig } from './smart-doorbells.config';
+import { smartLightingConfig } from './smart-lighting.config';
+import { smartLocksConfig } from './smart-locks.config';
+import { smartPlugsConfig } from './smart-plugs.config';
+import { smartSpeakersConfig } from './smart-speakers.config';
 
 // Gaming
-import { gamingAccessoriesConfig } from './gaming-accessories.config';
 
 
 // Others
-import { cablesConfig } from './cables.config';
+
 import { chargersConfig } from './chargers.config';
-import { softwareConfig } from './software.config';
-import { officeEquipmentConfig } from './office-equipment.config';
-import { educationalTechnologyConfig } from './educational-technology.config';
+import { powerBanksConfig } from './power-banks.config';
+import { surgeProtectorsConfig } from './surge-protectors.config';
+import { upsSystemsConfig } from './ups-systems.config';
+import { antivirusConfig } from './antivirus-software.config';
+import { designSoftwareConfig } from './design-software.config';
+import { developmentToolsConfig } from './development-tools.config';
+import { officeSoftwareConfig } from './office-software.config';
+import { operatingSystemsConfig } from './operating-systems.config';
+import { phoneAccessoriesConfig } from './phone-accessories.config';
+import { drawingTabletsConfig } from './drawing-tablets.config';
+import { soundCardConfig } from './sound-card.config';
 
 export const productFormConfigs: Map<string, CategoryFormConfig> = new Map([
   // Computer & Components
-  [laptopsConfig.id, laptopsConfig],
-  [desktopsConfig.id, desktopsConfig],
-  [processorsConfig.id, processorsConfig],
+  [twoInOneLaptopsConfig.id, twoInOneLaptopsConfig],
+  [allInOnePcsConfig.id, allInOnePcsConfig],
+  [businessLaptopsConfig.id, businessLaptopsConfig],
+  [gamingDesktopsConfig.id, gamingDesktopsConfig],
+  [gamingLaptopsConfig.id, gamingLaptopsConfig],
+  [miniPcsConfig.id, miniPcsConfig],
+  [ultrabooksConfig.id, ultrabooksConfig],
+  [workstationsConfig.id, workstationsConfig],
+  [processorsCpusConfig.id, processorsCpusConfig],
   [graphicsCardsConfig.id, graphicsCardsConfig],
-  [motherboardConfig.id, motherboardConfig],
-  [memoryConfig.id, memoryConfig],
+  [motherboardsConfig.id, motherboardsConfig],
+  [ramMemoryConfig.id, ramMemoryConfig],
   [storageDevicesConfig.id, storageDevicesConfig],
-  [powerSupplyConfig.id, powerSupplyConfig],
-  [caseConfig.id, caseConfig],
-  [coolingConfig.id, coolingConfig],
+  [powerSuppliesConfig.id, powerSuppliesConfig],
+  [pcCasesConfig.id, pcCasesConfig],
+  [coolingSystemsConfig.id, coolingSystemsConfig],
 
   // Peripherals
-  [monitorConfig.id, monitorConfig],
-  [keyboardConfig.id, keyboardConfig],
+  [monitorsConfig.id, monitorsConfig],
+  [keyboardsConfig.id, keyboardsConfig],
   [miceConfig.id, miceConfig],
   [printersConfig.id, printersConfig],
-
+  [scannersConfig.id, scannersConfig],
+  [projectorsConfig.id, projectorsConfig],
+  [interactiveDisplaysConfig.id, interactiveDisplaysConfig],
+  [documentCamerasConfig.id, documentCamerasConfig],
+  [documentScannersConfig.id, documentScannersConfig],
+  [labelPrintersConfig.id, labelPrintersConfig],
+  [paperShreddersConfig.id, paperShreddersConfig],
 
   // Networking
   [routersConfig.id, routersConfig],
   [networkSwitchesConfig.id, networkSwitchesConfig],
+  [enterpriseSwitchesConfig.id, enterpriseSwitchesConfig],
   [networkCardsConfig.id, networkCardsConfig],
-  [networkingConfig.id, networkingConfig],
+  [networkSecurityConfig.id, networkSecurityConfig],
+  [ethernetCablesConfig.id, ethernetCablesConfig],
+  [fiberOpticCablesConfig.id, fiberOpticCablesConfig],
+  [hdmiCablesConfig.id, hdmiCablesConfig],
+  [displayPortCablesConfig.id, displayPortCablesConfig],
+  [usbCCablesConfig.id, usbCCablesConfig],
+  [lightningCablesConfig.id, lightningCablesConfig],
 
   // Audio/Video
-  [audioConfig.id, audioConfig],
-  [camerasConfig.id, camerasConfig],
-
+  [audioInterfaceConfig.id, audioInterfaceConfig],
+  [speakersConfig.id, speakersConfig],
+  [headphonesConfig.id, headphonesConfig],
+  [microphonesConfig.id, microphonesConfig],
+  [webcamsConfig.id, webcamsConfig],
+  [securityCamerasConfig.id, securityCamerasConfig],
+  [conferenceSystemsConfig.id, conferenceSystemsConfig],
+  [studentResponseSystemsConfig.id, studentResponseSystemsConfig],
 
   // Mobile & Wearables
   [smartphonesConfig.id, smartphonesConfig],
   [tabletsConfig.id, tabletsConfig],
-  [wearablesConfig.id, wearablesConfig],
+  [educationalTabletsConfig.id, educationalTabletsConfig],
+  [eReadersConfig.id, eReadersConfig],
+  [smartwatchesConfig.id, smartwatchesConfig],
+  [smartBandsConfig.id, smartBandsConfig],
+  [watchBandsConfig.id, watchBandsConfig],
+  [watchChargersConfig.id, watchChargersConfig],
+  [watchProtectorsConfig.id, watchProtectorsConfig],
 
   // Smart Home
-  [smartSecurityConfig.id, smartSecurityConfig],
-  [smartControlsConfig.id, smartControlsConfig],
+
   [smartAppliancesConfig.id, smartAppliancesConfig],
+  [smartDoorbellsConfig.id, smartDoorbellsConfig],
+  [smartLightingConfig.id, smartLightingConfig],
+  [smartLocksConfig.id, smartLocksConfig],
+  [smartPlugsConfig.id, smartPlugsConfig],
+  [smartSpeakersConfig.id, smartSpeakersConfig],
 
   // Gaming
-  [gamingAccessoriesConfig.id, gamingAccessoriesConfig],
 
 
   // Others
-  [cablesConfig.id, cablesConfig],
+  [usbCCablesConfig.id, usbCCablesConfig],
   [chargersConfig.id, chargersConfig],
-  [softwareConfig.id, softwareConfig],
-  [officeEquipmentConfig.id, officeEquipmentConfig],
-  [educationalTechnologyConfig.id, educationalTechnologyConfig]
+  [powerBanksConfig.id, powerBanksConfig],
+  [surgeProtectorsConfig.id, surgeProtectorsConfig],
+  [upsSystemsConfig.id, upsSystemsConfig],
+  [antivirusConfig.id, antivirusConfig],
+  [designSoftwareConfig.id, designSoftwareConfig],
+  [developmentToolsConfig.id, developmentToolsConfig],
+  [officeSoftwareConfig.id, officeSoftwareConfig],
+  [operatingSystemsConfig.id, operatingSystemsConfig],
+  [phoneAccessoriesConfig.id, phoneAccessoriesConfig],
+  [drawingTabletsConfig.id, drawingTabletsConfig],
+  [soundCardConfig.id, soundCardConfig],
 ]);
 
 // Export all configs individually
 export {
   // Computer & Components
-  laptopsConfig,
-  desktopsConfig,
-  processorsConfig,
+  twoInOneLaptopsConfig,
+  allInOnePcsConfig,
+  businessLaptopsConfig,
+  gamingDesktopsConfig,
+  gamingLaptopsConfig,
+  miniPcsConfig,
+  ultrabooksConfig,
+  workstationsConfig,
+  processorsCpusConfig,
   graphicsCardsConfig,
-  motherboardConfig,
-  memoryConfig,
+  motherboardsConfig,
+  ramMemoryConfig,
   storageDevicesConfig,
-  powerSupplyConfig,
-  caseConfig,
-  coolingConfig,
+  powerSuppliesConfig,
+  pcCasesConfig,
+  coolingSystemsConfig,
 
   // Peripherals
-  monitorConfig,
-  keyboardConfig,
+  monitorsConfig,
+  keyboardsConfig,
   miceConfig,
   printersConfig,
-
+  scannersConfig,
+  projectorsConfig,
+  interactiveDisplaysConfig,
+  documentCamerasConfig,
+  documentScannersConfig,
+  labelPrintersConfig,
+  paperShreddersConfig,
 
   // Networking
   routersConfig,
   networkSwitchesConfig,
+  enterpriseSwitchesConfig,
   networkCardsConfig,
-  networkingConfig,
+  networkSecurityConfig,
+  ethernetCablesConfig,
+  fiberOpticCablesConfig,
+  hdmiCablesConfig,
+  displayPortCablesConfig,
+  usbCCablesConfig,
+  lightningCablesConfig,
 
   // Audio/Video
-  audioConfig,
-  camerasConfig,
+  audioInterfaceConfig,
+  speakersConfig,
+  headphonesConfig,
+  microphonesConfig,
+  webcamsConfig,
+  securityCamerasConfig,
+  conferenceSystemsConfig,
+  studentResponseSystemsConfig,
 
   // Mobile & Wearables
   smartphonesConfig,
   tabletsConfig,
-  wearablesConfig,
+  educationalTabletsConfig,
+  eReadersConfig,
+  smartwatchesConfig,
+  smartBandsConfig,
+  watchBandsConfig,
+  watchChargersConfig,
+  watchProtectorsConfig,
 
   // Smart Home
-  smartSecurityConfig,
-  smartControlsConfig,
   smartAppliancesConfig,
+  smartDoorbellsConfig,
+  smartLightingConfig,
+  smartLocksConfig,
+  smartPlugsConfig,
+  smartSpeakersConfig,
 
   // Gaming
-  gamingAccessoriesConfig,
 
 
   // Others
-  cablesConfig,
   chargersConfig,
-  softwareConfig,
-  officeEquipmentConfig,
-  educationalTechnologyConfig
+  powerBanksConfig,
+  surgeProtectorsConfig,
+  upsSystemsConfig,
+  antivirusConfig,
+  designSoftwareConfig,
+  developmentToolsConfig,
+  officeSoftwareConfig,
+  operatingSystemsConfig,
+  phoneAccessoriesConfig,
+  drawingTabletsConfig,
+  soundCardConfig,
 };
 
 // Export types
 export * from './product-form.types';
 
-// Computer & Components
-export * from './laptops.config';
-export * from './desktops.config';
-export * from './processors.config';
+// Export all config files
+export * from './2-in-1-laptops.config';
+export * from './all-in-one-pcs.config';
+export * from './business-laptops.config';
+export * from './gaming-desktops.config';
+export * from './gaming-laptops.config';
+export * from './mini-pcs.config';
+export * from './ultrabooks.config';
+export * from './workstations.config';
+export * from './processors-cpus.config';
 export * from './graphics-cards.config';
 export * from './motherboards.config';
-export * from './memory.config';
+export * from './ram-memory.config';
 export * from './storage-devices.config';
 export * from './power-supplies.config';
-export * from './cases.config';
-export * from './cooling.config';
+export * from './pc-cases.config';
+export * from './cooling-systems.config';
 
-// Peripherals
 export * from './monitors.config';
 export * from './keyboards.config';
 export * from './mice.config';
 export * from './printers.config';
+export * from './scanners.config';
+export * from './projectors.config';
+export * from './interactive-displays.config';
+export * from './document-cameras.config';
+export * from './document-scanners.config';
+export * from './label-printers.config';
+export * from './paper-shredders.config';
 
-// Networking
 export * from './routers.config';
 export * from './network-switches.config';
+export * from './enterprise-switches.config';
 export * from './network-cards.config';
-export * from './networking.config';
+export * from './network-security.config';
+export * from './ethernet-cables.config';
+export * from './fiber-optic-cables.config';
+export * from './hdmi-cables.config';
+export * from './displayport-cables.config';
+export * from './usb-c-cables.config';
+export * from './lightning-cables.config';
 
-// Audio/Video
-export * from './audio.config';
-export * from './cameras.config';
+export * from './speakers.config';
+export * from './headphones.config';
+export * from './microphones.config';
+export * from './webcams.config';
+export * from './security-cameras.config';
+export * from './conference-systems.config';
+export * from './student-response-systems.config';
 
-// Mobile & Wearables
 export * from './smartphones.config';
 export * from './tablets.config';
-export * from './wearables.config';
+export * from './educational-tablets.config';
+export * from './e-readers.config';
+export * from './smartwatches.config';
+export * from './smart-bands.config';
+export * from './watch-bands.config';
+export * from './watch-chargers.config';
+export * from './watch-protectors.config';
 
-// Smart Home
-export * from './smart-security.config';
-export * from './smart-controls.config';
 export * from './smart-appliances.config';
+export * from './smart-doorbells.config';
+export * from './smart-lighting.config';
+export * from './smart-locks.config';
+export * from './smart-plugs.config';
+export * from './smart-speakers.config';
 
-// Gaming
-export * from './gaming-accessories.config';
 
-// Others
-export * from './cables.config';
+
 export * from './chargers.config';
-export * from './software.config';
-export * from './office-equipment.config';
-export * from './educational-technology.config';
+export * from './power-banks.config';
+export * from './surge-protectors.config';
+export * from './ups-systems.config';
+export * from './antivirus-software.config';
+export * from './design-software.config';
+export * from './development-tools.config';
+export * from './office-software.config';
+export * from './operating-systems.config';
+export * from './phone-accessories.config';
+export * from './drawing-tablets.config';
+export * from './sound-card.config';
 
-// Helper function to get configuration by category ID
+// Helper functions
 export function getFormConfigById(id: string): CategoryFormConfig | undefined {
   return productFormConfigs.get(id);
 }
 
-// Helper function to get all available category IDs
 export function getAllCategoryIds(): string[] {
   return Array.from(productFormConfigs.keys());
 }
 
-// Helper function to get all configurations as an array
 export function getAllConfigs(): CategoryFormConfig[] {
   return Array.from(productFormConfigs.values());
 }
 
-// Helper function to update brand options across all configurations
 export function updateBrandOptionsForAllConfigs(brands: string[]): void {
   productFormConfigs.forEach(config => {
     const brandField = config.fields.find(field => field.name === 'brandId');

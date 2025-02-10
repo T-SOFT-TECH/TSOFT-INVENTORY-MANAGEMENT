@@ -9,7 +9,7 @@ export const environment = {
 
   // Appwrite Configuration
   appwrite: {
-    endpoint: 'http://localhost/v1',
+    endpoint: 'http://172.30.128.1/v1',
     projectId: 'tsoftmart-inventory-invoice-system',
     databaseId: 'inventory-invoice-db',
     collections: {
@@ -25,6 +25,9 @@ export const environment = {
       productImages: 'productImages',
       companyLogos: 'company-logo',
       brandLogos: 'brand-logo'
+    },
+    api:{
+      createProduct: 'create-product',
     }
   },
 

@@ -1,10 +1,9 @@
 // src/app/core/services/customer.service.ts
 import { Injectable, Signal, inject, signal } from '@angular/core';
 import { AppwriteService } from './appwrite.service';
-import { Customer } from '../models/interfaces';
-import { Observable, from } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ID, Query } from 'appwrite';
+import {Customer} from '../interfaces/customer/customer.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -116,6 +115,6 @@ export class CustomerService {
     }
   }
 
-  
+
 
 }

@@ -1,10 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { AppwriteService } from './appwrite.service';
 import { environment } from '../../../environments/environment';
-import { Sale, SaleWithDetails, SalesQueryOptions } from '../models/interfaces';
 import { Query } from 'appwrite';
 import { InvoiceService } from './invoice.service';
 import { CustomerService } from './customer.service';
+import {Sale, SalesQueryOptions, SaleWithDetails} from '../interfaces/sales/sales.interfaces';
 
 @Injectable({
   providedIn: 'root'

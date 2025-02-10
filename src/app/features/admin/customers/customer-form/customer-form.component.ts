@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CustomerService } from '../../../../core/services/customer.service';
-import { Customer } from '../../../../core/models/interfaces';
+import {Customer} from '../../../../core/interfaces/customer/customer.interfaces';
 
 
 @Component({
@@ -76,4 +76,4 @@ export class CustomerFormComponent {
       this.isLoading.set(false);
     }
   }
-} 
+}

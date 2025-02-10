@@ -1,10 +1,9 @@
-import { CategoryFormConfig, commonFields } from './product-form.types';
+import { CategoryFormConfig} from './product-form.types';
 
 export const smartphonesConfig: CategoryFormConfig = {
   id: 'smartphones',
   name: 'Smartphones',
   fields: [
-    ...commonFields,
     {
       name: 'platform',
       type: 'select',
@@ -166,4 +165,4 @@ export const smartphonesConfig: CategoryFormConfig = {
       group: 'specifications'
     }
   ]
-}; 
+};

@@ -1,32 +1,57 @@
-import { CategoryFormConfig, commonFields } from './product-form.types';
+import { CategoryFormConfig } from './product-form.types';
 
 export const printersConfig: CategoryFormConfig = {
-  id: 'printers-scanners', // Matches the category name from initial-categories.ts
-  name: 'Printers & Scanners',
+  id: 'printers',
+  name: 'Printers',
   fields: [
-    ...commonFields,
     {
-      name: 'deviceType',
+      name: 'printerType',
       type: 'select',
-      label: 'Device Type',
+      label: 'Printer Type',
       required: true,
-      options: ['Printer', 'Scanner', 'All-in-One', 'Label Printer'],
-      group: 'specifications'
+      options: [
+        'Inkjet',
+        'Laser',
+        'All-in-One',
+        'Photo Printer',
+        'Label Printer',
+        'Dot Matrix'
+      ],
+      group: 'basic'
+    },
+    {
+      name: 'functionality',
+      type: 'multiselect',
+      label: 'Functions',
+      required: true,
+      options: [
+        'Print',
+        'Scan',
+        'Copy',
+        'Fax'
+      ],
+      group: 'basic'
     },
     {
       name: 'printTechnology',
       type: 'select',
       label: 'Print Technology',
       required: true,
-      options: ['Inkjet', 'Laser', 'Thermal', 'LED', 'Dot Matrix'],
+      options: [
+        'Thermal Inkjet',
+        'Piezo Inkjet',
+        'Laser',
+        'LED',
+        'Dot Matrix',
+        'Thermal'
+      ],
       group: 'specifications'
     },
     {
-      name: 'printColor',
-      type: 'select',
-      label: 'Print Color',
+      name: 'colorPrinting',
+      type: 'checkbox',
+      label: 'Color Printing',
       required: true,
-      options: ['Color', 'Monochrome'],
       group: 'specifications'
     },
     {
@@ -34,69 +59,44 @@ export const printersConfig: CategoryFormConfig = {
       type: 'text',
       label: 'Print Resolution',
       required: true,
-      placeholder: 'e.g., 4800 x 1200 dpi',
-      group: 'specifications'
+      placeholder: '4800x1200 dpi',
+      group: 'performance'
     },
     {
-      name: 'printSpeed',
+      name: 'printSpeedBlackAndWhite',
       type: 'number',
-      label: 'Print Speed',
-      required: true,
+      label: 'Black & White Print Speed',
       unit: 'ppm',
-      group: 'specifications'
+      required: true,
+      group: 'performance'
+    },
+    {
+      name: 'printSpeedColor',
+      type: 'number',
+      label: 'Color Print Speed',
+      unit: 'ppm',
+      group: 'performance'
     },
     {
       name: 'duplexPrinting',
       type: 'checkbox',
       label: 'Automatic Duplex Printing',
-      required: false,
-      group: 'specifications'
+      group: 'features'
     },
     {
-      name: 'paperSize',
+      name: 'paperHandling',
       type: 'multiselect',
       label: 'Supported Paper Sizes',
       required: true,
-      options: ['A4', 'A3', 'Letter', 'Legal', 'Photo', 'Envelope'],
-      group: 'specifications'
-    },
-    {
-      name: 'connectivity',
-      type: 'multiselect',
-      label: 'Connectivity',
-      required: true,
-      options: ['USB', 'Ethernet', 'Wi-Fi', 'Bluetooth', 'NFC'],
-      group: 'specifications'
-    },
-    {
-      name: 'mobilePrinting',
-      type: 'multiselect',
-      label: 'Mobile Printing',
-      required: false,
-      options: ['AirPrint', 'Google Cloud Print', 'Mopria', 'Mobile App'],
-      group: 'specifications'
-    },
-    {
-      name: 'scannerType',
-      type: 'select',
-      label: 'Scanner Type',
-      required: false,
-      options: ['Flatbed', 'Sheet-fed', 'Both'],
-      group: 'specifications'
-    },
-    {
-      name: 'scanResolution',
-      type: 'text',
-      label: 'Scan Resolution',
-      required: false,
-      placeholder: 'e.g., 1200 x 2400 dpi',
-      group: 'specifications'
-    },
-    {
-      name: 'documentFeeder',
-      type: 'checkbox',
-      label: 'Automatic Document Feeder',
-      required: false,
+      options: [
+        'Letter',
+        'Legal',
+        'A4',
+        'A3',
+        'A5',
+        'Envelope',
+        'Photo'
+      ],
       group: 'specifications'
     },
     {
@@ -108,6 +108,47 @@ export const printersConfig: CategoryFormConfig = {
       group: 'specifications'
     },
     {
+      name: 'connectivity',
+      type: 'multiselect',
+      label: 'Connectivity',
+      required: true,
+      options: [
+        'USB',
+        'Ethernet',
+        'Wi-Fi',
+        'Wi-Fi Direct',
+        'NFC',
+        'Bluetooth'
+      ],
+      group: 'connectivity'
+    },
+    {
+      name: 'mobilePrinting',
+      type: 'multiselect',
+      label: 'Mobile Printing',
+      options: [
+        'AirPrint',
+        'Google Cloud Print',
+        'Mopria',
+        'Manufacturer App'
+      ],
+      group: 'features'
+    },
+    {
+      name: 'memory',
+      type: 'number',
+      label: 'Internal Memory',
+      unit: 'MB',
+      group: 'specifications'
+    },
+    {
+      name: 'processorSpeed',
+      type: 'number',
+      label: 'Processor Speed',
+      unit: 'MHz',
+      group: 'specifications'
+    },
+    {
       name: 'monthlyDutyCycle',
       type: 'number',
       label: 'Monthly Duty Cycle',
@@ -116,18 +157,58 @@ export const printersConfig: CategoryFormConfig = {
       group: 'specifications'
     },
     {
-      name: 'displayScreen',
-      type: 'checkbox',
-      label: 'LCD Display Screen',
-      required: false,
-      group: 'specifications'
+      name: 'scannerFeatures',
+      type: 'multiselect',
+      label: 'Scanner Features',
+      options: [
+        'Flatbed',
+        'ADF',
+        'Duplex Scanning',
+        'Color Scanning'
+      ],
+      group: 'scanning'
     },
     {
-      name: 'faxFunction',
-      type: 'checkbox',
-      label: 'Fax Functionality',
-      required: false,
-      group: 'specifications'
+      name: 'scanResolution',
+      type: 'text',
+      label: 'Scan Resolution',
+      placeholder: '1200x2400 dpi',
+      group: 'scanning'
+    },
+    {
+      name: 'displayScreen',
+      type: 'select',
+      label: 'Display Screen',
+      options: [
+        'None',
+        'LCD',
+        'Color LCD',
+        'Touchscreen'
+      ],
+      group: 'features'
+    },
+    {
+      name: 'dimensions',
+      type: 'text',
+      label: 'Dimensions (WxDxH)',
+      required: true,
+      placeholder: '440x420x250mm',
+      group: 'physical'
+    },
+    {
+      name: 'weight',
+      type: 'number',
+      label: 'Weight',
+      required: true,
+      unit: 'kg',
+      group: 'physical'
+    },
+    {
+      name: 'powerConsumption',
+      type: 'number',
+      label: 'Power Consumption',
+      unit: 'W',
+      group: 'power'
     }
   ]
-}; 
+};

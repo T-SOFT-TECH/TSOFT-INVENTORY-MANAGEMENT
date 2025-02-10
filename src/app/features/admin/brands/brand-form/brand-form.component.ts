@@ -5,7 +5,8 @@ import { FormBuilder, ReactiveFormsModule, Validators, FormControl } from '@angu
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { BrandService } from '../../../../core/services/brand.service';
 import { HotToastService } from '@ngxpert/hot-toast';
-import { Brand, BrandInput } from '../../../../core/models/interfaces';
+import {BrandInput} from '../../../../core/interfaces/brand/brand.interfaces';
+
 
 type BrandFormControls = {
   name: FormControl<string>;
@@ -97,7 +98,8 @@ export class BrandFormComponent implements OnInit {
         description: formValues.description || undefined,
         logoUrl: formValues.logoUrl || undefined,
         websiteUrl: formValues.websiteUrl || undefined,
-        status: formValues.status
+        status: formValues.status,
+        products: []
       };
 
       if (this.isEditMode()) {
@@ -115,7 +117,7 @@ export class BrandFormComponent implements OnInit {
       this.router.navigate(['/admin/brands'], {
         queryParamsHandling: 'preserve'
       });
-      
+
     } catch (error) {
       this.toast.error(this.isEditMode() ? 'Failed to update brand' : 'Failed to create brand');
     } finally {

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { SaleWithDetails } from '../models/interfaces';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { environment } from '../../../environments/environment';
+import {SaleWithDetails} from '../interfaces/sales/sales.interfaces';
 
 
 @Injectable({
@@ -33,33 +33,33 @@ export class InvoiceService {
     doc.setFontSize(20);
     doc.setTextColor(44, 62, 80);
     doc.text('INVOICE', pageWidth - 20, yPos, { align: 'right' });
-    
+
     doc.setFontSize(10);
     doc.text(this.companyInfo.name, 20, yPos);
     doc.text(this.companyInfo.address, 20, yPos + 5);
     doc.text(this.companyInfo.phone, 20, yPos + 10);
     doc.text(this.companyInfo.email, 20, yPos + 15);
-    
+
     yPos += 30;
 
     // Invoice Details
     doc.setFontSize(12);
     doc.text(`Invoice Number: ${sale.invoiceNumber}`, pageWidth - 20, yPos, { align: 'right' });
     doc.text(`Date: ${new Date(sale.date).toLocaleDateString()}`, pageWidth - 20, yPos + 7, { align: 'right' });
-    
+
     yPos += 20;
 
     // Customer Info
     doc.setFillColor(241, 245, 249);
     doc.rect(20, yPos, pageWidth - 40, 25, 'F');
-    
+
     doc.setFontSize(10);
     doc.text('Bill To:', 25, yPos + 7);
     doc.setFontSize(12);
     doc.text(sale.customer?.name || '', 25, yPos + 15);
     doc.setFontSize(10);
     doc.text(sale.customer?.email || '', 25, yPos + 22);
-    
+
     yPos += 35;
 
     // Products Table
@@ -105,10 +105,10 @@ export class InvoiceService {
     doc.setFontSize(10);
     doc.text('Subtotal:', pageWidth - 80, yPos);
     doc.text(`$${subtotal.toFixed(2)}`, pageWidth - 20, yPos, { align: 'right' });
-    
+
     doc.text('Tax (10%):', pageWidth - 80, yPos + 7);
     doc.text(`$${tax.toFixed(2)}`, pageWidth - 20, yPos + 7, { align: 'right' });
-    
+
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.text('Total:', pageWidth - 80, yPos + 15);
@@ -168,7 +168,7 @@ export class InvoiceService {
     yPos += 6;
     doc.text(sale.customer.email, 20, yPos);
     yPos += 6;
-   
+
     // Add items header
     yPos += 20;
     doc.setFont('helvetica', 'bold');
@@ -202,4 +202,4 @@ export class InvoiceService {
     // Save the PDF
     doc.save(`invoice-${sale.invoiceNumber}.pdf`);
   }
-} 
+}

@@ -1,9 +1,9 @@
 // src/app/core/services/brand.service.ts
 import { Injectable, inject, signal } from '@angular/core';
 import { AppwriteService } from './appwrite.service';
-import { Brand, BrandInput } from '../models/interfaces';
 import { environment } from '../../../environments/environment';
 import { ID, Query, Storage } from 'appwrite';
+import {Brand, BrandInput} from '../interfaces/brand/brand.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -109,11 +109,31 @@ export class BrandService {
   }
 
   getLogoUrl(fileId: string): string {
-    const result =  this.storage.getFileView(
+    const result = this.storage.getFileView(
       environment.appwrite.buckets.brandLogos,
       fileId,
-    )
+    );
+    return result;
+  }
 
-    return result
+  // Add this method to update the brand document with the product ID
+  async addProductToBrand(brandId: string, productId: string): Promise<void> {
+    try {
+      // Fetch the existing brand document
+      const brand = await this.getBrand(brandId);
+
+      // Update the products array (assuming it's a relationship field)
+      const updatedProducts = brand.products ? [...brand.products, productId] : [productId];
+
+      // Update the brand document
+      await this.updateBrand(brandId, {
+        products: updatedProducts,
+      });
+
+      console.log('Product added to brand:', brandId);
+    } catch (error) {
+      console.error('Error adding product to brand:', error);
+      throw error;
+    }
   }
 }

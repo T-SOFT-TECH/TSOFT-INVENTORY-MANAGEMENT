@@ -1,10 +1,14 @@
+export interface FormFieldOption {
+  label: string;
+  value: string;
+}
 
 export interface FormFieldConfig {
   name: string;
-  type: 'text' | 'number' | 'select' | 'multiselect'  | 'textarea' | 'radio' | 'checkbox';
+  type: 'text' | 'number' | 'select' | 'multiselect' | 'textarea' | 'radio' | 'checkbox' | 'checkbox-group';
   label: string;
   required?: boolean;
-  options?: string[];
+  options?: string[] | FormFieldOption[]; // Updated to support both string and object options
   validation?: any[];
   defaultValue?: any;
   placeholder?: string;

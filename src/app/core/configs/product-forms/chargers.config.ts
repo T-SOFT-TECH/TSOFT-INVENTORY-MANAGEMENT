@@ -1,10 +1,9 @@
-import {CategoryFormConfig, commonFields} from './product-form.types';
+import {CategoryFormConfig} from './product-form.types';
 
 export const chargersConfig: CategoryFormConfig = {
   id: 'chargers-power-adapters',
   name: 'Chargers & Power Adapters',
   fields: [
-    ...commonFields,
     {
       name: 'chargerType',
       type: 'select',

@@ -9,7 +9,8 @@ import { SidebarComponent } from "../../components/sidebar/sidebar.component";
   selector: 'app-main-layout',
   standalone: true,
   imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent],
-  templateUrl: './main-layout.component.html'
+  templateUrl: './main-layout.component.html',
+  styleUrls: ['./main-layout.component.scss']
 })
 export class MainLayoutComponent {
   private authService = inject(AuthService);

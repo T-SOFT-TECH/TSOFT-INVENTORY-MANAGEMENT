@@ -1,5 +1,5 @@
-// src/app/core/services/product-form-config.service.ts
-import { Injectable } from '@angular/core';
+
+import { inject, Injectable } from '@angular/core';
 import {
   CategoryFormConfig,
   FormFieldConfig,
@@ -8,6 +8,8 @@ import {
   getAllConfigs,
   updateBrandOptionsForAllConfigs
 } from '../configs/product-forms';
+import { Category } from '../interfaces/category/category.interfaces';
+import { CategoryService } from './category.service';
 
 // Re-export types for consumers
 export type { CategoryFormConfig, FormFieldConfig } from '../configs/product-forms';
@@ -18,9 +20,35 @@ export type { CategoryFormConfig, FormFieldConfig } from '../configs/product-for
 export class ProductFormConfigService {
   private formConfigs = productFormConfigs;
 
+  private categoryService = inject(CategoryService);
+  private categories: Category[] = [];
+
   getFormConfig(categoryId: string): CategoryFormConfig | undefined {
-    return getFormConfigById(categoryId);
+    let config = productFormConfigs.get(categoryId);
+
+    if (!config) {
+      const parentCategory = this.getCategoryParent(categoryId);
+      if (parentCategory) {
+        config = productFormConfigs.get(parentCategory.$id);
+      }
+    }
+
+    return config;
   }
+
+
+  private async loadCategories() {
+    this.categories = await this.categoryService.getCategories();
+  }
+
+  private getCategoryParent(categoryId: string): Category | null {
+    const category = this.categories.find((c: Category) => c.$id === categoryId);
+    if (category?.parentId) {
+      return this.categories.find((c: Category) => c.$id === category.parentId) || null;
+    }
+    return null;
+  }
+
 
   getAllConfigs(): Map<string, CategoryFormConfig> {
     return this.formConfigs;

@@ -1,25 +1,25 @@
-import {CategoryFormConfig, commonFields} from './product-form.types';
+
+import { CategoryFormConfig } from './product-form.types';
 
 export const graphicsCardsConfig: CategoryFormConfig = {
   id: 'graphics-cards-gpus',
   name: 'Graphics Cards',
   fields: [
-    ...commonFields,
     {
-      name: 'gpuType',
+      name: 'chipsetManufacturer',
       type: 'select',
-      label: 'GPU Type',
+      label: 'Chipset Manufacturer',
       required: true,
-      options: ['Gaming', 'Workstation', 'Mining'],
-      group: 'specifications'
+      options: ['NVIDIA', 'AMD', 'Intel'],
+      group: 'basic'
     },
     {
-      name: 'chipset',
+      name: 'gpuModel',
       type: 'text',
-      label: 'GPU Chipset',
+      label: 'GPU Model',
       required: true,
       placeholder: 'e.g., RTX 4080, RX 7900 XT',
-      group: 'specifications'
+      group: 'basic'
     },
     {
       name: 'memorySize',
@@ -27,7 +27,7 @@ export const graphicsCardsConfig: CategoryFormConfig = {
       label: 'Memory Size',
       required: true,
       unit: 'GB',
-      group: 'specifications'
+      group: 'memory'
     },
     {
       name: 'memoryType',
@@ -35,15 +35,15 @@ export const graphicsCardsConfig: CategoryFormConfig = {
       label: 'Memory Type',
       required: true,
       options: ['GDDR6X', 'GDDR6', 'GDDR5', 'HBM2', 'HBM3'],
-      group: 'specifications'
+      group: 'memory'
     },
     {
       name: 'memoryBus',
       type: 'number',
-      label: 'Memory Bus',
+      label: 'Memory Bus Width',
       required: true,
       unit: 'bit',
-      group: 'specifications'
+      group: 'memory'
     },
     {
       name: 'baseClock',
@@ -51,7 +51,7 @@ export const graphicsCardsConfig: CategoryFormConfig = {
       label: 'Base Clock',
       required: true,
       unit: 'MHz',
-      group: 'specifications'
+      group: 'performance'
     },
     {
       name: 'boostClock',
@@ -59,7 +59,7 @@ export const graphicsCardsConfig: CategoryFormConfig = {
       label: 'Boost Clock',
       required: true,
       unit: 'MHz',
-      group: 'specifications'
+      group: 'performance'
     },
     {
       name: 'rtCores',
@@ -68,20 +68,45 @@ export const graphicsCardsConfig: CategoryFormConfig = {
       group: 'specifications'
     },
     {
+      name: 'tensorCores',
+      type: 'number',
+      label: 'Tensor Cores',
+      group: 'specifications'
+    },
+    {
       name: 'displayOutputs',
       type: 'multiselect',
       label: 'Display Outputs',
       required: true,
-      options: ['HDMI 2.1', 'DisplayPort 1.4', 'DisplayPort 2.1', 'USB Type-C'],
-      group: 'specifications'
+      options: [
+        'HDMI 2.1',
+        'HDMI 2.0',
+        'DisplayPort 1.4a',
+        'DisplayPort 2.1',
+        'USB Type-C'
+      ],
+      group: 'connectivity'
     },
     {
       name: 'powerConnectors',
       type: 'multiselect',
       label: 'Power Connectors',
       required: true,
-      options: ['8-pin', '6-pin', '12VHPWR', 'None'],
-      group: 'specifications'
+      options: [
+        '8-pin',
+        '6-pin',
+        '12VHPWR',
+        '16-pin'
+      ],
+      group: 'power'
+    },
+    {
+      name: 'tdp',
+      type: 'number',
+      label: 'TDP',
+      required: true,
+      unit: 'W',
+      group: 'power'
     },
     {
       name: 'recommendedPsu',
@@ -89,7 +114,7 @@ export const graphicsCardsConfig: CategoryFormConfig = {
       label: 'Recommended PSU',
       required: true,
       unit: 'W',
-      group: 'specifications'
+      group: 'power'
     },
     {
       name: 'length',
@@ -97,14 +122,61 @@ export const graphicsCardsConfig: CategoryFormConfig = {
       label: 'Card Length',
       required: true,
       unit: 'mm',
-      group: 'specifications'
+      group: 'physical'
+    },
+    {
+      name: 'width',
+      type: 'number',
+      label: 'Card Width',
+      required: true,
+      unit: 'slots',
+      group: 'physical'
     },
     {
       name: 'cooling',
       type: 'select',
       label: 'Cooling Solution',
       required: true,
-      options: ['Air Cooling', 'Water Cooling', 'Hybrid'],
+      options: [
+        'Air Cooling',
+        'Water Cooling',
+        'Hybrid',
+        'Passive'
+      ],
+      group: 'thermal'
+    },
+    {
+      name: 'features',
+      type: 'multiselect',
+      label: 'Features',
+      options: [
+        'Ray Tracing',
+        'DLSS',
+        'FSR',
+        'XeSS',
+        'RGB Lighting',
+        'Metal Backplate',
+        'Zero RPM Mode'
+      ],
+      group: 'features'
+    },
+    {
+      name: 'directX',
+      type: 'select',
+      label: 'DirectX Support',
+      required: true,
+      options: [
+        'DirectX 11',
+        'DirectX 12',
+        'DirectX 12 Ultimate'
+      ],
+      group: 'specifications'
+    },
+    {
+      name: 'openGL',
+      type: 'text',
+      label: 'OpenGL Support',
+      required: true,
       group: 'specifications'
     }
   ]

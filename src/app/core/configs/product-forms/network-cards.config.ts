@@ -1,10 +1,9 @@
-import { CategoryFormConfig, commonFields } from './product-form.types';
+import {CategoryFormConfig} from './product-form.types';
 
 export const networkCardsConfig: CategoryFormConfig = {
   id: 'network-cards',
   name: 'Network Cards',
   fields: [
-    ...commonFields,
     {
       name: 'interfaceType',
       type: 'select',
@@ -128,4 +127,4 @@ export const networkCardsConfig: CategoryFormConfig = {
       group: 'specifications'
     }
   ]
-}; 
+};

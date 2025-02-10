@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SalesService } from '../../../core/services/sales.service';
-
-import { SaleWithDetails, SalesQueryOptions, PaymentStatus, Sale, Customer } from '../../../core/models/interfaces';
 import { from } from 'rxjs';
 import { CustomerService } from '../../../core/services/customer.service';
+import {Sale, SalesQueryOptions, SaleWithDetails} from '../../../core/interfaces/sales/sales.interfaces';
+import {Customer} from '../../../core/interfaces/customer/customer.interfaces';
+import {PaymentStatus} from '../../../core/interfaces/base/base.interfaces';
 
 @Component({
   selector: 'app-sales-history',

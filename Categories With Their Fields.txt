@@ -1,0 +1,292 @@
+1. **Computers**
+   - **Laptops**
+      - Specifications:
+        - Display (screenSize, resolution, refreshRate, displayType, touchscreen)
+        - Performance (processorModel, cores, ramSize, ramType, gpuModel, gpuVram)
+        - Storage (storageType, storageCapacity, storageInterface)
+        - Physical (weight, dimensions, color, buildMaterial)
+        - Battery (batteryCapacity, batteryLife, chargingWattage)
+        - Ports (usbPorts, displayPorts, audioJack, ethernetPort)
+        - Features (webcam, backlitKeyboard, fingerprint, wifi, bluetooth)
+
+   - **Desktops**
+      - Specifications:
+        - Performance (processorModel, cores, ramSize, ramType, gpuModel)
+        - Storage (storageType, storageCapacity)
+        - Form Factor (caseType, dimensions)
+        - Power (powerSupply, powerRating)
+        - Ports (frontPorts, rearPorts)
+        - Features (wifi, bluetooth, opticalDrive)
+
+2. **Computer Components**
+   - **Processors (CPUs)**
+      - Specifications:
+        - Base Specs (cores, threads, baseFrequency, maxFrequency)
+        - Architecture (socket, lithography, generation, family)
+        - Performance (cache, tdp, integratedGraphics)
+        - Support (memorySupport, pcieLanes)
+
+   - **Graphics Cards (GPUs)**
+      - Specifications:
+        - Memory (size, type, speed, bandwidth)
+        - Clock Speeds (baseClock, boostClock)
+        - Physical (length, height, slots)
+        - Power (tdp, powerConnectors, recommendedPsu)
+        - Display (outputs, maxResolution, maxRefreshRate)
+        - Features (rayTracing, dlss, freeSync, gSync)
+
+
+3. **Peripherals**
+   - **Monitors**
+      - Specifications:
+        - Display (size, resolution, panelType, refreshRate)
+        - Performance (responseTime, brightness, contrast, colorGamut)
+        - HDR (hdrSupport, hdrBrightness, hdrFormat)
+        - Ports (displayPorts, hdmiPorts, usbPorts)
+        - Features (adaptiveSync, speakers, vesaMount)
+        - Physical (dimensions, weight, bezels)
+
+   - **Input Devices**
+      - **Keyboards**
+        - Basic (type, layout, switchType, connectivity)
+        - Features (backlight, macroKeys, mediaControls, wristRest)
+        - Technical (pollingRate, nKeyRollover, antiGhosting)
+        - Physical (dimensions, weight, cableLength)
+
+      - **Mice**
+        - Technical (sensor, dpi, pollingRate, buttons)
+        - Physical (dimensions, weight, gripType)
+        - Features (rgb, programmableButtons, onboardMemory)
+        - Wireless (batteryLife, chargingType, latency)
+
+      - **Graphics Tablets**
+        - Technical (activeArea, pressureLevels, resolution)
+        - Features (tiltSupport, expressKeys, touchRing)
+        - Pen (type, buttons, batteryFree)
+
+   - **Printers & Scanners**
+      - Specifications:
+        - Print (technology, speed, resolution, color)
+        - Media (paperSize, mediaTypes, capacity)
+        - Connectivity (wifi, ethernet, usb, bluetooth)
+        - Features (duplex, adf, fax)
+
+4. **Mobile Devices**
+   - **Smartphones**
+      - Specifications:
+        - Display (size, resolution, technology, refreshRate)
+        - Performance (processor, ram, storage)
+        - Camera (mainCamera, selfieCamera, features)
+        - Battery (capacity, chargingSpeed, wirelessCharging)
+        - Connectivity (5g, wifi, bluetooth, nfc)
+        - Security (fingerprint, faceUnlock)
+
+   - **Tablets**
+      - Specifications:
+        - Display (size, resolution, technology)
+        - Performance (processor, ram, storage)
+        - Battery (capacity, chargingSpeed)
+        - Features (pencilSupport, keyboardSupport)
+        - Connectivity (wifi, cellular, bluetooth)
+
+   - **Phone Accessories**
+      - Cases (type, material, compatibility)
+      - Screen Protectors (type, hardness, compatibility)
+      - Mounts & Stands (type, adjustability, compatibility)
+
+5. **Networking**
+   - **Routers**
+      - Specifications:
+        - Wireless (standards, bands, speed, coverage)
+        - Hardware (processor, memory, antennas)
+        - Ports (ethernet, usb, wan)
+        - Features (meshSupport, parentalControls, qos)
+        - Security (encryption, firewall, vpnSupport)
+
+
+6. **Audio & Video**
+   - **Audio Devices**
+      - **Headphones**
+        - Audio (driverSize, frequency, impedance, sensitivity)
+        - Features (noiseCancel, surroundSound, foldable)
+        - Connectivity (type, bluetooth, codecs, multipoint)
+        - Battery (life, chargingTime, quickCharge)
+        - Physical (weight, cableLength, controls)
+
+      - **Speakers**
+        - Audio (power, frequency, channels)
+        - Features (bluetooth, wifi, voiceAssistant)
+        - Physical (dimensions, mountType)
+        - Connectivity (inputs, wireless, multiroom)
+
+      - **Professional Audio**
+        - Technical (interface, bitDepth, sampleRate)
+        - I/O (inputs, outputs, types)
+        - Features (phantom, monitoring, dsp)
+
+   - **Video Devices**
+      - **Webcams**
+        - Video (resolution, fps, fov)
+        - Features (autofocus, privacy, mounting)
+        - Audio (microphone, noise reduction)
+
+      - **Capture Cards**
+        - Video (maxResolution, maxFps, passthrough)
+        - Inputs (hdmi, displayPort, usb)
+        - Features (latency, streaming, recording)
+
+7. **Power & Charging**
+   - **Chargers & Adapters**
+      - Power (inputVoltage, outputVoltage, wattage)
+      - Features (gan, foldablePins, protection)
+      - Ports (number, types, protocols)
+      - Physical (size, weight, cableLength)
+      - Standards (certifications, compatibility)
+
+   - **Power Banks**
+      - Capacity (mah, actualCapacity)
+      - Output (ports, powerDelivery, quickCharge)
+      - Features (display, passthrough, wireless)
+      - Physical (size, weight, durability)
+
+   - **Power Protection**
+      - Features (surge, backup, conditioning)
+      - Capacity (watts, va, runtime)
+      - Outlets (number, type, spacing)
+      - Protection (joules, response, warranty)
+
+8. **Gaming & Entertainment**
+   - **Gaming Consoles**
+      - Performance (processor, gpu, storage)
+      - Features (resolution, hdr, vr)
+      - Connectivity (wifi, bluetooth, ports)
+      - Physical (dimensions, cooling)
+
+   - **Gaming Accessories**
+      - Controllers (type, connectivity, features)
+      - Racing Wheels (force feedback, pedals, shifting)
+      - Gaming Chairs (ergonomics, adjustability, materials)
+
+
+9. **Smart Home**
+   - **Smart Security**
+      - Camera (resolution, nightVision, fov)
+      - Features (motionDetection, twoWayAudio, storage)
+      - Connectivity (wifi, ethernet, protocols)
+      - Power (type, backup, consumption)
+      - Environmental (weatherRating, operatingTemp)
+
+   - **Smart Controls**
+      - Compatibility (platforms, devices, protocols)
+      - Features (scheduling, automation, scenes)
+      - Sensors (temperature, humidity, motion)
+      - Power (voltage, consumption, backup)
+      - Connectivity (wifi, bluetooth, zigbee, zwave)
+
+   - **Smart Speakers**
+      - Audio (power, speakers, microphones)
+      - Features (assistant, multiroom, display)
+      - Connectivity (wifi, bluetooth, aux)
+      - Controls (touch, voice, app)
+
+10. **Software & Security**
+    - **Operating Systems**
+      - Type (desktop, mobile, server)
+      - Features (security, updates, support)
+      - Requirements (processor, memory, storage)
+      - License (type, duration, users)
+
+    - **Security Software**
+      - Features (antivirus, firewall, vpn)
+      - Protection (realtime, web, email)
+      - Performance (resources, scan speed)
+      - Updates (frequency, type)
+
+11. **Professional Equipment**
+    - **Server Equipment**
+      - Hardware (cpu, ram, storage)
+      - Form (rackUnits, dimensions)
+      - Network (ports, speed, redundancy)
+      - Power (consumption, redundancy)
+      - Management (remote, monitoring)
+
+    - **Network Infrastructure**
+      - Ports (number, speed, poe)
+      - Features (vlan, routing, qos)
+      - Management (interface, snmp, cli)
+      - Performance (throughput, latency)
+      - Physical (mounting, cooling)
+
+12. **Cables & Connectivity**
+    - Video Cables (type, length, version)
+    - USB Cables (type, speed, power)
+    - Network Cables (category, shielding, rating)
+    - Features (braiding, connectors, strain relief)
+    - Certifications (standards, compliance)
+
+
+13. **Office Equipment**
+    - **Office Electronics**
+      - Calculators (type, display, functions)
+      - Label Printers (resolution, speed, media)
+      - Paper Shredders (capacity, security level, duty cycle)
+      - Features (power saving, noise level)
+      - Physical (dimensions, weight)
+
+    - **Communication Devices**
+      - IP Phones (lines, display, features)
+      - Conference Phones (microphones, coverage, connectivity)
+      - Headsets (type, noise cancel, battery)
+
+14. **Maintenance & Repair**
+    - **Cleaning Supplies**
+      - Type (solutions, wipes, compressed air)
+      - Compatibility (surfaces, materials)
+      - Volume/Quantity (size, amount)
+      - Safety (certifications, warnings)
+
+    - **Repair Tools**
+      - Type (screwdrivers, pliers, testers)
+      - Material (quality, durability)
+      - Features (magnetic, precision, ergonomic)
+      - Compatibility (screw types, devices)
+
+    - **Spare Parts**
+      - Type (screws, connectors, thermal paste)
+      - Compatibility (devices, models)
+      - Quality (material, durability)
+      - Specifications (size, rating)
+
+15. **Educational Technology**
+    - **Learning Devices**
+      - Educational Tablets (durability, controls, software)
+      - E-Readers (display, storage, battery)
+      - Learning Computers (performance, protection, controls)
+      - Features (parental controls, educational apps)
+
+    - **Classroom Technology**
+      - Interactive Displays (size, touch points, software)
+      - Document Cameras (resolution, zoom, connectivity)
+      - Response Systems (users, range, features)
+
+16. **Smart Wearables**
+    - **Smartwatches**
+      - Display (type, size, resolution)
+      - Health Features (heartRate, spo2, ecg)
+      - Fitness (gps, activities, sensors)
+      - Battery (capacity, charging, life)
+      - Connectivity (bluetooth, wifi, cellular)
+      - Physical (size, waterproof, durability)
+
+    - **Smart Bands**
+      - Display (type, size)
+      - Sensors (heartRate, steps, sleep)
+      - Battery (capacity, life)
+      - Features (notifications, waterproof)
+      - Connectivity (bluetooth, app)
+
+    - **Watch Accessories**
+      - Bands (material, size, style)
+      - Screen Protectors (type, clarity)
+      - Chargers (type, power, cable)
+

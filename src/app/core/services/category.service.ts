@@ -1,9 +1,9 @@
 // category.service.ts
 import {Injectable, inject, signal} from '@angular/core';
 import { AppwriteService } from './appwrite.service';
-import {Category, CategoryCreateDTO} from '../models/interfaces';
 import { environment } from '../../../environments/environment';
 import {ID, Query} from 'appwrite';
+import {Category, CategoryCreateDTO} from '../interfaces/category/category.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class CategoryService {
     return name
       .toLowerCase()
       .trim()
-      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/[^a-z0-9]+/g, '_')
       .replace(/^-+|-+$/g, '');
   }
 
@@ -65,7 +65,7 @@ export class CategoryService {
     try {
       let allCategories: Category[] = [];
       let offset = 0;
-      const limit = 100;
+      const limit = 1000;
 
       while (true) {
         console.log(`Fetching categories: offset ${offset}, limit ${limit}`);

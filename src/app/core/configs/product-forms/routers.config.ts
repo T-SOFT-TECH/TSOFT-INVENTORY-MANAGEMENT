@@ -1,10 +1,8 @@
-import { CategoryFormConfig, commonFields } from './product-form.types';
-
+import { CategoryFormConfig} from './product-form.types';
 export const routersConfig: CategoryFormConfig = {
   id: 'routers',
   name: 'Routers',
   fields: [
-    ...commonFields,
     {
       name: 'routerType',
       type: 'select',
@@ -104,4 +102,4 @@ export const routersConfig: CategoryFormConfig = {
       group: 'specifications'
     }
   ]
-}; 
+};
