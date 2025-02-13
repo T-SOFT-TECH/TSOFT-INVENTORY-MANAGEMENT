@@ -15,14 +15,36 @@ export default async ({ req, res, log, error }) => {
   let createdProductId = null;
   let createdSpecId = null;
   let createdImageId = null;
+  let category = null;
 
   try {
     log('Starting product creation process');
     log(`Request body: ${req.body}`);
 
-    const { category, specifications, imageUrl, ...productData } = JSON.parse(req.body);
+    // Parse request body with error handling
+    let parsedBody;
+    try {
+      parsedBody = JSON.parse(req.body);
+    } catch (e) {
+      return res.json({
+        error: 'Invalid JSON in request body',
+        details: e.message
+      }, 400);
+    }
+
+    const { category: requestCategory, specifications, imageUrl, ...productData } = parsedBody;
+    category = requestCategory; // Store category for cleanup
+
     log(`Parsed data - Category: ${category}, Product Data:`, productData);
     log(`Specifications:`, specifications);
+
+    // Validate required fields
+    if (!category) {
+      throw new Error('Category is required');
+    }
+    if (!specifications) {
+      throw new Error('Specifications are required');
+    }
 
     if (imageUrl) {
       createdImageId = imageUrl;
@@ -44,15 +66,17 @@ export default async ({ req, res, log, error }) => {
     createdProductId = product.$id;
     log(`Base product created with ID: ${createdProductId}`, product);
 
-    // Create specs document in the corresponding collection
+    // Create specs document
     const specsCollectionName = `${category}_specs`;
     log(`Creating specifications in collection: ${specsCollectionName}`);
     const specs = await databases.createDocument(
       DBID,
       specsCollectionName,
       ID.unique(),
-      specifications,
-      product: [createdProductId] // Creating Relationship
+      {
+        ...specifications,
+        product: createdProductId // Correct relationship field
+      }
     );
     createdSpecId = specs.$id;
     log(`Specifications created with ID: ${createdSpecId}`, specs);
@@ -115,4 +139,3 @@ export default async ({ req, res, log, error }) => {
     }, 500);
   }
 };
-

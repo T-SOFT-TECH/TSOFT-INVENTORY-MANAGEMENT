@@ -244,6 +244,8 @@ export class ProductService {
     }
   }
 
+// In product.service.ts
+
   async getProductById(id: string): Promise<BaseProduct> {
     try {
       const response = await this.appwrite.database.getDocument(
@@ -251,7 +253,14 @@ export class ProductService {
         environment.appwrite.collections.products,
         id
       );
-      return response as unknown as BaseProduct;
+
+      // Transform the response to include specifications
+      const product = response as unknown as BaseProduct;
+      if (product.specifications) {
+        product.specifications = JSON.parse(product.specifications as unknown as string);
+      }
+
+      return product;
     } catch (error) {
       console.error('Error fetching product:', error);
       throw error;

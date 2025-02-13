@@ -1363,85 +1363,174 @@ async function createRelationship(categoryCollectionId) {
   try {
     console.log(`Creating relationship for ${categoryCollectionId}`);
 
-    // Add validation for relationship attribute name length
-    const relationshipAttributeName = `${categoryCollectionId}_id`;
-    if (relationshipAttributeName.length > 64) { // Appwrite has limits on attribute name length
-      console.warn(`Warning: Relationship attribute name ${relationshipAttributeName} might be too long`);
-    }
+    // Wait for any existing processing to complete
+    await delay(2000);
+
+    // Create a shortened version of the collection name for the two-way key
+    // Remove '_specs' and take first 30 chars to stay within limits
+    const shortName = categoryCollectionId.replace('_specs', '');
+    const twoWayKey = `${shortName}_pid`.substring(0, 30);
 
     await database.createRelationshipAttribute(
       databaseId,
-      baseCollectionId,
-      categoryCollectionId,
+      categoryCollectionId,  // Child collection
+      baseCollectionId,      // Parent collection
       'oneToOne',
-      true,
-      relationshipAttributeName,
-      'product_id',
+      true,                  // Enable two-way relationship
+      'product',          // Foreign key in child collection
+      categoryCollectionId,            // Shortened two-way key for parent collection
       'cascade'
     );
 
     console.log(`Created relationship between ${baseCollectionId} and ${categoryCollectionId}`);
-    await delay(DELAY_BETWEEN_OPERATIONS);
+    await delay(2000);
   } catch (error) {
     if (error.code === 409) {
       console.log(`Relationship for ${categoryCollectionId} already exists`);
     } else {
-      console.error(`Failed to create relationship for ${categoryCollectionId}:`, error);
-      console.error('Error details:', {
+      console.error(`Failed to create relationship for ${categoryCollectionId}:`, {
         message: error.message,
         code: error.code,
-        type: error.type
+        type: error.type,
+        twoWayKey: `${categoryCollectionId.replace('_specs', '')}_pid`.substring(0, 30)
       });
 
-      // Instead of throwing, we'll log and continue
-      console.log('Continuing with next collection...');
+      // Throw error to trigger retry mechanism
+      throw error;
     }
   }
 }
 
+
+async function verifyRelationship(categoryCollectionId) {
+  try {
+    // Wait for processing to complete
+    await delay(3000);
+
+    // Attempt to get collection attributes to verify relationship
+    const attributes = await database.listAttributes(
+      databaseId,
+      categoryCollectionId
+    );
+
+    const hasRelationship = attributes.attributes.some(attr =>
+      attr.type === 'relationship' && attr.key === 'product_id'
+    );
+
+    if (!hasRelationship) {
+      throw new Error('Relationship not found after creation');
+    }
+
+    console.log(`Verified relationship for ${categoryCollectionId}`);
+  } catch (error) {
+    console.error(`Relationship verification failed for ${categoryCollectionId}:`, error);
+    // Attempt to recreate the relationship
+    await createRelationship(categoryCollectionId);
+  }
+}
+
 // Main async function to setup the entire database schema.
+/*async function setupDatabase() {
+  try {
+    console.log('Starting database setup...');
+
+    // Create base products collection first
+    await createCollection(baseCollectionId, 'Products');
+    await createAttributes(baseCollectionId, baseAttributes);
+    await delay(3000);
+
+    // Process collections one at a time
+    for (const [category, config] of Object.entries(categoryCollections)) {
+      // Stop before smartphones
+      if (category === 'smartphones') {
+        console.log('Reached smartphones - stopping here as requested');
+        break;
+      }
+
+      console.log(`Processing category: ${category}`);
+
+      try {
+        // Create collection
+        await createCollection(config.name, `Product ${category} Specifications`);
+        await delay(2000);
+
+        // Create attributes
+        await createAttributes(config.name, config.attributes);
+        await delay(2000);
+
+        // Create and verify relationship
+        await createRelationship(config.name);
+        await verifyRelationship(config.name);
+
+        // Additional delay between collections
+        await delay(5000);
+
+        console.log(`Completed processing category: ${category}`);
+      } catch (error) {
+        console.error(`Error processing category ${category}:`, error);
+        continue;
+      }
+    }
+
+    console.log('Database setup completed up to smartphones');
+  } catch (error) {
+    console.error('Database setup failed:', error.message);
+    throw error;
+  }
+}*/
+
+
+
 async function setupDatabase() {
   try {
     console.log('Starting database setup...');
 
-    // Create base products collection and its attributes first
+    // Create base products collection first
     await createCollection(baseCollectionId, 'Products');
     await createAttributes(baseCollectionId, baseAttributes);
-    await delay(DELAY_BETWEEN_COLLECTIONS);
+    await delay(3000);
 
-    // Process collections in smaller batches
-    const categories = Object.entries(categoryCollections);
-    const BATCH_SIZE = 5;
+    // Convert the collections object to an array of entries
+    const collections = Object.entries(categoryCollections);
 
-    for (let i = 0; i < categories.length; i += BATCH_SIZE) {
-      const batch = categories.slice(i, i + BATCH_SIZE);
+    // Find the index of smartphones
+    const startIndex = collections.findIndex(([category]) => category === 'smartphones');
 
-      console.log(`Processing batch ${i/BATCH_SIZE + 1}`);
-
-      for (const [category, config] of batch) {
-        console.log(`Processing category: ${category}`);
-
-        try {
-          await createCollection(config.name, `Product ${category} Specifications`);
-          await delay(DELAY_BETWEEN_OPERATIONS);
-          await createAttributes(config.name, config.attributes);
-          await delay(DELAY_BETWEEN_OPERATIONS);
-          await createRelationship(config.name);
-          await delay(DELAY_BETWEEN_COLLECTIONS);
-
-          console.log(`Completed processing category: ${category}`);
-        } catch (error) {
-          console.error(`Error processing category ${category}:`, error);
-          // Continue with next category instead of stopping
-          continue;
-        }
-      }
-
-      // Add additional delay between batches
-      await delay(5000); // 5-second delay between batches
+    if (startIndex === -1) {
+      throw new Error('Smartphones category not found');
     }
 
-    console.log('Database setup completed successfully');
+    // Slice the array to get only smartphones and collections after it
+    const remainingCollections = collections.slice(startIndex);
+
+    // Process collections starting from smartphones
+    for (const [category, config] of remainingCollections) {
+      console.log(`Processing category: ${category}`);
+
+      try {
+        // Create collection
+        await createCollection(config.name, `Product ${category} Specifications`);
+        await delay(2000);
+
+        // Create attributes
+        await createAttributes(config.name, config.attributes);
+        await delay(2000);
+
+        // Create and verify relationship
+       /* await createRelationship(config.name);
+        await verifyRelationship(config.name);*/
+
+        // Additional delay between collections
+        await delay(5000);
+
+        console.log(`Completed processing category: ${category}`);
+      } catch (error) {
+        console.error(`Error processing category ${category}:`, error);
+        continue;
+      }
+    }
+
+    console.log('Database setup completed');
   } catch (error) {
     console.error('Database setup failed:', error.message);
     throw error;

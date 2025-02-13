@@ -1,392 +1,396 @@
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/80 dark:to-gray-800/80 p-3 sm:p-4 md:p-6 lg:p-8">
-  <div class="max-w-7xl mx-auto">
-    <!-- Header -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-6">
-      <div class="flex items-center justify-between">
-        <button
-          routerLink="/admin/products"
-          class="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-gray-600 hover:bg-gray-100
+@if (isLoading()) {
+  <div class="flex justify-center items-center h-64">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+  </div>
+} @else {
+
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/80 dark:to-gray-800/80 p-3 sm:p-4 md:p-6 lg:p-8">
+    <div class="max-w-7xl mx-auto">
+      <!-- Header -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-6">
+        <div class="flex items-center justify-between">
+          <button
+            routerLink="/admin/products"
+            class="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-gray-600 hover:bg-gray-100
                 dark:text-gray-400 dark:hover:bg-gray-700/50 transition-all duration-200">
-          <span class="material-icons">arrow_back</span>
-          <span class="hidden sm:inline">Back to Products</span>
-        </button>
+            <span class="material-icons">arrow_back</span>
+            <span class="hidden sm:inline">Back to Products</span>
+          </button>
 
-        <div class="text-center">
-          <h1 class="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-primary-600">
-            {{ isEditMode() ? 'Edit Product' : 'New Product' }}
-          </h1>
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            {{ isEditMode() ? 'Update product details' : 'Add a new product' }}
-          </p>
+          <div class="text-center">
+            <h1 class="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-primary-600">
+              {{ isEditMode() ? 'Edit Product' : 'New Product' }}
+            </h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              {{ isEditMode() ? 'Update product details' : 'Add a new product' }}
+            </p>
+          </div>
+          <div class="w-[88px]"></div>
         </div>
-        <div class="w-[88px]"></div>
       </div>
-    </div>
 
-    <!-- Basic Information -->
-    <div class="mb-4 sm:mb-6">
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <span class="material-icons text-primary-500">info</span>
-          Basic Information
-        </h3>
+      <!-- Basic Information -->
+      <div class="mb-4 sm:mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <span class="material-icons text-primary-500">info</span>
+            Basic Information
+          </h3>
 
-        <form [formGroup]="productForm" class="space-y-4 sm:space-y-6">
-          <!-- Name, SKU, Price, Cost Grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            <!-- Name Field -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Product Name <span class="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                formControlName="name"
-                (blur)="generateInitialSKU()"
-                class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
+          <form [formGroup]="productForm" class="space-y-4 sm:space-y-6">
+            <!-- Name, SKU, Price, Cost Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <!-- Name Field -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Product Name <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  formControlName="name"
+                  (blur)="generateInitialSKU()"
+                  class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
                       dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white
                       focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-            </div>
+              </div>
 
-            <!-- SKU Field -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                SKU <span class="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                formControlName="sku"
-                readonly
-                class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
+              <!-- SKU Field -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  SKU <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  formControlName="sku"
+                  readonly
+                  class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
                       dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white">
-            </div>
+              </div>
 
-            <!-- Price Field -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Price <span class="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                formControlName="price"
-                class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
+              <!-- Price Field -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Price <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  formControlName="price"
+                  class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
                       dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white
                       focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-            </div>
+              </div>
 
-            <!-- Cost Field -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Cost <span class="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                formControlName="cost"
-                class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
+              <!-- Cost Field -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Cost <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  formControlName="cost"
+                  class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
                       dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white
                       focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-            </div>
+              </div>
 
-            <!-- Brand Field -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Brand <span class="text-red-500">*</span>
-              </label>
-              <select
-                formControlName="brand"
-                class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
+              <!-- Brand Field -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Brand <span class="text-red-500">*</span>
+                </label>
+                <select
+                  formControlName="brand"
+                  class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
                       dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white
                       focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                <option value="">Select Brand</option>
-                @for (brand of brands(); track brand.$id) {
-                  <option [value]="brand.$id">{{brand.name}}</option>
-                }
-              </select>
-            </div>
+                  <option value="">Select Brand</option>
+                  @for (brand of brands(); track brand.$id) {
+                    <option [value]="brand.$id">{{brand.name}}</option>
+                  }
+                </select>
+              </div>
 
-            <!-- Stock Quantity Field -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Stock Quantity <span class="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                formControlName="stockQuantity"
-                class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
+              <!-- Stock Quantity Field -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Stock Quantity <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  formControlName="stockQuantity"
+                  class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
                       dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white
                       focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-            </div>
+              </div>
 
-            <!-- Low Stock Threshold Field -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Low Stock Threshold <span class="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                formControlName="lowStockThreshold"
-                class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
+              <!-- Low Stock Threshold Field -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Low Stock Threshold <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  formControlName="lowStockThreshold"
+                  class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
                       dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white
                       focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+              </div>
             </div>
-          </div>
 
-          <!-- Description Field -->
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
-            <div class="quill-editor-container ">
-              <quill-editor class="w-full rounded-lg"
-                formControlName="description"
-                [modules]="editorModules"
-                [styles]="editorStyle">
-              </quill-editor>
+            <!-- Description Field -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+              <div class="quill-editor-container ">
+                <quill-editor class="w-full rounded-lg"
+                              formControlName="description"
+                              [modules]="editorModules"
+                              [styles]="editorStyle">
+                </quill-editor>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
-    <!-- Category Selection Section -->
-    <div class="mb-4 sm:mb-6">
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6" autoAnimate>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <span class="material-icons text-primary-500">category</span>
-          Select Category
-        </h3>
+      <!-- Category Selection Section -->
+      <div class="mb-4 sm:mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6" autoAnimate>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <span class="material-icons text-primary-500">category</span>
+            Select Category
+          </h3>
 
-        <!-- Parent Categories Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3" autoAnimate>
-          @for (category of parentCategories(); track category.$id) {
-            <button
-              type="button"
-              (click)="onParentCategorySelect(category)"
-              class="relative p-3 sm:p-4 min-h-[80px] sm:min-h-[100px] rounded-xl border transition-all duration-300 group"
-              [class]="category === selectedParentCategory() ?
+          <!-- Parent Categories Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3" autoAnimate>
+            @for (category of parentCategories(); track category.$id) {
+              <button
+                type="button"
+                (click)="onParentCategorySelect(category)"
+                class="relative p-3 sm:p-4 min-h-[80px] sm:min-h-[100px] rounded-xl border transition-all duration-300 group"
+                [class]="category === selectedParentCategory() ?
            'bg-primary-50 dark:bg-primary-900/20 border-primary-500 ring-2 ring-primary-500/20' :
            'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-primary-500/50'"
-            >
-              <div class="text-center space-y-2">
+              >
+                <div class="text-center space-y-2">
            <span class="material-icons text-xl sm:text-2xl text-primary-500 group-hover:scale-110 transition-transform">
              category
            </span>
-                <p class="text-sm font-medium text-gray-900 dark:text-white line-clamp-2">{{ category.name }}</p>
-              </div>
-              @if (category.children?.length) {
-                <span class="absolute top-2 right-2 text-xs px-2 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white line-clamp-2">{{ category.name }}</p>
+                </div>
+                @if (category.children?.length) {
+                  <span class="absolute top-2 right-2 text-xs px-2 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
              {{ category.children?.length }}
            </span>
-              }
-            </button>
-          }
-        </div>
+                }
+              </button>
+            }
+          </div>
 
-        <!-- Subcategories -->
-        @if (selectedParentCategory() && subCategories().length > 0) {
-          <div class="mt-6 space-y-6">
-            <ng-template #categoryLevel let-categories let-depth="depth">
-              <div class="space-y-4">
-                <!-- Category header -->
-                <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                  <span class="material-icons text-base">subdirectory_arrow_right</span>
-                  <span>Select {{ depth === 0 ? 'a subcategory' : 'an option' }}</span>
-                </div>
+          <!-- Subcategories -->
+          @if (selectedParentCategory() && subCategories().length > 0) {
+            <div class="mt-6 space-y-6">
+              <ng-template #categoryLevel let-categories let-depth="depth">
+                <div class="space-y-4">
+                  <!-- Category header -->
+                  <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                    <span class="material-icons text-base">subdirectory_arrow_right</span>
+                    <span>Select {{ depth === 0 ? 'a subcategory' : 'an option' }}</span>
+                  </div>
 
-                <!-- Categories grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  @for (category of categories; track category.$id) {
-                    <div class="relative">
-                      <div class="border-l-2 border-t-2 border-gray-200 dark:border-gray-700 absolute h-1/2 w-4 -left-4 top-0"></div>
-                      @if (!$last) {
-                        <div class="border-l-2 border-gray-200 dark:border-gray-700 absolute h-1/2 -left-4 bottom-0"></div>
-                      }
-
-                      <button
-                        type="button"
-                        (click)="onSubCategorySelect(category)"
-                        class="w-full p-4 rounded-xl border transition-all duration-300 flex items-center gap-3"
-                        [class]="selectedCategory() === category.$id || category.isSelected ?
-                     'bg-primary-50 dark:bg-primary-900/20 border-primary-500 ring-2 ring-primary-500/20' :
-                     'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-primary-500/50'"
-                      >
-                   <span class="material-icons text-primary-500">
-                     {{ selectedCategory() === category.$id || category.isSelected ? 'check_circle' : 'radio_button_unchecked' }}
-                   </span>
-                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ category.name }}</span>
-                        @if (category.children?.length) {
-                          <span class="ml-auto material-icons text-gray-400">
-                       {{ category.isExpanded ? 'expand_less' : 'expand_more' }}
-                     </span>
+                  <!-- Categories grid -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    @for (category of categories; track category.$id) {
+                      <div class="relative">
+                        <div class="border-l-2 border-t-2 border-gray-200 dark:border-gray-700 absolute h-1/2 w-4 -left-4 top-0"></div>
+                        @if (!$last) {
+                          <div class="border-l-2 border-gray-200 dark:border-gray-700 absolute h-1/2 -left-4 bottom-0"></div>
                         }
-                      </button>
-                    </div>
-                  }
-                </div>
 
-                <!-- Nested categories -->
-                @for (category of categories; track category.$id) {
-                  @if (category.isExpanded && category.children?.length) {
-                    <div class="ml-8 mt-4">
-                      <ng-container *ngTemplateOutlet="categoryLevel; context: {
+                        <button
+                          type="button"
+                          (click)="onSubCategorySelect(category)"
+                          class="w-full p-4 rounded-xl border transition-all duration-300 flex items-center gap-3"
+                          [class]="selectedCategory() === category.$id ?
+           'bg-primary-50 dark:bg-primary-900/20 border-primary-500 ring-2 ring-primary-500/20' :
+           'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-primary-500/50'">
+  <span class="material-icons text-primary-500">
+    {{ selectedCategory() === category.$id ? 'check_circle' : 'radio_button_unchecked' }}
+  </span>
+                          <span class="text-sm font-medium text-gray-900 dark:text-white">{{ category.name }}</span>
+                          @if (category.children?.length) {
+                            <span class="ml-auto material-icons text-gray-400">
+      {{ category.isExpanded ? 'expand_less' : 'expand_more' }}
+    </span>
+                          }
+                        </button>
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Nested categories -->
+                  @for (category of categories; track category.$id) {
+                    @if (category.isExpanded && category.children?.length) {
+                      <div class="ml-8 mt-4">
+                        <ng-container *ngTemplateOutlet="categoryLevel; context: {
                    $implicit: category.children,
                    depth: depth + 1
                  }">
-                      </ng-container>
-                    </div>
+                        </ng-container>
+                      </div>
+                    }
                   }
-                }
-              </div>
-            </ng-template>
+                </div>
+              </ng-template>
 
-            <!-- Initial categories render -->
-            <ng-container *ngTemplateOutlet="categoryLevel; context: {
+              <!-- Initial categories render -->
+              <ng-container *ngTemplateOutlet="categoryLevel; context: {
          $implicit: subCategories(),
          depth: 0
        }">
-            </ng-container>
-          </div>
-        }
-
-        <!-- Selection Path -->
-        @if (selectedCategory()) {
-          <div class="mt-6 p-3 rounded-lg bg-gray-50 dark:bg-gray-900/50">
-            <div class="flex flex-wrap gap-2 text-sm">
-              <span class="text-gray-500 dark:text-gray-400">Selected Path:</span>
-              @for (category of getSelectionPath(); track category.$id) {
-                <div class="flex items-center gap-2">
-                  @if (!$first) {
-                    <span class="material-icons text-gray-400">chevron_right</span>
-                  }
-                  <span class="font-medium text-primary-500">{{ category.name }}</span>
-                </div>
-              }
+              </ng-container>
             </div>
-          </div>
-        }
+          }
 
+          <!-- Selection Path -->
+          @if (selectedCategory()) {
+            <div class="mt-6 p-3 rounded-lg bg-gray-50 dark:bg-gray-900/50">
+              <div class="flex flex-wrap gap-2 text-sm">
+                <span class="text-gray-500 dark:text-gray-400">Selected Path:</span>
+                @for (category of getSelectionPath(); track category.$id) {
+                  <div class="flex items-center gap-2">
+                    @if (!$first) {
+                      <span class="material-icons text-gray-400">chevron_right</span>
+                    }
+                    <span class="font-medium text-primary-500">{{ category.name }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+        </div>
       </div>
-    </div>
 
-    <!-- Dynamic Form Section -->
-    @if (selectedCategory()) {
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg" autoAnimate>
-        <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="p-4 sm:p-6 space-y-6">
-          <!-- Dynamic Fields -->
-          @for (group of objectKeys(groupedFields()); track group) {
-            <div class="space-y-4">
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <span class="material-icons text-primary-500">{{ getGroupIcon(group) }}</span>
-                {{ group | titlecase }}
-              </h3>
+      <!-- Dynamic Form Section -->
+      @if (selectedCategory()) {
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg" autoAnimate>
+          <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="p-4 sm:p-6 space-y-6">
+            <!-- Dynamic Fields -->
+            @for (group of objectKeys(groupedFields()); track group) {
+              <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                  <span class="material-icons text-primary-500">{{ getGroupIcon(group) }}</span>
+                  {{ group | titlecase }}
+                </h3>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                @for (field of groupedFields()[group]; track field.name) {
-                  <div class="space-y-2">
-                    <label [for]="field.name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {{ field.label }}
-                      @if (field.required) {
-                        <span class="text-red-500">*</span>
-                      }
-                    </label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  @for (field of groupedFields()[group]; track field.name) {
+                    <div class="space-y-2">
+                      <label [for]="field.name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {{ field.label }}
+                        @if (field.required) {
+                          <span class="text-red-500">*</span>
+                        }
+                      </label>
 
-                    <div class="relative">
-                      <!-- Dynamic Fields Section -->
                       <div class="relative">
-                        @if (field.type === 'text') {
-                          <input
-                            [id]="field.name"
-                            type="text"
-                            [formControlName]="field.name"
-                            [placeholder]="field.placeholder || ''"
-                            class="w-full pl-10 pr-4 py-3 sm:py-2 text-base sm:text-sm rounded-xl border border-gray-300
+                        <!-- Dynamic Fields Section -->
+                        <div class="relative">
+                          @if (field.type === 'text') {
+                            <input
+                              [id]="field.name"
+                              type="text"
+                              [formControlName]="field.name"
+                              [placeholder]="field.placeholder || ''"
+                              class="w-full pl-10 pr-4 py-3 sm:py-2 text-base sm:text-sm rounded-xl border border-gray-300
             dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white
             focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
-                        }
+                          }
 
-                        @if (field.type === 'textarea') {
-                          <textarea
-                            [id]="field.name"
-                            [formControlName]="field.name"
-                            [placeholder]="field.placeholder || ''"
-                            rows="3"
-                            class="w-full pl-10 pr-4 py-3 sm:py-2 text-base sm:text-sm rounded-xl border border-gray-300
+                          @if (field.type === 'textarea') {
+                            <textarea
+                              [id]="field.name"
+                              [formControlName]="field.name"
+                              [placeholder]="field.placeholder || ''"
+                              rows="3"
+                              class="w-full pl-10 pr-4 py-3 sm:py-2 text-base sm:text-sm rounded-xl border border-gray-300
             dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white
             focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
    </textarea>
-                        }
+                          }
 
-                        @if (field.type === 'radio') {
-                          <div class="flex flex-wrap gap-4 pl-10">
-                            @for (option of field.options; track option) {
-                              <label class="flex items-center gap-2">
-                                <input
-                                  type="radio"
-                                  [id]="field.name + option"
-                                  [formControlName]="field.name"
-                                  [value]="option"
-                                  class="w-4 h-4 text-primary-500 border-gray-300 dark:border-gray-600
+                          @if (field.type === 'radio') {
+                            <div class="flex flex-wrap gap-4 pl-10">
+                              @for (option of field.options; track option) {
+                                <label class="flex items-center gap-2">
+                                  <input
+                                    type="radio"
+                                    [id]="field.name + option"
+                                    [formControlName]="field.name"
+                                    [value]="option"
+                                    class="w-4 h-4 text-primary-500 border-gray-300 dark:border-gray-600
                   focus:ring-primary-500 dark:bg-gray-900">
-                                <span class="text-sm text-gray-900 dark:text-white">{{ option }}</span>
-                              </label>
-                            }
-                          </div>
-                        }
-
-                        @if (field.type === 'checkbox') {
-                          <div class="flex items-center gap-3 pl-10">
-                            <input
-                              [id]="field.name"
-                              type="checkbox"
-                              [formControlName]="field.name"
-                              class="w-5 h-5 rounded text-primary-500 border-gray-300 dark:border-gray-600
-              focus:ring-primary-500 dark:bg-gray-900">
-                            <label [for]="field.name" class="text-sm text-gray-700 dark:text-gray-300">
-                              {{ field.label }}
-                              @if (field.required) {
-                                <span class="text-red-500">*</span>
+                                  <span class="text-sm text-gray-900 dark:text-white">{{ option }}</span>
+                                </label>
                               }
-                            </label>
-                          </div>
-                        }
+                            </div>
+                          }
 
-                        <!-- Dynamic section for checkbox-group -->
-                        @if (field.type === 'checkbox-group') {
-                        <div class="flex flex-col gap-2 pl-10">
-                          @for (option of field.options; track $index) {
-                            <label class="flex items-center gap-2">
+                          @if (field.type === 'checkbox') {
+                            <div class="flex items-center gap-3 pl-10">
                               <input
-                                type="checkbox"
                                 [id]="field.name"
+                                type="checkbox"
                                 [formControlName]="field.name"
-                                [value]="isFieldOptionType(option) ? option.value : option"
-                                class="w-5 h-5 rounded text-primary-500 border-gray-300 dark:border-gray-600 focus:ring-primary-500 dark:bg-gray-900">
-                              <span class="text-sm text-gray-900 dark:text-white">
+                                class="w-5 h-5 rounded text-primary-500 border-gray-300 dark:border-gray-600
+              focus:ring-primary-500 dark:bg-gray-900">
+                              <label [for]="field.name" class="text-sm text-gray-700 dark:text-gray-300">
+                                {{ field.label }}
+                                @if (field.required) {
+                                  <span class="text-red-500">*</span>
+                                }
+                              </label>
+                            </div>
+                          }
+
+                          <!-- Dynamic section for checkbox-group -->
+                          @if (field.type === 'checkbox-group') {
+                            <div class="flex flex-col gap-2 pl-10">
+                              @for (option of field.options; track $index) {
+                                <label class="flex items-center gap-2">
+                                  <input
+                                    type="checkbox"
+                                    [id]="field.name"
+                                    [formControlName]="field.name"
+                                    [value]="isFieldOptionType(option) ? option.value : option"
+                                    class="w-5 h-5 rounded text-primary-500 border-gray-300 dark:border-gray-600 focus:ring-primary-500 dark:bg-gray-900">
+                                  <span class="text-sm text-gray-900 dark:text-white">
                                 {{ isFieldOptionType(option) ? option.label : option }}
                               </span>
-                            </label>
+                                </label>
+                              }
+                            </div>
                           }
-                        </div>
-                      }
 
-                        @if (field.type === 'multiselect') {
-                          <div class="relative">
-                            <select
-                              [id]="field.name"
-                              [formControlName]="field.name"
-                              multiple
-                              class="w-full pl-10 pr-10 py-3 sm:py-2 text-base sm:text-sm rounded-xl border border-gray-300
+                          @if (field.type === 'multiselect') {
+                            <div class="relative">
+                              <select
+                                [id]="field.name"
+                                [formControlName]="field.name"
+                                multiple
+                                class="w-full pl-10 pr-10 py-3 sm:py-2 text-base sm:text-sm rounded-xl border border-gray-300
               dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white
               focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none">
-                              @for (option of field.options; track option) {
-                                <option [value]="option">{{ option }}</option>
-                              }
-                            </select>
-                            <span class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                @for (option of field.options; track option) {
+                                  <option [value]="option">{{ option }}</option>
+                                }
+                              </select>
+                              <span class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
        <span class="material-icons text-gray-400">expand_more</span>
      </span>
-                          </div>
-                        }
+                            </div>
+                          }
 
-                        @if (field.type === 'number') {
-                          <div class="relative">
+                          @if (field.type === 'number') {
                             <input
                               [id]="field.name"
                               type="number"
@@ -395,130 +399,133 @@
                               [max]="getNumericValue(field.max)"
                               [step]="field.step || 1"
                               class="w-full pl-10 pr-12 py-3 sm:py-2 text-base sm:text-sm rounded-xl border border-gray-300
-              dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white
-              focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
+           dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white
+           focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300">
                             @if (field.unit) {
                               <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
-         {{ field.unit }}
-       </span>
+      {{ field.unit }}
+    </span>
                             }
-                          </div>
-                        }
+                          }
 
-                        @if (field.type === 'select') {
-                          <div class="relative">
-                            <select
-                              [id]="field.name"
-                              [formControlName]="field.name"
-                              class="w-full pl-10 pr-10 py-3 sm:py-2 text-base sm:text-sm rounded-xl border border-gray-300
+                          @if (field.type === 'select') {
+                            <div class="relative">
+                              <select
+                                [id]="field.name"
+                                [formControlName]="field.name"
+                                class="w-full pl-10 pr-10 py-3 sm:py-2 text-base sm:text-sm rounded-xl border border-gray-300
               dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white
               focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none">
-                              <option value="">Select {{ field.label }}</option>
-                              @for (option of field.options; track option) {
-                                <option [value]="option">{{ option }}</option>
-                              }
-                            </select>
-                            <span class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                <option value="">Select {{ field.label }}</option>
+                                @for (option of field.options; track option) {
+                                  <option [value]="option">{{ option }}</option>
+                                }
+                              </select>
+                              <span class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
        <span class="material-icons text-gray-400">expand_more</span>
      </span>
-                          </div>
-                        }
+                            </div>
+                          }
 
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
    <span class="material-icons">{{ getFieldIcon(field) }}</span>
  </span>
+                        </div>
+                        <!-- Error and Help Text -->
+                        @if (hasFieldError(field.name)) {
+                          <p class="mt-1 text-sm text-red-500 flex items-center gap-1">
+                            <span class="material-icons text-sm">error</span>
+                            {{ getFieldError(field) }}
+                          </p>
+                        }
+
+                        @if (field.helpText) {
+                          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                            <span class="material-icons text-sm">info</span>
+                            {{ field.helpText }}
+                          </p>
+                        }
                       </div>
-                      <!-- Error and Help Text -->
-                      @if (hasFieldError(field.name)) {
-                        <p class="mt-1 text-sm text-red-500 flex items-center gap-1">
-                          <span class="material-icons text-sm">error</span>
-                          {{ getFieldError(field) }}
-                        </p>
-                      }
-
-                      @if (field.helpText) {
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                          <span class="material-icons text-sm">info</span>
-                          {{ field.helpText }}
-                        </p>
-                      }
                     </div>
-                  </div>
-                      }
-                    </div>
-                  </div>
-                }
+                  }
+                </div>
+              </div>
+            }
 
 
-                      <!-- Image Upload Section -->
-                      <div class="space-y-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                          <span class="material-icons text-primary-500">image</span>
-                          Product Image
-                        </h3>
+            <!-- Image Upload Section -->
+            <div class="space-y-4">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <span class="material-icons text-primary-500">image</span>
+                Product Image
+              </h3>
 
-                        <div class="flex flex-col sm:flex-row items-center gap-4">
-                          <div class="w-full sm:w-48 h-48 rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-900/50
+              <div class="flex flex-col sm:flex-row items-center gap-4">
+                <div class="w-full sm:w-48 h-48 rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-900/50
                border-2 border-dashed border-gray-300 dark:border-gray-600
                hover:border-primary-500 dark:hover:border-primary-500
                transition-all duration-300">
-                            @if (imagePreview()) {
-                              <img [src]="imagePreview()" alt="Preview" class="w-full h-full object-contain p-2">
-                            } @else {
-                              <div class="w-full h-full flex flex-col items-center justify-center">
-                                <span class="material-icons text-gray-400 text-3xl mb-2">cloud_upload</span>
-                                <span class="text-sm text-gray-500 dark:text-gray-400">Upload Image</span>
-                              </div>
-                            }
-                          </div>
+                  @if (imagePreview()) {
+                    <img [src]="imagePreview()" alt="Preview" class="w-full h-full object-contain p-2">
+                  } @else {
+                    <div class="w-full h-full flex flex-col items-center justify-center">
+                      <span class="material-icons text-gray-400 text-3xl mb-2">cloud_upload</span>
+                      <span class="text-sm text-gray-500 dark:text-gray-400">Upload Image</span>
+                    </div>
+                  }
+                </div>
 
-                          <div class="flex-1 space-y-2">
-                            <label class="inline-flex items-center px-4 py-3 sm:py-2 rounded-lg
+                <div class="flex-1 space-y-2">
+                  <label class="inline-flex items-center px-4 py-3 sm:py-2 rounded-lg
                  bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400
                  hover:bg-primary-100 dark:hover:bg-primary-900/40
                  cursor-pointer transition-colors">
-                              <span class="material-icons mr-2">upload</span>
-                              Choose Image
-                              <input type="file" class="hidden" (change)="handleImageUpload($event)" accept="image/*">
-                            </label>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                              Supported formats: PNG, JPG, GIF (max 2MB)
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+                    <span class="material-icons mr-2">upload</span>
+                    Choose Image
+                    <input type="file" class="hidden" (change)="handleImageUpload($event)" accept="image/*">
+                  </label>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    Supported formats: PNG, JPG, GIF (max 2MB)
+                  </p>
+                </div>
+              </div>
+            </div>
 
-                      <!-- Form Actions -->
-                      <div class="flex flex-col sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-                        <button
-                          type="button"
-                          routerLink="/admin/products"
-                          class="w-full sm:w-auto px-6 py-3 sm:py-2.5 rounded-xl text-gray-700 dark:text-gray-300
+            <!-- Form Actions -->
+            <div class="flex flex-col sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <button
+                type="button"
+                routerLink="/admin/products"
+                class="w-full sm:w-auto px-6 py-3 sm:py-2.5 rounded-xl text-gray-700 dark:text-gray-300
           hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300">
-                          Cancel
-                        </button>
+                Cancel
+              </button>
 
-                        <button
-                          type="submit"
-                          [disabled]="!productForm.valid || isLoading()"
-                          class="w-full sm:w-auto px-6 py-3 sm:py-2.5 rounded-xl bg-primary-500 text-white
+              <button
+                type="submit"
+                [disabled]="!productForm.valid || isLoading()"
+                class="w-full sm:w-auto px-6 py-3 sm:py-2.5 rounded-xl bg-primary-500 text-white
           hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed
           transition-all duration-300 flex items-center justify-center gap-2
           shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40">
-                          @if (isLoading()) {
-                            <span class="material-icons animate-spin">refresh</span>
-                            {{ isEditMode() ? 'Updating...' : 'Creating...' }}
-                          } @else {
-                            <span class="material-icons">{{ isEditMode() ? 'save' : 'add' }}</span>
-                            {{ isEditMode() ? 'Update Product' : 'Create Product' }}
-                          }
-                        </button>
-                      </div>
+                @if (isLoading()) {
+                  <span class="material-icons animate-spin">refresh</span>
+                  {{ isEditMode() ? 'Updating...' : 'Creating...' }}
+                } @else {
+                  <span class="material-icons">{{ isEditMode() ? 'save' : 'add' }}</span>
+                  {{ isEditMode() ? 'Update Product' : 'Create Product' }}
+                }
+              </button>
+            </div>
 
 
 
-        </form>
-      </div>
-    }
+          </form>
+        </div>
+      }
+    </div>
   </div>
-</div>
+
+
+}
+

@@ -25,16 +25,17 @@ interface CategoryOption {
   name: string;
   level: number;
   children?: CategoryOption[];
-  parent?: CategoryOption;
+  isExpanded?: boolean;
+  isSelected?: boolean;
 }
 
 interface CategoryNode {
   $id: string;
   name: string;
   level: number;
+  isExpanded: boolean;
+  isSelected: boolean;
   children?: CategoryNode[];
-  isExpanded?: boolean;
-  isSelected?: boolean; // Add this
 }
 
 
@@ -193,6 +194,7 @@ export class ProductFormComponent implements OnInit {
       name: child.name,
       level: child.level,
       isExpanded: false,
+      isSelected: false,
       children: child.children ? this.buildNestedCategories(child) : undefined
     }));
   }
@@ -203,9 +205,12 @@ export class ProductFormComponent implements OnInit {
 
     // Then handle new selection
     const selectParents = (cat: CategoryNode) => {
-      cat.isSelected = true;
-      cat.isExpanded = true;
-      const parent = this.findParentCategory(cat, this.subCategories());
+      const updatedCat: CategoryNode = {
+        ...cat,
+        isSelected: true,
+        isExpanded: true
+      };
+      const parent = this.findParentInSubCategories(updatedCat, this.subCategories());
       if (parent) {
         selectParents(parent);
       }
@@ -220,18 +225,22 @@ export class ProductFormComponent implements OnInit {
       this.rebuildForm(config);
       this.groupFieldsByCategory(config.fields);
     }
-
-    // Re-generating the SKU
-    const nameControl = this.productForm.get('name');
-    if (nameControl?.value) {
-      const timestamp = this.productForm.get('sku')?.value?.split('-')[2] || Date.now().toString(36).toUpperCase();
-      const categoryPrefix = category.$id.substring(0, 3).toUpperCase();
-      const namePrefix = String(nameControl.value).substring(0, 3).toUpperCase();
-      const sku = `${categoryPrefix}-${namePrefix}-${timestamp}`;
-      this.productForm.patchValue({ sku });
-    }
   }
 
+  private findParentInSubCategories(child: CategoryNode, categories: CategoryNode[]): CategoryNode | null {
+    for (const cat of categories) {
+      if (cat.children?.some(c => c.$id === child.$id)) {
+        return cat;
+      }
+      if (cat.children?.length) {
+        const parent = this.findParentInSubCategories(child, cat.children);
+        if (parent) return parent;
+      }
+    }
+    return null;
+  }
+
+// Update collapseAll method
   private collapseAll(categories: CategoryNode[]) {
     categories.forEach(cat => {
       cat.isExpanded = false;
@@ -241,21 +250,6 @@ export class ProductFormComponent implements OnInit {
       }
     });
   }
-
-
-  private findParentCategory(child: CategoryNode, categories: CategoryNode[]): CategoryNode | null {
-    for (const cat of categories) {
-      if (cat.children?.includes(child)) {
-        return cat;
-      }
-      if (cat.children?.length) {
-        const parent = this.findParentCategory(child, cat.children);
-        if (parent) return parent;
-      }
-    }
-    return null;
-  }
-
 
 
   onCategoryChange(categoryId: string) {
@@ -295,10 +289,20 @@ export class ProductFormComponent implements OnInit {
     // Then add new controls from config
     config.fields.forEach((field: FormFieldConfig) => {
       if (!this.productForm.contains(field.name)) {
+        let value = this.productForm.value[field.name] ??
+          this.getInitialValue(field);
+
+        // Handle checkbox groups
+        if (field.type === 'checkbox-group' && Array.isArray(value)) {
+          value = value.map(v =>
+            typeof v === 'string' ? v :
+              (v as FormFieldOption).value
+          );
+        }
+
         this.productForm.addControl(
           field.name,
-          this.fb.control(field.defaultValue ?? '',
-            field.required ? [Validators.required] : [])
+          this.fb.control(value, field.required ? [Validators.required] : [])
         );
       }
     });
@@ -306,15 +310,74 @@ export class ProductFormComponent implements OnInit {
     this.groupFieldsByCategory(config.fields);
   }
 
+// Update getInitialValue method
+  private getInitialValue(field: FormFieldConfig): any {
+    // If editing existing product, use existing value from specifications
+    if (this.isEditMode()) {
+      const product = this.productForm.value;
+      if (product.specifications && product.specifications[field.name] !== undefined) {
+        return product.specifications[field.name];
+      }
+    }
+
+    // Otherwise use default values based on field type
+    switch(field.type) {
+      case 'number':
+        return field.defaultValue ?? null;
+      case 'checkbox':
+        return field.defaultValue ?? false;
+      case 'multiselect':
+      case 'checkbox-group':
+        return field.defaultValue ?? [];
+      default:
+        return field.defaultValue ?? '';
+    }
+  }
+
+
   private async loadProduct(id: string) {
     try {
       this.isLoading.set(true);
       const product = await this.productService.getProductById(id);
       if (product) {
-        this.onCategoryChange(product.category.$id);
+        // First load all categories
+        const allCategories = await this.categoryService.getCategories();
+
+        // Find the product's category
+        const productCategory = allCategories.find(c => c.$id === product.category.$id);
+        if (!productCategory) throw new Error('Category not found');
+
+        // Find the category path
+        const categoryPath = this.getCategoryPath(productCategory, allCategories);
+
+        // Select root parent
+        const rootCategory = categoryPath[0];
+        this.selectedParentCategory.set(this.transformToCategoryOption(rootCategory));
+        this.subCategories.set(this.buildNestedCategories(rootCategory));
+
+        // Expand and select the hierarchy
+        let currentLevel = this.subCategories();
+        for (const cat of categoryPath.slice(1)) {
+          const parent = currentLevel.find(c => c.$id === cat.parentId);
+          if (parent) {
+            parent.isExpanded = true;
+            parent.isSelected = false;
+            currentLevel = parent.children || [];
+          }
+        }
+
+        // Finally select the actual category
+        this.selectedCategory.set(productCategory.$id);
+        const lastNode = currentLevel.find(c => c.$id === productCategory.$id);
+        if (lastNode) lastNode.isSelected = true;
+
+        // Load form config and patch values
+        this.onCategoryChange(productCategory.$id);
+
+        // Patch form values
         this.productForm.patchValue({
           ...product,
-          specifications: product.specifications || {}
+          ...product.specifications // Spread specifications into root form
         });
 
         if (product.imageUrl) {
@@ -329,6 +392,88 @@ export class ProductFormComponent implements OnInit {
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  private getCategoryPath(category: Category, allCategories: Category[]): Category[] {
+    const path: Category[] = [category];
+    let current = category;
+
+    while (current.parentId) {
+      const parent = allCategories.find(c => c.$id === current.parentId);
+      if (!parent) break;
+      path.unshift(parent);
+      current = parent;
+    }
+
+    return path;
+  }
+
+  private transformToCategoryOption(category: Category): CategoryOption {
+    return {
+      $id: category.$id,
+      name: category.name,
+      level: category.level,
+      children: category.children?.map(c => this.transformToCategoryOption(c))
+    };
+  }
+
+  // Helper method to find root parent
+  private findRootParent(category: Category): Category | null {
+    const findParent = (cat: Category): Category | null => {
+      if (!cat.parentId) return cat;
+      const parent = this.categories().find(c => c.$id === cat.parentId);
+      return parent ? findParent(parent) : cat;
+    };
+    return findParent(category);
+  }
+
+// Transform Category[] to CategoryOption[]
+  private transformToOptions(categories: Category[]): CategoryOption[] {
+    return categories.map(cat => ({
+      $id: cat.$id,
+      name: cat.name,
+      level: cat.level,
+      children: cat.children ? this.transformToOptions(cat.children) : undefined
+    }));
+  }
+
+// Build subcategories for display
+  private buildSubCategories(category: Category): CategoryNode[] {
+    if (!category.children) return [];
+
+    return category.children.map(child => ({
+      $id: child.$id,
+      name: child.name,
+      level: child.level,
+      isExpanded: false,
+      isSelected: false,
+      children: child.children ? this.buildSubCategories(child) : undefined
+    }));
+  }
+
+
+// Update findParentCategory method to take only one parameter
+  private findParentCategory(category: CategoryNode): CategoryOption | null {
+    const categories = this.parentCategories();
+    for (const parent of categories) {
+      if (this.isCategoryChild(parent, category.$id)) {
+        return {
+          ...parent,
+          isExpanded: false,
+          isSelected: false
+        };
+      }
+    }
+    return null;
+  }
+
+  private isCategoryChild(parent: CategoryOption, categoryId: string): boolean {
+    if (parent.$id === categoryId) return true;
+    if (!parent.children) return false;
+
+    return parent.children.some(child =>
+      this.isCategoryChild(child, categoryId)
+    );
   }
 
   async handleImageUpload(event: Event) {
@@ -422,19 +567,45 @@ export class ProductFormComponent implements OnInit {
     const config = this.formConfigService.getFormConfig(this.selectedCategory()!);
     const specs: Record<string, any> = {};
 
-    // Get all fields except the common product fields
     const commonFieldNames = ['name', 'sku', 'description', 'brand', 'price',
-                            'cost', 'stockQuantity', 'lowStockThreshold',
-                            'status', 'imageUrl'];
+      'cost', 'stockQuantity', 'lowStockThreshold',
+      'status', 'imageUrl'];
 
     config?.fields.forEach(field => {
-        if (!commonFieldNames.includes(field.name)) {
-            specs[field.name] = this.productForm.get(field.name)?.value;
-        }
+      if (!commonFieldNames.includes(field.name)) {
+        const value = this.productForm.get(field.name)?.value;
+        specs[field.name] = this.sanitizeValue(value, field.type);
+      }
     });
 
     return specs;
-}
+  }
+
+  private sanitizeValue(value: any, fieldType: string): any {
+    if (value === '' || value === null || value === undefined) {
+      return this.getDefaultForType(fieldType);
+    }
+
+    // Convert numeric strings to numbers
+    if (typeof value === 'string' && fieldType === 'number') {
+      return isNaN(Number(value)) ? null : Number(value);
+    }
+
+    return value;
+  }
+
+  private getDefaultForType(fieldType: string): any {
+    switch(fieldType) {
+      case 'number':
+      case 'checkbox-group':
+      case 'multiselect':
+        return null;
+      case 'checkbox':
+        return false;
+      default:
+        return null;
+    }
+  }
 
 
 
@@ -523,18 +694,28 @@ export class ProductFormComponent implements OnInit {
       path.push({
         $id: this.selectedParentCategory()!.$id,
         name: this.selectedParentCategory()!.name,
-        level: this.selectedParentCategory()!.level
+        level: this.selectedParentCategory()!.level,
+        isExpanded: false,
+        isSelected: false
       });
     }
 
     const findPath = (categories: CategoryNode[]): boolean => {
       for (const cat of categories) {
         if (cat.$id === this.selectedCategory()) {
-          path.push(cat);
+          path.push({
+            ...cat,
+            isExpanded: false,
+            isSelected: true
+          });
           return true;
         }
         if (cat.children?.length && findPath(cat.children)) {
-          path.unshift(cat); // Changed from push to unshift
+          path.unshift({
+            ...cat,
+            isExpanded: true,
+            isSelected: false
+          });
           return true;
         }
       }
@@ -552,6 +733,18 @@ export class ProductFormComponent implements OnInit {
 
   isFieldOptionType(option: string | FormFieldOption): option is FormFieldOption {
     return (option as FormFieldOption).value !== undefined;
+  }
+
+  private expandCategoryPath(categoryPath: Category[]) {
+    let currentLevel = this.subCategories();
+
+    for (const cat of categoryPath) {
+      const node = currentLevel.find(c => c.$id === cat.$id);
+      if (node) {
+        node.isExpanded = true;
+        currentLevel = node.children || [];
+      }
+    }
   }
 
 
