@@ -49,10 +49,10 @@ export class SalesDashboardComponent {
   private async loadDashboardData() {
     try {
       this.isLoading.set(true);
-      const [activeCustomers, lowStockProducts, topProducts] = await Promise.all([
+      const [activeCustomers, lowStockProducts,] = await Promise.all([
         this.customerService.getActiveCustomers(),
         this.productService.getLowStockProducts(),
-        this.productService.getTopProducts()
+
       ]);
 
       // Calculate metrics
@@ -60,7 +60,7 @@ export class SalesDashboardComponent {
         ...current,
         activeCustomers: activeCustomers.length,
         lowStockItems: lowStockProducts,
-        topProducts: topProducts
+
       }));
 
     } catch (err) {

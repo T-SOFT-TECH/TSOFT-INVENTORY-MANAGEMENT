@@ -17,8 +17,8 @@ const colors = {
   // Surface Colors
   surface: {
     dark: {
-      primary: '#000',    // Very dark black
-      secondary: '#121212',   // Slightly lighter black
+      primary: '#131315',    // Very dark black
+      secondary: '#1c1c21',   // Slightly lighter black
       tertiary: '#1a1a1a',   // Accent black
     },
     light: {

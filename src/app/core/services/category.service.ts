@@ -68,7 +68,6 @@ export class CategoryService {
       const limit = 1000;
 
       while (true) {
-        console.log(`Fetching categories: offset ${offset}, limit ${limit}`);
 
         const response = await this.appwrite.database.listDocuments(
           environment.appwrite.databaseId,
@@ -77,10 +76,9 @@ export class CategoryService {
             Query.limit(limit),
             Query.offset(offset)
           ]
-        );
+        );6
 
         const categories = response.documents as unknown as Category[];
-        console.log(`Fetched ${categories.length} categories`);
 
         allCategories = [...allCategories, ...categories];
 

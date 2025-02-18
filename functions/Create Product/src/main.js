@@ -1,4 +1,4 @@
-import { Client, Databases, ID, Storage } from 'node-appwrite';
+import { Client, Databases, ID, Storage, Query } from 'node-appwrite';  // Added Query
 
 const DBID = "inventory-invoice-db";
 const PRODUCT_BUCKET = "productImages";
@@ -16,12 +16,13 @@ export default async ({ req, res, log, error }) => {
   let createdSpecId = null;
   let createdImageId = null;
   let category = null;
+  let isUpdate = false;
+  let updatedSpecs = null;  // Added to store updated specs
 
   try {
-    log('Starting product creation process');
+    log('Starting product operation process');
     log(`Request body: ${req.body}`);
 
-    // Parse request body with error handling
     let parsedBody;
     try {
       parsedBody = JSON.parse(req.body);
@@ -32,13 +33,14 @@ export default async ({ req, res, log, error }) => {
       }, 400);
     }
 
-    const { category: requestCategory, specifications, imageUrl, ...productData } = parsedBody;
-    category = requestCategory; // Store category for cleanup
+    const { productId, category: requestCategory, specifications, imageId, ...productData } = parsedBody;
+    isUpdate = !!productId;
+    category = requestCategory;
 
+    log(`Operation type: ${isUpdate ? 'Update' : 'Create'}`);
     log(`Parsed data - Category: ${category}, Product Data:`, productData);
     log(`Specifications:`, specifications);
 
-    // Validate required fields
     if (!category) {
       throw new Error('Category is required');
     }
@@ -46,51 +48,107 @@ export default async ({ req, res, log, error }) => {
       throw new Error('Specifications are required');
     }
 
-    if (imageUrl) {
-      createdImageId = imageUrl;
+    if (imageId) {
+      createdImageId = imageId;
       log(`Image ID to track: ${createdImageId}`);
     }
 
-    // Create base product
-    log('Creating base product...');
-    const product = await databases.createDocument(
-      DBID,
-      'products',
-      ID.unique(),
-      {
-        ...productData,
-        category,
-        imageUrl: createdImageId
-      }
-    );
-    createdProductId = product.$id;
-    log(`Base product created with ID: ${createdProductId}`, product);
+    let product;
+    if (isUpdate) {
+      // Update existing product
+      log(`Updating product with ID: ${productId}`);
+      product = await databases.updateDocument(
+        DBID,
+        'products',
+        productId,
+        {
+          ...productData,
+          category,
+          imageId: createdImageId || undefined
+        }
+      );
 
-    // Create specs document
-    const specsCollectionName = `${category}_specs`;
-    log(`Creating specifications in collection: ${specsCollectionName}`);
-    const specs = await databases.createDocument(
-      DBID,
-      specsCollectionName,
-      ID.unique(),
-      {
-        ...specifications,
-        product: createdProductId // Correct relationship field
-      }
-    );
-    createdSpecId = specs.$id;
-    log(`Specifications created with ID: ${createdSpecId}`, specs);
+      // Find and update existing specs
+      const specsCollectionName = `${category}_specs`;
+      log(`Looking for existing specs in collection: ${specsCollectionName}`);
 
+      const existingSpecs = await databases.listDocuments(
+        DBID,
+        specsCollectionName,
+        [Query.equal('product', productId)]
+      );
+
+      if (existingSpecs.documents.length > 0) {
+        // Update existing specs
+        const specId = existingSpecs.documents[0].$id;
+        log(`Updating existing specs with ID: ${specId}`);
+
+        updatedSpecs = await databases.updateDocument(
+          DBID,
+          specsCollectionName,
+          specId,
+          {
+            ...specifications,
+            product: productId
+          }
+        );
+      } else {
+        // Create new specs if none exist
+        log(`No existing specs found, creating new specs`);
+        updatedSpecs = await databases.createDocument(
+          DBID,
+          specsCollectionName,
+          ID.unique(),
+          {
+            ...specifications,
+            product: productId
+          }
+        );
+      }
+
+      log('Update completed successfully');
+    } else {
+      // Create new product flow remains unchanged
+      product = await databases.createDocument(
+        DBID,
+        'products',
+        ID.unique(),
+        {
+          ...productData,
+          category,
+          imageId: createdImageId
+        }
+      );
+      createdProductId = product.$id;
+
+      const specsCollectionName = `${category}_specs`;
+      updatedSpecs = await databases.createDocument(
+        DBID,
+        specsCollectionName,
+        ID.unique(),
+        {
+          ...specifications,
+          product: product.$id
+        }
+      );
+      createdSpecId = updatedSpecs.$id;
+    }
+
+    // Return consistent response format for both create and update
     return res.json({
       product,
-      specs,
-      specCollectionName: specsCollectionName
+      specs: updatedSpecs,  // Now we always have specs to return
+      operation: isUpdate ? 'update' : 'create'
     });
 
+
   } catch (err) {
-    error(`Failed to create product: ${err.message}`);
+    error(`Failed to ${isUpdate ? 'update' : 'create'} product: ${err.message}`);
     error(`Stack trace: ${err.stack}`);
-    log('Starting cleanup process...');
+
+    // Only perform cleanup for new resources in case of failure
+    if (!isUpdate) {
+      log('Starting cleanup process...');
 
     // Cleanup in reverse order
     if (createdSpecId) {
@@ -138,4 +196,5 @@ export default async ({ req, res, log, error }) => {
       details: err.response
     }, 500);
   }
+    }
 };

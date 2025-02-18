@@ -63,9 +63,7 @@ export class SalesService {
     }
   }
 
-  generateInvoice(sale: SaleWithDetails): void {
-    this.invoiceService.generatePDF(sale);
-  }
+
 
   async fetchSalesWithDetails(): Promise<Sale[]> {
     try {

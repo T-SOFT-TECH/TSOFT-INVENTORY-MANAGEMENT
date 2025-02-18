@@ -4,11 +4,12 @@ import { RouterOutlet } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HeaderComponent } from "../../components/header/header.component";
 import { SidebarComponent } from "../../components/sidebar/sidebar.component";
+import {LoadingComponent} from '../../components/loading/loading.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent, LoadingComponent],
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss']
 })

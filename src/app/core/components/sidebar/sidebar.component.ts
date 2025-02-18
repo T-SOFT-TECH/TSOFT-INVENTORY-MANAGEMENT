@@ -53,6 +53,7 @@ export class SidebarComponent {
     {
       title: 'ADMINISTRATION',
       items: [
+        { label: 'Stock', icon: 'dashboard', route: '/admin/stock' },
         { label: 'Products', icon: 'inventory_2', route: '/admin/products' },
         { label: 'Categories', icon: 'category', route: '/admin/categories' },
         { label: 'Brands', icon: 'business', route: '/admin/brands' },

@@ -21,7 +21,17 @@ export class ProductService {
 
 // Base Product Methods
 
-  async createProduct(data: ProductInput): Promise<BaseProduct> {
+  async createProduct(data: {
+    name: any;
+    description: any;
+    category: string;
+    sku: any;
+    price: number;
+    lowStockThreshold: number;
+    status: string;
+    brand: any;
+    specifications: Record<string, any>
+  }): Promise<BaseProduct> {
     try {
       const execution = await this.appwrite.functions.createExecution(
         'create-product',
@@ -43,59 +53,78 @@ export class ProductService {
     }
   }
 
-  async updateProduct(id: string, data: Partial<ProductInput>): Promise<BaseProduct> {
+  async updateProduct(id: string, data: {
+    name: any;
+    description: any;
+    category: string;
+    sku: any;
+    price: number;
+    lowStockThreshold: number;
+    status: string;
+    brand: any;
+    specifications: Record<string, any>
+  }): Promise<BaseProduct> {
     try {
-      const response = await this.appwrite.database.updateDocument(
-        environment.appwrite.databaseId,
-        environment.appwrite.collections.products,
-        id,
-        data
+      const execution = await this.appwrite.functions.createExecution(
+        'create-product', // Same function handles both operations
+        JSON.stringify({
+          productId: id, // Include this for updates
+          ...data
+        })
       );
-      return response as unknown as BaseProduct;
+
+      const result = JSON.parse(execution.responseBody);
+      if (!result.product) {
+        throw new Error(result.error || 'Failed to update product');
+      }
+
+      await this.refreshProducts();
+      return result.product;
     } catch (error) {
-      console.error('Error updating product:', error);
+      console.error('Update product error:', error);
       throw error;
     }
   }
 
-  // Specification Methods
-  async createSpecs(collectionName: string, data: any): Promise<any> {
+
+  async deleteProduct(id: string): Promise<void> {
     try {
-      return await this.appwrite.database.createDocument(
-        environment.appwrite.databaseId,
-        collectionName,
-        ID.unique(),
-        data
+      // Call the delete-product cloud function
+      const execution = await this.appwrite.functions.createExecution(
+        'delete-product',
+        JSON.stringify({ productId: id })
       );
+
+      const result = JSON.parse(execution.responseBody);
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to delete product');
+      }
+
+      // Refresh the products list after successful deletion
+      await this.refreshProducts();
     } catch (error) {
-      console.error('Error creating specifications:', error);
+      console.error('Error deleting product:', error);
       throw error;
     }
   }
 
-  async updateSpecs(collectionName: string, specId: string, data: any): Promise<any> {
-    try {
-      return await this.appwrite.database.updateDocument(
-        environment.appwrite.databaseId,
-        collectionName,
-        specId,
-        data
-      );
-    } catch (error) {
-      console.error('Error updating specifications:', error);
-      throw error;
-    }
-  }
 
-  async getSpecs(collectionName: string, specId: string): Promise<any> {
+  async getProductDetails(id: string): Promise<Product> {
     try {
-      return await this.appwrite.database.getDocument(
-        environment.appwrite.databaseId,
-        collectionName,
-        specId
+      const execution = await this.appwrite.functions.createExecution(
+        'get-product-details',
+        JSON.stringify({ productId: id })
       );
+
+      const result = JSON.parse(execution.responseBody);
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      return result.product;
     } catch (error) {
-      console.error('Error fetching specifications:', error);
+      console.error('Error fetching product details:', error);
       throw error;
     }
   }
@@ -123,49 +152,7 @@ export class ProductService {
   }
 
   // Method to get product with its specifications
-  async getProductWithSpecs(productId: string): Promise<Product> {
-    try {
-      const product = await this.appwrite.database.getDocument(
-        environment.appwrite.databaseId,
-        environment.appwrite.collections.products,
-        productId
-      ) as unknown as BaseProduct;
 
-      if (product.category) {
-        const specId = (product as any)[`${product.category}Specs`];
-        if (specId) {
-          const specs = await this.getSpecs(
-            `product_${product.category}_specs`,
-            specId
-          );
-          return {
-            ...product,
-            [`${product.category}Specs`]: specs
-          } as Product;
-        }
-      }
-
-      return product as Product;
-    } catch (error) {
-      console.error('Error fetching product with specs:', error);
-      throw error;
-    }
-  }
-
-
-
-
-
-
-
-
-  private transformToProduct(baseProduct: BaseProduct): Product {
-    return {
-      ...baseProduct,
-      totalQuantitySold: 0, // You might want to fetch these from sales data
-      totalRevenue: 0
-    };
-  }
 
   async getProducts(): Promise<BaseProduct[]> {
     try {
@@ -197,24 +184,6 @@ export class ProductService {
 
 
 
-
-
-
-
-
-  async deleteProduct(id: string): Promise<void> {
-    try {
-      await this.appwrite.database.deleteDocument(
-        environment.appwrite.databaseId,
-        environment.appwrite.collections.products,
-        id
-      );
-    } catch (error) {
-      console.error('Error deleting product:', error);
-      throw error;
-    }
-  }
-
   async getLowStockProducts(threshold: number = 10): Promise<BaseProduct[]> {
     try {
       const response = await this.appwrite.database.listDocuments(
@@ -229,20 +198,7 @@ export class ProductService {
     }
   }
 
-  async getTopProducts(limit: number = 5): Promise<Product[]> {
-    try {
-      const response = await this.appwrite.database.listDocuments(
-        environment.appwrite.databaseId,
-        environment.appwrite.collections.products,
-        [Query.orderDesc('totalQuantitySold'), Query.limit(limit)]
-      );
-      const baseProducts = response.documents as unknown as BaseProduct[];
-      return baseProducts.map(this.transformToProduct);
-    } catch (error) {
-      console.error('Error fetching top products:', error);
-      throw error;
-    }
-  }
+
 
 // In product.service.ts
 

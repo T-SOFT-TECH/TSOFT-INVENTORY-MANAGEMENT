@@ -35,25 +35,38 @@ import { StorageDeviceSpecs } from "../specs/storage-device-specs.interface";
 import { TabletSpecs } from "../specs/tablet-specs.interface";
 import { WearableSpecs } from "../specs/wearable-specs.interface";
 import {Category} from '../category/category.interfaces';
+import {Brand} from '../brand/brand.interfaces';
 
 
 export interface BaseProductFields {
   name: string;
   sku: string;
-  brand: string;
+  brand: Brand;
   price: number;
-  cost: number;
+  cost?: number;
   stockQuantity: number;
   lowStockThreshold: number;
   description: string;
-  imageUrl?: string;
+  imageId?: string;
   status: ProductStatus;
 }
 
+export interface ProductSpecifications {
+  [key: string]: any;
+  $id: string;
+  $createdAt: string;
+  $updatedAt: string;
+  $permissions: string[];
+  $databaseId: string;
+  $collectionId: string;
+}
+
 export interface Product extends BaseDocument, BaseProductFields {
+
   totalQuantitySold: number;
   totalRevenue: number;
   category: Category;
+  specifications?: ProductSpecifications;
   audioSpecs?: AudioSpecs;
   cableSpecs?: CableSpecs;
   cameraSpecs?: CameraSpecs;
@@ -101,7 +114,7 @@ export interface ProductInput {
   stockQuantity: number;
   lowStockThreshold: number;
   status: ProductStatus;
-  imageUrl?: string;
+  imageId?: string;
   brand?: string;
   specifications?: Record<string, any>;
 }
@@ -136,19 +149,19 @@ export interface ModemFields extends BaseProductFields {
   features: string[];
 }
 
-export interface BaseProduct extends BaseDocument {
+/*export interface BaseProduct extends BaseDocument {
   name: string;
   category: Category;
   brand: string;
   description: string;
   price: number;
-  cost: number;
   stockQuantity: number;
   lowStockThreshold: number;
   sku: string;
   status: ProductStatus;
-  imageUrl?: string;
+  imageId?: string;
   specifications?: Record<string, any>;
-}
+}*/
 
 export type ProductFields = BaseProductFields | StorageDeviceFields | ChargerFields | ModemFields;
+export type BaseProduct = Product;

@@ -130,6 +130,27 @@ export const routes: Routes = [
             ]
           },
           {
+            path: 'stock',
+            children: [
+              {
+                path: '',
+                redirectTo: 'history',
+                pathMatch: 'full'
+              },
+              {
+                path: 'new',
+                loadComponent: () => import('./features/admin/stock/stock-entry/stock-entry.component')
+                  .then(m => m.StockEntryComponent)
+              },
+              {
+                path: 'history',
+                loadComponent: () => import('./features/admin/stock/stock-history/stock-history.component')
+                  .then(m => m.StockHistoryComponent)
+              },
+
+            ]
+          },
+          {
             path: 'settings',
             children: [
               {

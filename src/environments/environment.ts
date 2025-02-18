@@ -19,12 +19,14 @@ export const environment = {
       invoices: 'invoices',
       settings: 'settings',
       categories: 'categories',
-      brands: 'brands'
+      brands: 'brands',
+      stockTransactions: 'stock_transactions'
     },
     buckets: {
       productImages: 'productImages',
       companyLogos: 'company-logo',
-      brandLogos: 'brand-logo'
+      brandLogos: 'brand-logo',
+      receiptImages: 'stock-receipts'
     },
     api:{
       createProduct: 'create-product',

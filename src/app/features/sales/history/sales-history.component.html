@@ -123,10 +123,10 @@
                 </td>
                 <td class="px-md py-sm whitespace-nowrap">
                   <div class="text-sm text-gray-900 dark:text-white">
-                    {{ sale.customer.name }}
+                    {{ sale.customer?.name }}
                   </div>
                   <div class="text-sm text-gray-500 dark:text-gray-400">
-                    {{ sale.customer.email }}
+                    {{ sale.customer?.name }}
                   </div>
                 </td>
                 <td class="px-md py-sm whitespace-nowrap">
@@ -154,7 +154,8 @@
                     View
                   </button>
                   <button
-                    (click)="generateInvoice(sale)"
+
+
                     class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                   >
                     Invoice

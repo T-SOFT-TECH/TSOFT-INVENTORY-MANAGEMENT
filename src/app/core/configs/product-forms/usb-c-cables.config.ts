@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const usbCCablesConfig: CategoryFormConfig = {
-  id: 'usb-c-cables',
+  id: 'usb_c_cables',
   name: 'USB-C Cables',
   fields: [
     {

@@ -8,6 +8,8 @@ import {Category} from '../../../../core/interfaces/category/category.interfaces
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {BaseProduct, Product} from '../../../../core/interfaces/product/product.interfaces';
 import {AutoAnimationDirective} from '../../../../core/Directives/auto-Animate.directive';
+import {HotToastService} from '@ngxpert/hot-toast';
+import {LoadingService} from '../../../../core/services/loading.service';
 
 @Component({
   selector: 'app-product-list',
@@ -17,13 +19,17 @@ import {AutoAnimationDirective} from '../../../../core/Directives/auto-Animate.d
 })
 export class ProductListComponent {
   private productService = inject(ProductService);
-  private categoryService = inject(CategoryService);
+  private loadingService = inject(LoadingService);
   private sanitizer = inject(DomSanitizer);
+  private toast = inject(HotToastService);
+  private categoryService = inject(CategoryService);
 
   products = this.productService.products;
   categories = signal<Category[]>([]);
   isLoading = signal(false);
   error = signal<string | null>(null);
+  isDeleting = signal(false);
+
 
 
   sortField = signal<string>('name');
@@ -60,14 +66,8 @@ export class ProductListComponent {
       const dir = this.sortDirection() === 'asc' ? 1 : -1;
       switch(this.sortField()) {
         case 'price': return (a.price - b.price) * dir;
-        case 'cost': return (a.cost - b.cost) * dir;
         case 'stock': return (a.stockQuantity - b.stockQuantity) * dir;
-        case 'profit':
-          const profitA = ((a.price - a.cost) / a.price) * 100;
-          const profitB = ((b.price - b.cost) / b.price) * 100;
-          return (profitA - profitB) * dir;
-        // ... other sort cases
-        default: return a.name.localeCompare(b.name) * dir;
+      default: return a.name.localeCompare(b.name) * dir;
       }
     });
   });
@@ -76,6 +76,51 @@ export class ProductListComponent {
 
   constructor() {
     this.loadData();
+  }
+
+  // Add these helper computed values to your component
+  hasActiveFilters = computed(() => {
+    return this.searchQuery() !== '' || this.selectedCategory() !== 'all';
+  });
+
+  isEmpty = computed(() => {
+    return this.products().length === 0;
+  });
+
+  hasNoResults = computed(() => {
+    return this.filteredProducts().length === 0 && !this.isEmpty();
+  });
+
+  activeCategories = computed(() => {
+    // Get all product categories
+    const productCategories = new Set(
+      this.products().map(product => product.category.$id)
+    );
+
+    // Filter categories to only those that have products
+    return this.categories().filter(category =>
+      productCategories.has(category.$id)
+    );
+  });
+
+// Add these methods for filter clearing
+  clearSearch() {
+    this.loadingService.start('Clearing search...');
+    this.searchQuery.set('');
+    setTimeout(() => this.loadingService.clear(), 300);
+  }
+
+  resetCategory() {
+    this.loadingService.start('Resetting category filter...');
+    this.selectedCategory.set('all');
+    setTimeout(() => this.loadingService.clear(), 300);
+  }
+
+  resetAllFilters() {
+    this.loadingService.start('Resetting all filters...');
+    this.searchQuery.set('');
+    this.selectedCategory.set('all');
+    setTimeout(() => this.loadingService.clear(), 300);
   }
 
 
@@ -98,9 +143,7 @@ export class ProductListComponent {
   }
 
 
-  toggleView() {
-    this.isGridView.update(v => !v);
-  }
+
 
   stripHtml(html: string): string {
     const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -116,12 +159,17 @@ export class ProductListComponent {
 
   async loadData() {
     try {
-      this.isLoading.set(true);
-      await this.productService.refreshProducts();
+      this.loadingService.start('Loading products and categories...');
+      const [products, categories] = await Promise.all([
+        this.productService.refreshProducts(),
+        this.categoryService.getCategories()
+      ]);
+      this.categories.set(categories);
     } catch (error) {
       this.error.set('Failed to load products');
+      this.toast.error('Failed to load products');
     } finally {
-      this.isLoading.set(false);
+      this.loadingService.clear();
     }
   }
 
@@ -137,15 +185,9 @@ export class ProductListComponent {
     }
   }
 
-  async deleteProduct(id: string) {
-    if (!confirm('Are you sure you want to delete this product?')) return;
+  // product-list.component.ts
 
-    try {
-      await this.productService.deleteProduct(id);
-    } catch (err) {
-      this.error.set('Failed to delete product');
-    }
-  }
+
 
   getImageUrl(fileId: string | undefined): string {
     if (!fileId) return 'assets/placeholder.png';
@@ -157,7 +199,61 @@ export class ProductListComponent {
   }
 
 
+  async deleteProduct(id: string, productName: string) {
 
+    try {
+      // Show a more informative confirmation dialog
+      const confirmMessage = `Are you sure you want to delete "${productName}"?\n\n` +
+        `This will also delete:\n` +
+        `- Product specifications\n` +
+        `- Product images\n\n` +
+        `This action cannot be undone.`;
+
+      if (!confirm(confirmMessage)) return;
+
+      // Start the loading indicator with a specific message
+      this.loadingService.start(`Deleting ${productName}...`);
+
+      // Set local deletion state for UI feedback
+      this.isDeleting.set(true);
+
+      // Apply visual feedback to the specific product card
+      const productElement = document.getElementById(`product-${id}`);
+      if (productElement) {
+        productElement.classList.add('opacity-50', 'pointer-events-none');
+      }
+
+      // Perform the deletion
+      await this.productService.deleteProduct(id);
+
+      // Show success message
+      this.toast.success('Product deleted successfully');
+
+      // Start a new loading state for refreshing the product list
+      this.loadingService.start('Refreshing product list...');
+      await this.loadData();
+
+    } catch (error) {
+      // Handle errors with specific messages
+      const errorMessage = error instanceof Error ?
+        error.message : 'Failed to delete product';
+      this.toast.error(errorMessage);
+
+      // Log the full error for debugging
+      console.error('Product deletion error:', error);
+
+    } finally {
+      // Clean up all states
+      this.isDeleting.set(false);
+      this.loadingService.clear(); // Clear any remaining loading states
+
+      // Reset the product element's visual state
+      const productElement = document.getElementById(`product-${id}`);
+      if (productElement) {
+        productElement.classList.remove('opacity-50', 'pointer-events-none');
+      }
+    }
+  }
 
 
 

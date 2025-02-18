@@ -1,5 +1,5 @@
 // dashboard.component.ts
-import { Component, inject, signal } from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Chart } from 'chart.js/auto';
 import {ProductService} from '../../core/services/product.service';
@@ -22,7 +22,7 @@ interface DashboardMetrics {
   imports: [CommonModule],
   templateUrl: './dashboard.component.html'
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   private productService = inject(ProductService);
   private customerService = inject(CustomerService);
   private salesService = inject(SalesService);
@@ -41,41 +41,11 @@ export class DashboardComponent {
   salesChart: Chart | undefined;
 
   ngOnInit() {
-    this.loadDashboardData();
+
     this.initializeCharts();
   }
 
-  private async loadDashboardData() {
-    try {
-      this.isLoading.set(true);
-      const [sales, lowStockProducts, customers] = await Promise.all([
-        this.salesService.fetchRecentSales(),
-        this.productService.getLowStockProducts(),
-        this.customerService.getActiveCustomers()
-      ]);
 
-      // Transform BaseProduct to Product
-      const productsWithMetrics: Product[] = lowStockProducts.map(product => ({
-        ...product,
-        totalQuantitySold: 0, // You might want to calculate this from sales data
-        totalRevenue: 0       // You might want to calculate this from sales data
-      }));
-
-      this.recentSales.set(sales);
-      this.lowStockProducts.set(productsWithMetrics);
-
-      this.metrics.set({
-        todayRevenue: this.calculateTodayRevenue(sales),
-        totalOrders: sales.length,
-        activeCustomers: customers.length,
-        lowStockCount: productsWithMetrics.length
-      });
-    } catch (error) {
-      this.toast.error('Failed to load dashboard data');
-    } finally {
-      this.isLoading.set(false);
-    }
-  }
 
 
   private initializeCharts() {

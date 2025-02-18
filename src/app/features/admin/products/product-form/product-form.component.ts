@@ -15,8 +15,9 @@ import {AutoAnimationDirective} from '../../../../core/Directives/auto-Animate.d
 import {Category} from '../../../../core/interfaces/category/category.interfaces';
 import {Brand} from '../../../../core/interfaces/brand/brand.interfaces';
 import {QuillEditorComponent} from 'ngx-quill';
-import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {FormFieldOption} from '../../../../core/interfaces/base/base.interfaces';
+import {LoadingService} from '../../../../core/services/loading.service';
+
 
 
 
@@ -64,7 +65,7 @@ export class ProductFormComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private toast = inject(HotToastService);
-  private sanitizer = inject(DomSanitizer);
+  private loadingService = inject(LoadingService);
 
 
 // Quill Editor Config
@@ -111,11 +112,9 @@ export class ProductFormComponent implements OnInit {
     description: [''],
     brand: ['', Validators.required],
     price: [0, Validators.required],
-    cost: [0, Validators.required],
-    stockQuantity: [0, Validators.required],
     lowStockThreshold: [0, Validators.required],
     status: ['active'],
-    imageUrl: [''], // Add imageUrl control
+    imageId: [''], // Add imageId control
   });
 
   parentCategories = signal<CategoryOption[]>([]);
@@ -172,7 +171,8 @@ export class ProductFormComponent implements OnInit {
             name: cat.name,
             level: cat.level,
             children: children.length > 0 ? children : undefined,
-            parent: undefined
+            isExpanded: false,
+            isSelected: false
           };
         });
     };
@@ -225,6 +225,17 @@ export class ProductFormComponent implements OnInit {
       this.rebuildForm(config);
       this.groupFieldsByCategory(config.fields);
     }
+
+    // Re-generating the SKU
+    const nameControl = this.productForm.get('name');
+    if (nameControl?.value) {
+      const timestamp = this.productForm.get('sku')?.value?.split('-')[2] || Date.now().toString(36).toUpperCase();
+      const categoryPrefix = category.$id.substring(0, 3).toUpperCase();
+      const namePrefix = String(nameControl.value).substring(0, 3).toUpperCase();
+      const sku = `${categoryPrefix}-${namePrefix}-${timestamp}`;
+      this.productForm.patchValue({ sku });
+    }
+
   }
 
   private findParentInSubCategories(child: CategoryNode, categories: CategoryNode[]): CategoryNode | null {
@@ -252,16 +263,6 @@ export class ProductFormComponent implements OnInit {
   }
 
 
-  onCategoryChange(categoryId: string) {
-    this.selectedCategory.set(categoryId);
-    const config = this.formConfigService.getFormConfig(categoryId);
-    if (config) {
-      this.formConfig.set(config);
-      this.rebuildForm(config);
-      this.groupFieldsByCategory(config.fields);
-    }
-  }
-
   private groupFieldsByCategory(fields: FormFieldConfig[]) {
     const grouped = fields.reduce<{ [key: string]: FormFieldConfig[] }>((acc, field) => {
       const group = field.group || 'other';
@@ -276,33 +277,24 @@ export class ProductFormComponent implements OnInit {
   }
 
   private rebuildForm(config: CategoryFormConfig) {
-    // First, remove all dynamic controls
     const staticControls = ['name', 'sku', 'description', 'brand', 'price', 'cost',
-      'stockQuantity', 'lowStockThreshold', 'status', 'imageUrl'];
+      'stockQuantity', 'lowStockThreshold', 'status', 'imageId'];
 
-    Object.keys(this.productForm.controls).forEach(key => {
-      if (!staticControls.includes(key)) {
-        this.productForm.removeControl(key);
-      }
-    });
+    // Remove non-static controls
+    Object.keys(this.productForm.controls)
+      .filter(key => !staticControls.includes(key))
+      .forEach(key => this.productForm.removeControl(key));
 
-    // Then add new controls from config
+    // Add dynamic controls from config
     config.fields.forEach((field: FormFieldConfig) => {
-      if (!this.productForm.contains(field.name)) {
-        let value = this.productForm.value[field.name] ??
-          this.getInitialValue(field);
-
-        // Handle checkbox groups
-        if (field.type === 'checkbox-group' && Array.isArray(value)) {
-          value = value.map(v =>
-            typeof v === 'string' ? v :
-              (v as FormFieldOption).value
-          );
-        }
+      if (!staticControls.includes(field.name)) {
+        const currentValue = this.isEditMode()
+          ? this.productForm.value.specifications?.[field.name]
+          : this.getInitialValue(field);
 
         this.productForm.addControl(
           field.name,
-          this.fb.control(value, field.required ? [Validators.required] : [])
+          this.fb.control(currentValue, field.required ? [Validators.required] : [])
         );
       }
     });
@@ -336,64 +328,111 @@ export class ProductFormComponent implements OnInit {
 
 
   private async loadProduct(id: string) {
+
     try {
       this.isLoading.set(true);
-      const product = await this.productService.getProductById(id);
+      this.loadingService.start('Loading product details...');
+
+      const product = await this.productService.getProductDetails(id);
+
       if (product) {
-        // First load all categories
+        // Loading categories requires several steps, so update the loading message
+        this.loadingService.start('Setting up product categories...');
+
         const allCategories = await this.categoryService.getCategories();
 
-        // Find the product's category
         const productCategory = allCategories.find(c => c.$id === product.category.$id);
-        if (!productCategory) throw new Error('Category not found');
-
-        // Find the category path
-        const categoryPath = this.getCategoryPath(productCategory, allCategories);
-
-        // Select root parent
-        const rootCategory = categoryPath[0];
-        this.selectedParentCategory.set(this.transformToCategoryOption(rootCategory));
-        this.subCategories.set(this.buildNestedCategories(rootCategory));
-
-        // Expand and select the hierarchy
-        let currentLevel = this.subCategories();
-        for (const cat of categoryPath.slice(1)) {
-          const parent = currentLevel.find(c => c.$id === cat.parentId);
-          if (parent) {
-            parent.isExpanded = true;
-            parent.isSelected = false;
-            currentLevel = parent.children || [];
-          }
+        if (!productCategory) {
+          throw new Error('Product category not found');
         }
 
-        // Finally select the actual category
-        this.selectedCategory.set(productCategory.$id);
-        const lastNode = currentLevel.find(c => c.$id === productCategory.$id);
-        if (lastNode) lastNode.isSelected = true;
+        // Building category hierarchy - this is a complex operation so let's inform the user
+        this.loadingService.start('Building category structure...');
 
-        // Load form config and patch values
-        this.onCategoryChange(productCategory.$id);
+        const categoryPath = this.getCategoryPath(productCategory, allCategories);
+        const pathIds = categoryPath.map(cat => cat.$id);
+        const rootCategory = categoryPath[0];
 
-        // Patch form values
-        this.productForm.patchValue({
-          ...product,
-          ...product.specifications // Spread specifications into root form
+        // Set up parent category with full hierarchy
+        this.selectedParentCategory.set({
+          $id: rootCategory.$id,
+          name: rootCategory.name,
+          level: rootCategory.level,
+          children: this.buildCategoryTree(allCategories)
+            .find(c => c.$id === rootCategory.$id)?.children,
+          isExpanded: true,
+          isSelected: false
         });
 
-        if (product.imageUrl) {
+        // Build and expand subcategories
+        const subCategories = this.buildNestedCategories(this.selectedParentCategory()!);
+        this.expandCategoryPath(subCategories, pathIds);
+        this.subCategories.set(subCategories);
+        this.selectedCategory.set(product.category.$id);
+
+        // Loading form configuration and rebuilding the form
+        this.loadingService.start('Preparing product form...');
+
+        const config = this.formConfigService.getFormConfig(product.category.$id);
+        if (config) {
+          this.formConfig.set(config);
+          this.rebuildForm(config);
+          this.groupFieldsByCategory(config.fields);
+        }
+
+        // Populating form with product data
+        this.loadingService.start('Loading product information...');
+
+        this.productForm.patchValue({
+          name: product.name,
+          sku: product.sku,
+          description: product.description,
+          brand: product.brand.$id,
+          price: product.price,
+          lowStockThreshold: product.lowStockThreshold,
+          status: product.status,
+          imageId: product.imageId
+        });
+
+        // Handle specifications data separately as it requires special processing
+        if (product.specifications) {
+          this.loadingService.start('Loading product specifications...');
+
+          const { $id, $createdAt, $updatedAt, $permissions, $databaseId, $collectionId, product: _, ...cleanSpecs } = product.specifications;
+
+          Object.entries(cleanSpecs).forEach(([key, value]) => {
+            const control = this.productForm.get(key);
+            if (control) {
+              if (Array.isArray(value)) {
+                control.patchValue(value.length === 0 ? [] : value);
+              } else {
+                control.patchValue(value);
+              }
+            }
+          });
+        }
+
+        // Handle image preview loading last
+        if (product.imageId) {
+          this.loadingService.start('Loading product image...');
           this.imagePreview.set(
-            this.productService.getProductImageUrl(product.imageUrl)
+            this.productService.getProductImageUrl(product.imageId)
           );
         }
+
+        this.loadingService.start('Finalizing product setup...');
       }
     } catch (error) {
       console.error('Error loading product:', error);
       this.toast.error('Failed to load product');
     } finally {
+      // Clean up all loading states
+      this.loadingService.clear();
       this.isLoading.set(false);
     }
   }
 
+// Helper method to find the path from root to a category
   private getCategoryPath(category: Category, allCategories: Category[]): Category[] {
     const path: Category[] = [category];
     let current = category;
@@ -408,73 +447,19 @@ export class ProductFormComponent implements OnInit {
     return path;
   }
 
-  private transformToCategoryOption(category: Category): CategoryOption {
-    return {
-      $id: category.$id,
-      name: category.name,
-      level: category.level,
-      children: category.children?.map(c => this.transformToCategoryOption(c))
-    };
-  }
+  private expandCategoryPath(categories: CategoryNode[], pathIds: string[]): void {
+    categories.forEach(category => {
+      if (pathIds.includes(category.$id)) {
+        category.isExpanded = true;
+        category.isSelected = category.$id === pathIds[pathIds.length - 1];
 
-  // Helper method to find root parent
-  private findRootParent(category: Category): Category | null {
-    const findParent = (cat: Category): Category | null => {
-      if (!cat.parentId) return cat;
-      const parent = this.categories().find(c => c.$id === cat.parentId);
-      return parent ? findParent(parent) : cat;
-    };
-    return findParent(category);
-  }
-
-// Transform Category[] to CategoryOption[]
-  private transformToOptions(categories: Category[]): CategoryOption[] {
-    return categories.map(cat => ({
-      $id: cat.$id,
-      name: cat.name,
-      level: cat.level,
-      children: cat.children ? this.transformToOptions(cat.children) : undefined
-    }));
-  }
-
-// Build subcategories for display
-  private buildSubCategories(category: Category): CategoryNode[] {
-    if (!category.children) return [];
-
-    return category.children.map(child => ({
-      $id: child.$id,
-      name: child.name,
-      level: child.level,
-      isExpanded: false,
-      isSelected: false,
-      children: child.children ? this.buildSubCategories(child) : undefined
-    }));
-  }
-
-
-// Update findParentCategory method to take only one parameter
-  private findParentCategory(category: CategoryNode): CategoryOption | null {
-    const categories = this.parentCategories();
-    for (const parent of categories) {
-      if (this.isCategoryChild(parent, category.$id)) {
-        return {
-          ...parent,
-          isExpanded: false,
-          isSelected: false
-        };
+        if (category.children) {
+          this.expandCategoryPath(category.children, pathIds);
+        }
       }
-    }
-    return null;
+    });
   }
 
-  private isCategoryChild(parent: CategoryOption, categoryId: string): boolean {
-    if (parent.$id === categoryId) return true;
-    if (!parent.children) return false;
-
-    return parent.children.some(child =>
-      this.isCategoryChild(child, categoryId)
-    );
-  }
 
   async handleImageUpload(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
@@ -520,47 +505,105 @@ export class ProductFormComponent implements OnInit {
 
 /// Form Submission Method ///
   async onSubmit() {
+    // Inject the loading service if not already done at the component level
+
+
+    // First validate the form and category selection
     if (this.productForm.invalid || !this.selectedCategory()) {
       this.toast.error('Please check form fields');
       return;
     }
 
     try {
+      // Start initial loading state
+      const operation = this.isEditMode() ? 'Updating' : 'Creating';
+      const productName = this.productForm.get('name')?.value;
+      this.loadingService.start(`${operation} ${productName}...`);
       this.isLoading.set(true);
 
-      let imageUrl = this.productForm.get('imageUrl')?.value;
+      // Handle image processing with specific loading state
+      let imageId = this.productForm.get('imageId')?.value;
+
       if (this.selectedImageFile()) {
-        imageUrl = await this.productService.uploadImage(this.selectedImageFile()!);
+        try {
+          this.loadingService.start('Uploading product image...');
+          const productName = this.productForm.get('name')?.value;
+          const renamedFile = this.createRenamedImageFile(
+            this.selectedImageFile()!,
+            productName
+          );
+          imageId = await this.productService.uploadImage(renamedFile);
+        } catch (error) {
+          this.toast.error('Failed to upload image');
+          console.error('Image upload error:', error);
+          return;
+        }
       }
 
+      // Update loading state for data preparation
+      this.loadingService.start('Preparing product data...');
       const formValues = this.productForm.getRawValue();
       const specifications = this.getSpecifications();
 
+      // Prepare the complete product data object
       const productData = {
         name: formValues.name,
         description: formValues.description,
         category: this.selectedCategory()!,
         sku: formValues.sku,
         price: Number(formValues.price),
-        cost: Number(formValues.cost),
-        stockQuantity: Number(formValues.stockQuantity),
         lowStockThreshold: Number(formValues.lowStockThreshold),
         status: formValues.status || 'active',
-        imageUrl,
         brand: formValues.brand,
-        specifications
+        specifications,
+        ...(imageId ? { imageId } : {})
       };
-      console.dir(productData);
-      await this.productService.createProduct(productData);
 
-      this.toast.success('Product created successfully');
+      // Handle create or update with specific loading messages
+      if (this.isEditMode()) {
+        const productId = this.route.snapshot.params['id'];
+        this.loadingService.start(`Updating ${productName}...`);
+        console.log('Updating product:', productId, productData);
+        await this.productService.updateProduct(productId, productData);
+        this.toast.success('Product updated successfully');
+      } else {
+        this.loadingService.start(`Creating ${productName}...`);
+        console.log('Creating new product:', productData);
+        await this.productService.createProduct(productData);
+        this.toast.success('Product created successfully');
+      }
+
+      // Show loading state for navigation
+      this.loadingService.start('Redirecting to products list...');
       await this.router.navigate(['/admin/products']);
 
     } catch (error) {
-      this.toast.error(error instanceof Error ? error.message : 'Failed to create product');
+      // Error handling with specific messages
+      const operation = this.isEditMode() ? 'update' : 'create';
+      const errorMessage = error instanceof Error ?
+        error.message : `Failed to ${operation} product`;
+      this.toast.error(errorMessage);
+
+      console.error(`Product ${operation} error:`, error);
     } finally {
+      // Clean up all loading states
+      this.loadingService.clear();
       this.isLoading.set(false);
     }
+  }
+
+  private createRenamedImageFile(originalFile: File, productName: string): File {
+    const formattedName = productName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .substring(0, 50);
+
+    const fileExtension = originalFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+    const timestamp = new Date().getTime();
+    const newFilename = `${formattedName}-${timestamp}.${fileExtension}`;
+
+    return new File([originalFile], newFilename, { type: originalFile.type });
   }
 
   private getSpecifications(): Record<string, any> {
@@ -569,7 +612,7 @@ export class ProductFormComponent implements OnInit {
 
     const commonFieldNames = ['name', 'sku', 'description', 'brand', 'price',
       'cost', 'stockQuantity', 'lowStockThreshold',
-      'status', 'imageUrl'];
+      'status', 'imageId'];
 
     config?.fields.forEach(field => {
       if (!commonFieldNames.includes(field.name)) {
@@ -606,9 +649,6 @@ export class ProductFormComponent implements OnInit {
         return null;
     }
   }
-
-
-
 
   readonly objectKeys = Object.keys;
 
@@ -726,25 +766,8 @@ export class ProductFormComponent implements OnInit {
     return path;
   }
 
-  getSafeDescription(): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(this.productForm.get('description')?.value);
-  }
-
-
   isFieldOptionType(option: string | FormFieldOption): option is FormFieldOption {
     return (option as FormFieldOption).value !== undefined;
-  }
-
-  private expandCategoryPath(categoryPath: Category[]) {
-    let currentLevel = this.subCategories();
-
-    for (const cat of categoryPath) {
-      const node = currentLevel.find(c => c.$id === cat.$id);
-      if (node) {
-        node.isExpanded = true;
-        currentLevel = node.children || [];
-      }
-    }
   }
 
 

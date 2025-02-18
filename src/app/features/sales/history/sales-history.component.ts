@@ -101,15 +101,6 @@ export class SalesHistoryComponent {
     }
   }
 
-  generateInvoice(sale: Sale | SaleWithDetails) {
-    // Type guard to ensure we have a SaleWithDetails
-    if ('product' in sale.products[0]) {
-      this.salesService.generateInvoice(sale as SaleWithDetails);
-    } else {
-      // Fetch detailed sale data if needed
-      this.loadSaleDetailsAndGenerateInvoice(sale.$id);
-    }
-  }
 
   private async loadSaleDetails(saleId: string) {
     try {
@@ -120,14 +111,7 @@ export class SalesHistoryComponent {
     }
   }
 
-  private async loadSaleDetailsAndGenerateInvoice(saleId: string) {
-    try {
-      const saleDetails = await this.salesService.getSaleDetails(saleId);
-      this.salesService.generateInvoice(saleDetails);
-    } catch (error) {
-      this.error.set('Failed to generate invoice');
-    }
-  }
+
   getStatusColor(status: PaymentStatus): string {
     const statusColors = {
       'paid': 'text-success-500',
