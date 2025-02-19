@@ -8,9 +8,13 @@ import {HotToastService} from '@ngxpert/hot-toast';
 import {environment} from '../../../environments/environment';
 import {ID} from 'appwrite';
 import {ProcessSaleInput} from '../interfaces/pos/pos.interface';
+import {Sale} from '../interfaces/sales/sales.interfaces';
 
 
-
+interface PaymentResult {
+  success: boolean;
+  sale?: Sale | null;
+}
 
 
 @Injectable({
@@ -25,7 +29,7 @@ export class PosService {
   // Core state signals
   private cartItems = signal<CartItem[]>([]);
   selectedCustomer = signal<Customer | null>(null);
-  private paymentMethod = signal<'cash' | 'card' | 'transfer'>('cash');
+  public paymentMethod = signal<'cash' | 'card' | 'transfer'>('cash');
 
 
   // Computed values
@@ -118,7 +122,7 @@ export class PosService {
     this.paymentMethod.set(method);
   }
 
-  async processPayment(): Promise<boolean> {
+  async processPayment(): Promise<any> {
     try {
       if (!this.selectedCustomer()) {
         this.toast.error('No customer selected');
@@ -137,7 +141,7 @@ export class PosService {
           quantity: item.quantity,
           priceAtSale: item.product.price
         })),
-        paymentMethod: 'cash' // Default payment method
+        paymentMethod: this.paymentMethod()
       };
 
       // Call cloud function to process sale
@@ -156,7 +160,10 @@ export class PosService {
       // Clear cart after successful sale
       this.clearCart();
       this.toast.success('Sale completed successfully');
-      return true;
+      return {
+        success: true,
+        sale: result.sale
+      };
 
     } catch (err) {
       const error = err as Error;

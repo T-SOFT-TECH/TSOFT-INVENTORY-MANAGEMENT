@@ -14,26 +14,35 @@ import {CategoryService} from '../../../core/services/category.service';
 import {AutoAnimationDirective} from '../../../core/Directives/auto-Animate.directive';
 import {HotToastService} from '@ngxpert/hot-toast';
 import {AppwriteService} from '../../../core/services/appwrite.service';
+import {LoadingService} from '../../../core/services/loading.service';
+import {Sale} from '../../../core/interfaces/sales/sales.interfaces';
+import {ReceiptComponent} from '../../../core/components/receipt/receipt.component';
 
 @Component({
   selector: 'app-pos',
-  imports: [CommonModule, FormsModule, AutoAnimationDirective, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, AutoAnimationDirective, ReactiveFormsModule, ReceiptComponent],
   templateUrl: './pos.component.html',
   styleUrls: ['./pos.component.scss']
 })
 export class PosComponent implements OnInit {
-  private posService = inject(PosService);
+  protected posService = inject(PosService);
   private productService = inject(ProductService);
   private customerService = inject(CustomerService);
   private categoryService = inject(CategoryService);
   private toast = inject(HotToastService);
   private appwriteService = inject(AppwriteService);
+  private loadingService = inject(LoadingService);
+
 
   // UI state
+  completedSale = signal<Sale | null>(null);
+  showReceiptModal = signal(false);
   isLoading = signal(false);
   searchQuery = signal('');
   selectedCategory = signal('all');
   showCustomerModal = signal(false);
+  isCartOpen = signal(false);
+
 
   showNewCustomerForm = signal(false);
   isCreatingCustomer = signal(false);
@@ -67,6 +76,13 @@ export class PosComponent implements OnInit {
     });
   }
 
+  toggleCartPanel() {
+    this.isCartOpen.update(current => !current);
+  }
+
+  closeCartPanel() {
+    this.isCartOpen.set(false);
+  }
 
   ngOnInit() {
     this.loadInitialData();
@@ -74,21 +90,25 @@ export class PosComponent implements OnInit {
 
   private async loadInitialData() {
     try {
-      this.isLoading.set(true);
+      this.isLoading.set(true); // Keep this for backward compatibility
+      this.loadingService.start('Loading inventory and customers...'); // Add this
+
       const [products, customers, categories] = await Promise.all([
         this.productService.getProducts(),
         this.customerService.getCustomers(),
         this.categoryService.getCategories()
       ]);
 
-      // No conversion needed as types are now aligned
       this.products.set(products);
       this.customers.set(customers);
       this.categories.set(categories);
+
     } catch (error) {
       console.error('Failed to load initial data:', error);
+      this.toast.error('Failed to load initial data');
     } finally {
       this.isLoading.set(false);
+      this.loadingService.clear(); // Add this
     }
   }
 
@@ -124,14 +144,23 @@ export class PosComponent implements OnInit {
   async processPayment() {
     try {
       this.isLoading.set(true);
-      const success = await this.posService.processPayment();
-      if (success) {
-        // Maybe navigate to receipt page or show success screen
+      this.loadingService.start('Processing payment...');
+
+      const result = await this.posService.processPayment();
+
+      // Check if result exists and has sale data
+      if (result && 'sale' in result) {
+        // Store the completed sale and show receipt
+        this.completedSale.set(result.sale);
+        this.showReceiptModal.set(true);
+        this.toast.success('Payment completed successfully');
       }
     } catch (error) {
       console.error('Payment processing failed:', error);
+      this.toast.error('Payment processing failed');
     } finally {
       this.isLoading.set(false);
+      this.loadingService.clear();
     }
   }
 
@@ -192,6 +221,8 @@ export class PosComponent implements OnInit {
 
     try {
       this.isCreatingCustomer.set(true);
+      this.loadingService.start('Creating new customer...'); // Add this
+
 
       // Get raw form values
       const formValues = this.newCustomerForm.value;
@@ -256,8 +287,17 @@ export class PosComponent implements OnInit {
       this.toast.error('Failed to create customer');
     } finally {
       this.isCreatingCustomer.set(false);
+      this.loadingService.clear();
+
     }
   }
 
 
+  selectPaymentMethod(method: 'cash' | 'card' | 'transfer') {
+    this.posService.setPaymentMethod(method)
+  }
+
+  closeReceiptModal() {
+    this.showReceiptModal.set(false);
+  }
 }

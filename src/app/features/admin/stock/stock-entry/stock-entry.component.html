@@ -1,0 +1,375 @@
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6">
+  <div class="max-w-7xl mx-auto" autoAnimate>
+    <!-- Header Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-primary-600">
+            Record New Stock
+          </h1>
+          <p class="mt-2 text-gray-600 dark:text-gray-400">
+            Add new inventory items and track your stock
+          </p>
+        </div>
+
+        <button
+          routerLink="/admin/stock/history"
+          class="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-600 hover:text-gray-900
+                 dark:text-gray-400 dark:hover:text-white transition-colors">
+          <span class="material-icons">arrow_back</span>
+          Back to History
+        </button>
+      </div>
+    </div>
+
+    @if (showScanner()) {
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+          Scan Barcode/QR Code
+        </h2>
+        <app-barcode-scanner
+          (codeScanned)="onBarcodeScanned($event)"
+        />
+      </div>
+    }
+
+
+    @if(showBatchUpload()) {
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+          Batch Upload
+        </h2>
+
+        <app-batch-upload
+          (dataProcessed)="onBatchDataProcessed($event)"
+        />
+      </div>
+    }
+
+    <div class="flex items-center justify-between mb-4">
+
+      <button
+        (click)="showScanner.set(!showScanner())"
+        class="px-4 py-2 rounded-xl bg-primary-50 dark:bg-primary-900/20
+         text-primary-600 dark:text-primary-400 hover:bg-primary-100
+         dark:hover:bg-primary-900/40 transition-colors flex items-center gap-2">
+        <span class="material-icons">qr_code_scanner</span>
+        {{ showScanner() ? 'Hide Scanner' : 'Show Scanner' }}
+      </button>
+
+      <button
+        (click)="showBatchUpload.set(!showBatchUpload())"
+        class="px-4 py-2 rounded-xl bg-primary-50 dark:bg-primary-900/20
+         text-primary-600 dark:text-primary-400 hover:bg-primary-100
+         dark:hover:bg-primary-900/40 transition-colors flex items-center gap-2">
+        <span class="material-icons">cloud_upload</span>
+        {{ showBatchUpload() ? 'Hide Batch Upload' : 'Show Batch Upload' }}
+      </button>
+
+    </div>
+
+
+
+    <form [formGroup]="stockForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Stock Items Section -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg" formArrayName="items">
+        <div class="p-8">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Stock Items</h2>
+            <button
+              type="button"
+              (click)="addStockItem()"
+              class="px-4 py-2 rounded-xl bg-primary-50 dark:bg-primary-900/20
+                     text-primary-600 dark:text-primary-400 hover:bg-primary-100
+                     dark:hover:bg-primary-900/40 transition-colors flex items-center gap-2">
+              <span class="material-icons">add</span>
+              Add Item
+            </button>
+          </div>
+
+
+
+
+
+
+          <!-- Items List -->
+          <div class="space-y-6" autoAnimate>
+            @for (item of stockItems.controls; track item; let i = $index) {
+              <div [formGroupName]="i" class="p-6 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                  <!-- Product Selection -->
+                  <div class="md:col-span-5">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Select Product <span class="text-red-500">*</span>
+                    </label>
+
+                    <div class="relative hs-select-wrapper">
+                      <button type="button"
+                              (click)="toggleDropdown(i)"
+                              class="w-full flex justify-between items-center text-gray-800 dark:text-gray-200 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900">
+                        <span class="truncate">
+                          @if (item.get('productId')?.value) {
+                            {{ getSelectedProductName(i) }}
+                          } @else {
+                            Select a product...
+                          }
+                        </span>
+                        <svg class="w-4 h-4 transition-transform"
+                             [class.rotate-180]="openStates.get(i)"
+                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="m6 9 6 6 6-6"/>
+                        </svg>
+                      </button>
+
+                      <!-- Dropdown -->
+                      <div class="absolute z-50 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg"
+                           [class.hidden]="!openStates.get(i)">
+                        <div class="p-2">
+                          <input type="search"
+                                 (input)="onSearchInput($event, i)"
+                                 [value]="searchInputValues.get(i) || ''"
+                                 placeholder="Search products..."
+                                 class="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-sm focus:border-primary-500 focus:ring-primary-500 dark:text-gray-400">
+                        </div>
+
+                        <div class="max-h-96 overflow-y-auto">
+                          @for (category of getGroupedProducts(i) | keyvalue; track category.key) {
+                            <div class="group">
+                              <div class="px-4 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700">
+                                {{ category.key }}
+                              </div>
+                              <div class="divide-y divide-gray-100 dark:divide-gray-700">
+                                @for (product of category.value; track product.$id) {
+                                  <button type="button"
+                                          (click)="selectProduct(product, i)"
+                                          class="w-full px-4 py-3 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-between"
+                                          [ngClass]="{
+                                            'bg-primary-50 dark:bg-primary-900/20':
+                                              product.$id === item.get('productId')?.value
+                                          }">
+                                    <div class="flex items-center gap-3">
+                                      @if (product.imageId) {
+                                        <img [src]="getImageUrl(product.imageId)"
+                                             class="w-8 h-8 rounded-full object-cover">
+                                      }
+                                      <div>
+                                        <div class="text-gray-900 dark:text-gray-100">{{ product.name }}</div>
+                                        <div class="text-xs text-gray-500">SKU: {{ product.sku }}</div>
+                                      </div>
+                                    </div>
+                                    @if (product.$id === item.get('productId')?.value) {
+                                      <span class="material-icons text-primary-600 dark:text-primary-400">check</span>
+                                    }
+                                  </button>
+                                }
+                              </div>
+                            </div>
+                          }
+                          @if (getGroupedProducts(i).size === 0) {
+                            <div class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+                              No products found
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Hidden Native Select -->
+                    <select [formControlName]="'productId'" class="hidden">
+                      @for (category of getGroupedProducts(i) | keyvalue; track category.key) {
+                        <optgroup [label]="category.key">
+                          @for (product of category.value; track product.$id) {
+                            <option [value]="product.$id">{{ product.name }} ({{ product.sku }})</option>
+                          }
+                        </optgroup>
+                      }
+                    </select>
+                  </div>
+
+
+                  <!-- Quantity Input -->
+                  <div class="md:col-span-3">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Quantity <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      formControlName="quantity"
+                      min="1"
+                      class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
+                             bg-white dark:bg-gray-900 text-gray-900 dark:text-white
+                             focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                  </div>
+
+                  <!-- Unit Cost Input -->
+                  <div class="md:col-span-3">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Unit Cost <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      formControlName="unitCost"
+                      min="0"
+                      step="0.01"
+                      class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
+                             bg-white dark:bg-gray-900 text-gray-900 dark:text-white
+                             focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                  </div>
+
+                  <!-- Remove Button & Subtotal -->
+                  <div class="md:col-span-1 flex md:flex-col items-center justify-between md:justify-center gap-4">
+                    @if (stockItems.length > 1) {
+                      <button
+                        type="button"
+                        (click)="removeStockItem($index)"
+                        class="p-2 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                        <span class="material-icons">delete</span>
+                      </button>
+                    }
+                    <div class="text-sm font-medium text-gray-900 dark:text-white">
+                      {{ calculateSubtotal($index) | currency }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Total Cost -->
+          <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex justify-end">
+              <div class="bg-primary-50 dark:bg-primary-900/20 px-6 py-4 rounded-xl">
+                <span class="text-sm text-gray-600 dark:text-gray-400">Total Cost:</span>
+                <span class="ml-2 text-2xl font-bold text-primary-600 dark:text-primary-400">
+                  {{ calculateTotal() | currency }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transaction Details -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+          Transaction Details
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- Transaction Date -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Transaction Date
+            </label>
+            <div class="relative">
+              <input
+                type="date"
+                formControlName="transactionDate"
+                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-900 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-transparent
+               pl-10">
+              <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-primary-500">
+        calendar_today
+      </span>
+            </div>
+          </div>
+
+          <!-- Supplier Name -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Supplier Name
+            </label>
+            <input
+              type="text"
+              formControlName="supplierName"
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
+                     bg-white dark:bg-gray-900 text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+          </div>
+
+          <!-- Supplier Invoice -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Supplier Invoice #
+            </label>
+            <input
+              type="text"
+              formControlName="supplierInvoice"
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
+                     bg-white dark:bg-gray-900 text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+          </div>
+
+          <!-- Reference -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Reference
+            </label>
+            <input
+              type="text"
+              formControlName="reference"
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
+                     bg-white dark:bg-gray-900 text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+          </div>
+
+          <!-- Notes -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Notes
+            </label>
+            <textarea
+              formControlName="notes"
+              rows="3"
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
+                     bg-white dark:bg-gray-900 text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"></textarea>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+          Receipt Images
+        </h2>
+        <app-image-upload
+          (imagesChanged)="onImagesChanged($event)"
+        />
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex justify-end gap-4">
+        <button
+          type="button"
+          routerLink="/admin/stock/history"
+          class="px-6 py-3 rounded-xl border border-gray-300 dark:border-gray-600
+                 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700
+                 transition-colors">
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          [disabled]="stockForm.invalid || isLoading()"
+          class="px-6 py-3 rounded-xl bg-primary-500 text-white font-medium
+                 hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed
+                 transition-colors flex items-center gap-2
+                 shadow-lg shadow-primary-500/30">
+          @if (isLoading()) {
+            <span class="material-icons animate-spin">refresh</span>
+            Recording...
+          } @else {
+            <span class="material-icons">save</span>
+            Record Stock
+          }
+        </button>
+      </div>
+    </form>
+
+
+  </div>
+</div>

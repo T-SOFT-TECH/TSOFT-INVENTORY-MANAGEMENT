@@ -1,0 +1,460 @@
+<div class="min-h-screen p-6" autoAnimate>
+  <div class="max-w-7xl mx-auto">
+    <!-- Header Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-primary-600">
+            Stock History
+          </h1>
+          <p class="mt-2 text-gray-600 dark:text-gray-400">
+            View and manage your stock transactions
+          </p>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button
+            (click)="exportHistory()"
+            class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300
+                   hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center gap-2">
+            <span class="material-icons">download</span>
+            Export
+          </button>
+
+          <button
+            routerLink="/admin/stock/new"
+            class="px-4 py-2 rounded-xl bg-primary-500 text-white
+                   hover:bg-primary-600 transition-colors flex items-center gap-2">
+            <span class="material-icons">add</span>
+            Record Stock
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total Transactions</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ filteredTransactions().length }}
+          </p>
+        </div>
+        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total Value</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ totalValue() | currency:'NGN':'symbol-narrow' }}
+          </p>
+        </div>
+        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Unique Suppliers</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ uniqueSuppliers().length }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8">
+      <form [formGroup]="filterForm" class="space-y-6">
+        <!-- Search Bar -->
+        <div class="relative">
+          <input
+            type="text"
+            formControlName="searchTerm"
+            placeholder="Search by reference, supplier, product name or SKU..."
+            class="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600
+                   bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+          <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            search
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <!-- Date Range -->
+          <div formGroupName="dateRange" class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Date Range
+            </label>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="relative">
+                <input
+                  type="date"
+                  formControlName="start"
+                  class="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600
+                         bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  calendar_today
+                </span>
+              </div>
+              <div class="relative">
+                <input
+                  type="date"
+                  formControlName="end"
+                  class="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600
+                         bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+                <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  calendar_today
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Supplier Filter -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Supplier
+            </label>
+            <div class="relative">
+              <select
+                formControlName="supplier"
+                class="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600
+                       bg-white dark:bg-gray-900 text-gray-900 dark:text-white appearance-none">
+                <option value="">All Suppliers</option>
+                @for (supplier of uniqueSuppliers(); track supplier) {
+                  <option [value]="supplier">{{ supplier }}</option>
+                }
+              </select>
+              <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                business
+              </span>
+              <span class="material-icons absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                expand_more
+              </span>
+            </div>
+          </div>
+
+          <!-- Status Filter -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Status
+            </label>
+            <div class="relative">
+              <select
+                formControlName="status"
+                class="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600
+                       bg-white dark:bg-gray-900 text-gray-900 dark:text-white appearance-none">
+                <option value="">All Statuses</option>
+                @for (status of getStatusOptions(); track status) {
+                  <option [value]="status">{{ status | titlecase }}</option>
+                }
+              </select>
+              <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                filter_list
+              </span>
+              <span class="material-icons absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                expand_more
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Actions -->
+        <div class="flex justify-end gap-4">
+          <button
+            type="button"
+            (click)="resetFilters()"
+            class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100
+                   dark:hover:bg-gray-700 rounded-xl transition-colors flex items-center gap-2">
+            <span class="material-icons">refresh</span>
+            Reset Filters
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Transactions Table -->
+    @if (isLoading()) {
+      <div class="flex justify-center items-center h-64">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+      </div>
+    } @else if (filteredTransactions().length === 0) {
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
+        <span class="material-icons text-6xl text-gray-400 mb-4">inventory</span>
+        <h3 class="text-xl font-medium text-gray-900 dark:text-white mb-2">No transactions found</h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-6">
+          @if (transactions().length === 0) {
+            Start by recording your first stock transaction
+          } @else {
+            No transactions match your current filters
+          }
+        </p>
+        @if (transactions().length === 0) {
+          <button
+            routerLink="/admin/stock/new"
+            class="px-4 py-2 rounded-xl bg-primary-500 text-white
+                   hover:bg-primary-600 transition-colors inline-flex items-center gap-2">
+            <span class="material-icons">add</span>
+            Record Stock
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+            <tr class="bg-gray-50 dark:bg-gray-900/50">
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Date
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Reference
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Supplier
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Items
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Total Cost
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Status
+              </th>
+              <th class="px-6 py-4 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700" autoAnimate>
+              @for (transaction of filteredTransactions(); track transaction.$id) {
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {{ formatDate(transaction.transactionDate) }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    {{ transaction.reference || '-' }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {{ transaction.supplierName || '-' }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {{ calculateTotalQuantity(transaction) }} items
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    {{ transaction.totalCost | currency:'NGN':'symbol-narrow' }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+        [ngClass]="getStatusClass(transaction.status)">
+    {{ transaction.status | titlecase }}
+  </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+
+                    @if (transaction.receiptImageIds?.length) {
+                      <button
+                        (click)="viewReceipts(transaction)"
+                        class="text-primary-500 hover:text-primary-600 mr-3">
+                        <span class="material-icons">receipt</span>
+                      </button>
+                    }
+
+                    <button
+                      (click)="viewTransactionDetails(transaction)"
+                      class="text-primary-500 hover:text-primary-600 transition-colors">
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Transaction Details Modal -->
+  @if (selectedTransaction() && activeModal() === 'details') {
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" autoAnimate>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg w-full max-w-3xl m-6">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+            Transaction Details
+          </h3>
+          <button
+            (click)="closeModal()"
+            class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+
+        <div class="p-6">
+          <!-- Transaction Info -->
+          <div class="grid grid-cols-2 gap-4 mb-6">
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">Date</p>
+              <p class="font-medium text-gray-900 dark:text-white">
+                {{ formatDate(selectedTransaction()!.transactionDate) }}
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">Reference</p>
+              <p class="font-medium text-gray-900 dark:text-white">
+                {{ selectedTransaction()!.reference || '-' }}
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">Supplier</p>
+              <p class="font-medium text-gray-900 dark:text-white">
+                {{ selectedTransaction()!.supplierName || '-' }}
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">Status</p>
+              <span [class]="'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mt-1 ' +
+                            getStatusClass(selectedTransaction()!.status)">
+                {{ selectedTransaction()!.status }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Products Table -->
+          <div class="mt-6">
+            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">Products</h4>
+            <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+              <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-900/50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                    Product
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                    Quantity
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                    Unit Cost
+                  </th>
+                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                    Subtotal
+                  </th>
+                </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700" autoAnimate>
+                  @for (product of selectedTransaction()!.products; track product.$id; let i = $index) {
+                    <tr>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">
+                              {{ product.name }}
+                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                              SKU: {{ product.sku }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {{ selectedTransaction()!.quantities[i] }}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {{ selectedTransaction()!.unitCosts[i] | currency : 'NGN' : 'symbol-narrow'}}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900 dark:text-white">
+                        {{ selectedTransaction()!.quantities[i] * selectedTransaction()!.unitCosts[i] | currency : 'NGN' : 'symbol-narrow'}}
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+                <tfoot class="bg-gray-50 dark:bg-gray-900/50">
+                <tr>
+                  <td colspan="3" class="px-6 py-4 text-right font-medium text-gray-500 dark:text-gray-400">
+                    Total
+                  </td>
+                  <td class="px-6 py-4 text-right font-medium text-gray-900 dark:text-white">
+                    {{ selectedTransaction()!.totalCost | currency : 'NGN' : 'symbol-narrow'}}
+                  </td>
+                </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          @if (selectedTransaction()!.notes) {
+            <div class="mt-6">
+              <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Notes</h4>
+              <p class="text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900/50 p-4 rounded-xl">
+                {{ selectedTransaction()!.notes }}
+              </p>
+            </div>
+          }
+
+          <!-- Actions -->
+          <div class="mt-8 flex justify-end gap-4">
+            <button
+              (click)="closeModal()"
+              class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100
+                     dark:hover:bg-gray-700 rounded-xl transition-colors">
+              Close
+            </button>
+            <button
+              class="px-4 py-2 bg-primary-500 text-white rounded-xl hover:bg-primary-600
+                     transition-colors flex items-center gap-2">
+              <span class="material-icons">print</span>
+              Print Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (selectedTransaction() && activeModal() === 'receipts') {
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg w-full max-w-4xl m-6">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+            Transaction Receipts
+          </h3>
+          <button
+            (click)="selectedTransaction.set(null)"
+            class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+
+        <!-- Receipt Gallery -->
+        <div class="p-6">
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            @for (imageId of selectedTransaction()!.receiptImageIds; track imageId) {
+              <div class="aspect-square relative group">
+                <img
+                  [src]="getReceiptPreview(imageId)"
+                  [alt]="'Receipt ' + imageId"
+                  class="w-full h-full object-cover rounded-lg"
+                >
+
+                <!-- Overlay with actions -->
+                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100
+                    flex items-center justify-center gap-2 transition-opacity rounded-lg">
+                  <button
+                    (click)="openReceipt(imageId)"
+                    class="p-2 bg-primary-500 text-white rounded-full hover:bg-primary-600
+                   transition-colors"
+                  >
+                    <span class="material-icons">open_in_new</span>
+                  </button>
+
+                  <button
+                    (click)="downloadReceipt(imageId)"
+                    class="p-2 bg-primary-500 text-white rounded-full hover:bg-primary-600
+                   transition-colors"
+                  >
+                    <span class="material-icons">download</span>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div >

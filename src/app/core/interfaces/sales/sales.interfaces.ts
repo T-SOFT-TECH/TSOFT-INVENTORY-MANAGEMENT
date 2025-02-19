@@ -47,6 +47,7 @@ export interface SaleWithDetails extends Sale {
     id: string;
     name: string;
     email: string;
+    phone: string;
   };
   products: (SaleItem & {
     product: {

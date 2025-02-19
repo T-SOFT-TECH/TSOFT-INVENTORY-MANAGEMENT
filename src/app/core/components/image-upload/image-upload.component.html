@@ -1,0 +1,69 @@
+<div class="space-y-4">
+  <!-- Drag & Drop Zone -->
+  <div
+    class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-6
+               hover:border-primary-500 dark:hover:border-primary-500 transition-colors
+               cursor-pointer"
+    (dragover)="onDragOver($event)"
+    (dragleave)="isDragging.set(false)"
+    (drop)="onDrop($event)"
+    [class.border-primary-500]="isDragging()"
+    (click)="fileInput.click()"
+  >
+    <div class="text-center">
+          <span class="material-icons text-4xl text-gray-400 mb-2">
+            {{ isDragging() ? 'file_download' : 'upload_file' }}
+          </span>
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-1">
+        Upload Receipt Images
+      </h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        Drag and drop images here or click to select
+      </p>
+
+      <input
+        #fileInput
+        type="file"
+        (change)="onFileSelect($event)"
+        accept="image/*"
+        multiple
+        class="hidden"
+      >
+    </div>
+  </div>
+
+  <!-- Preview Grid -->
+  @if (images().length > 0) {
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      @for (image of images(); track image.id) {
+        <div class="relative group">
+          <img
+            [src]="image.preview"
+            [alt]="image.file.name"
+            class="w-full aspect-square object-cover rounded-lg"
+          >
+
+          <!-- Overlay -->
+          <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100
+                          flex items-center justify-center gap-2 transition-opacity rounded-lg">
+            <button
+              (click)="removeImage(image.id)"
+              class="p-2 bg-red-500 text-white rounded-full hover:bg-red-600
+                         transition-colors"
+            >
+              <span class="material-icons">delete</span>
+            </button>
+
+            <button
+              (click)="downloadImage(image)"
+              class="p-2 bg-primary-500 text-white rounded-full hover:bg-primary-600
+                         transition-colors"
+            >
+              <span class="material-icons">download</span>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
