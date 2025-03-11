@@ -105,53 +105,68 @@
   <!-- Footer with Actions - Reorganized for Mobile -->
   <div class="p-3 md:p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
     <!-- Bluetooth Printing Section - Highlighted for Mobile -->
+
     <div class="mb-3 pb-3 border-b border-gray-200 dark:border-gray-700">
       <h4 class="text-xs font-medium text-text-light-tertiary dark:text-gray-400 mb-2">Thermal Printer</h4>
-      <div class="flex flex-wrap gap-2">
-        <button
-          (click)="connectBluetoothPrinter()"
-          class="inline-flex items-center px-3 py-1.5 bg-primary-500 text-white rounded-lg
-                 hover:bg-primary-600 transition-colors text-sm"
-        >
-          <span class="material-icons text-sm mr-1">bluetooth</span>
-          Connect Printer
-        </button>
 
-        <button
-          (click)="printToThermal()"
-          [disabled]="!isBluetoothConnected()"
-          class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm"
-          [ngClass]="isBluetoothConnected() ?
-                    'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40' :
-                    'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'"
-        >
-          <span class="material-icons text-sm mr-1">receipt</span>
-          Print Receipt
-        </button>
+      @if (!isBrowserSupported()) {
+        <div class="p-3 bg-warning-light/30 dark:bg-warning-dark/20 rounded-lg mb-2">
+          @if (isIOS()) {
+            <p class="text-sm text-warning-dark dark:text-warning-light flex items-center">
+              <span class="material-icons text-sm mr-1.5">info</span>
+              Bluetooth printing is not supported on iOS devices. Please use email or download options instead.
+            </p>
+          } @else {
+            <p class="text-sm text-warning-dark dark:text-warning-light flex items-center">
+              <span class="material-icons text-sm mr-1.5">info</span>
+              Bluetooth printing is not supported in this browser. Try using Chrome or Edge.
+            </p>
+          }
+        </div>
+      } @else {
+        <div class="flex flex-wrap gap-2">
+          <button
+            (click)="connectBluetoothPrinter()"
+            class="inline-flex items-center px-3 py-1.5 bg-primary-500 text-white rounded-lg
+               hover:bg-primary-600 transition-colors text-sm"
+          >
+            <span class="material-icons text-sm mr-1">bluetooth</span>
+            Connect Printer
+          </button>
 
+          <button
+            (click)="printToThermal()"
+            [disabled]="!isBluetoothConnected()"
+            class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm"
+            [ngClass]="isBluetoothConnected() ?
+                  'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40' :
+                  'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'"
+          >
+            <span class="material-icons text-sm mr-1">receipt</span>
+            Print Receipt
+          </button>
 
-        <button
-          (click)="sendTestPrint()"
-          [disabled]="!isBluetoothConnected()"
-          class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm"
-          [ngClass]="isBluetoothConnected() ?
-            'bg-warning-light/30 text-warning-dark dark:bg-warning-dark/20 dark:text-warning-light hover:bg-warning-light/50' :
-            'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'"
-        >
-          <span class="material-icons text-sm mr-1">bug_report</span>
-          Test Print
-        </button>
+          <button
+            (click)="sendTestPrint()"
+            [disabled]="!isBluetoothConnected()"
+            class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm"
+            [ngClass]="isBluetoothConnected() ?
+                  'bg-warning-light/30 text-warning-dark dark:bg-warning-dark/20 dark:text-warning-light hover:bg-warning-light/50' :
+                  'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'"
+          >
+            <span class="material-icons text-sm mr-1">bug_report</span>
+            Test Print
+          </button>
+        </div>
 
-
-      </div>
-
-      <!-- Printer Status Indicator -->
-      <div class="mt-2 text-xs flex items-center" [ngClass]="isBluetoothConnected() ? 'text-success-DEFAULT' : 'text-text-light-tertiary dark:text-gray-400'">
-        <span class="material-icons text-xs mr-1">
-          {{ isBluetoothConnected() ? 'check_circle' : 'info' }}
-        </span>
-        {{ isBluetoothConnected() ? 'Printer connected' : 'Connect printer to print' }}
-      </div>
+        <!-- Printer Status Indicator -->
+        <div class="mt-2 text-xs flex items-center" [ngClass]="isBluetoothConnected() ? 'text-success-DEFAULT' : 'text-text-light-tertiary dark:text-gray-400'">
+      <span class="material-icons text-xs mr-1">
+        {{ isBluetoothConnected() ? 'check_circle' : 'info' }}
+      </span>
+          {{ isBluetoothConnected() ? 'Printer connected' : 'Connect printer to print' }}
+        </div>
+      }
     </div>
 
     <!-- Standard Print Options -->

@@ -587,4 +587,18 @@ export class ReceiptComponent {
     }
   }
 
+  // Add this method to your component
+  isBrowserSupported(): boolean {
+    return 'bluetooth' in navigator;
+  }
+
+// Add this method to detect iOS specifically
+  isIOS(): boolean {
+    // More reliable iOS detection without MSStream
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+      !/CriOS/.test(navigator.userAgent) && // Not Chrome on iOS
+      !/FxiOS/.test(navigator.userAgent) && // Not Firefox on iOS
+      !/OPiOS/.test(navigator.userAgent);   // Not Opera on iOS
+  }
+
 }
