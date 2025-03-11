@@ -7,12 +7,14 @@ import { LoadingService } from '../../services/loading.service';
 import { CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from '@angular/common';
 import { SafeResourceUrlPipe } from '../../Pipes/safe-resource-url.pipe';
 import { SettingsService } from '../../services/settings.service';
+import {FormsModule} from '@angular/forms';
 
 interface BluetoothDevice {
   id: string;
   name?: string;
   device?: any; // The actual device object
   characteristic?: any; // The Bluetooth characteristic for sending data
+  service?: any; // The Bluetooth service
 }
 
 @Component({
@@ -22,7 +24,8 @@ interface BluetoothDevice {
     TitleCasePipe,
     NgClass,
     DatePipe,
-    SafeResourceUrlPipe
+    SafeResourceUrlPipe,
+    FormsModule
   ],
   templateUrl: './receipt.component.html',
   styleUrl: './receipt.component.scss'
@@ -32,6 +35,8 @@ export class ReceiptComponent {
 
   isPreviewLoading = signal(false);
   previewUrl = signal<string | null>(null);
+
+  manualCharacteristicUUID = '';
 
   // Bluetooth-related signals
   showBluetoothDialog = signal(false);
@@ -66,23 +71,32 @@ export class ReceiptComponent {
     this.scanForBluetoothDevices();
   }
 
-  // Scan for Bluetooth devices
+
+// Scan for Bluetooth devices
   async scanForBluetoothDevices() {
     this.isScanning.set(true);
     this.bluetoothDevices.set([]);
 
     try {
-      // Request Bluetooth devices
+      // Request Bluetooth devices with broader options
       const device = await (navigator as any).bluetooth.requestDevice({
-        // Accept all Bluetooth printers that advertise as serial port
+        // Accept all Bluetooth printers with common patterns
         filters: [
-          { services: ['000018f0-0000-1000-8000-00805f9b34fb'] }, // Common thermal printer service
-          { services: ['e7810a71-73ae-499d-8c15-faa9aef0c3f2'] }, // ESCPOS service
           { namePrefix: 'BT' }, // Common prefix for Bluetooth thermal printers
           { namePrefix: 'POS' },
-          { namePrefix: 'Printer' }
+          { namePrefix: 'Printer' },
+          { namePrefix: 'SPRT' }, // Common for some thermal printers
+          { namePrefix: 'TP' },   // Thermal Printer abbreviation
+          { namePrefix: 'ZJ' }    // Common for Zjiang printers
         ],
-        optionalServices: ['battery_service', 'device_information']
+        // Include all potential services used by printers
+        optionalServices: [
+          '000018f0-0000-1000-8000-00805f9b34fb',
+          'e7810a71-73ae-499d-8c15-faa9aef0c3f2',
+          '0000ffe0-0000-1000-8000-00805f9b34fb',
+          '49535343-fe7d-4ae5-8fa9-9fafd205e455',
+          'fff0'
+        ]
       });
 
       if (device) {
@@ -104,7 +118,8 @@ export class ReceiptComponent {
     }
   }
 
-  // Connect to selected Bluetooth device
+
+// Connect to selected Bluetooth device
   async connectToDevice(device: BluetoothDevice) {
     try {
       this.loadingService.start('Connecting to printer...');
@@ -113,23 +128,104 @@ export class ReceiptComponent {
       // Connect to the GATT server
       const server = await btDevice.gatt.connect();
 
-      // Get the primary service for printing
-      // (actual service UUID may vary depending on your printer)
-      const service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb')
-        .catch(() => server.getPrimaryService('e7810a71-73ae-499d-8c15-faa9aef0c3f2'))
-        .catch(() => server.getPrimaryService(0xFFE0)); // Fallback to common UUID
+      // Get all available services
+      const services = await server.getPrimaryServices();
+      console.log('Available services:', services);
 
-      // Get the characteristic for sending data
-      const characteristic = await service.getCharacteristic(0xFFE1);
+      // Try to find a service we can use for printing
+      let service = null;
+      let characteristic = null;
 
-      // Store the connected device and its characteristic
-      this.connectedDevice.set({
-        ...device,
-        characteristic
-      });
+      // Common service UUIDs for ESC/POS printers
+      const serviceUUIDs = [
+        '000018f0-0000-1000-8000-00805f9b34fb',
+        'e7810a71-73ae-499d-8c15-faa9aef0c3f2',
+        '0000ffe0-0000-1000-8000-00805f9b34fb',
+        '49535343-fe7d-4ae5-8fa9-9fafd205e455',
+        '18f0',  // Shortened version
+        'ffe0',  // Shortened version
+        'fff0'   // Another common one
+      ];
 
-      this.toast.success(`Connected to ${device.name || 'printer'}`);
-      this.showBluetoothDialog.set(false);
+      // Common characteristic UUIDs for ESC/POS printers
+      const characteristicUUIDs = [
+        '0000ffe1-0000-1000-8000-00805f9b34fb',
+        '00002af1-0000-1000-8000-00805f9b34fb',
+        'ffe1',
+        '2af1',
+        'fff1',
+        'fff2'
+      ];
+
+      // First, try the most common combinations
+      for (const serviceUUID of serviceUUIDs) {
+        try {
+          service = await server.getPrimaryService(serviceUUID);
+          console.log(`Found service: ${serviceUUID}`);
+
+          // Try each characteristic UUID
+          for (const charUUID of characteristicUUIDs) {
+            try {
+              characteristic = await service.getCharacteristic(charUUID);
+              console.log(`Found characteristic: ${charUUID} in service ${serviceUUID}`);
+              break;
+            } catch (e) {
+              console.log(`Characteristic ${charUUID} not found in service ${serviceUUID}`);
+            }
+          }
+
+          if (characteristic) break;
+        } catch (e) {
+          console.log(`Service ${serviceUUID} not found`);
+        }
+      }
+
+      // If we didn't find a known combination, try discovery
+      if (!characteristic && services.length > 0) {
+        console.log('Attempting auto-discovery of characteristics...');
+
+        for (const svc of services) {
+          try {
+            console.log(`Discovering characteristics for service: ${svc.uuid}`);
+            const characteristics = await svc.getCharacteristics();
+
+            console.log(`Found ${characteristics.length} characteristics in service ${svc.uuid}:`,
+              characteristics.map((c: { uuid: any; }) => c.uuid));
+
+            // Find a characteristic with write property
+            for (const char of characteristics) {
+              const props = await char.getProperties();
+              console.log(`Characteristic ${char.uuid} properties:`, props);
+
+              if (props.write || props.writeWithoutResponse) {
+                console.log(`Found writable characteristic: ${char.uuid}`);
+                service = svc;
+                characteristic = char;
+                break;
+              }
+            }
+
+            if (characteristic) break;
+          } catch (e) {
+            console.log(`Error discovering characteristics for service ${svc.uuid}:`, e);
+          }
+        }
+      }
+
+      // If we found a suitable characteristic
+      if (characteristic) {
+        // Store the connected device and its characteristic
+        this.connectedDevice.set({
+          ...device,
+          characteristic,
+          service
+        });
+
+        this.toast.success(`Connected to ${device.name || 'printer'}`);
+        this.showBluetoothDialog.set(false);
+      } else {
+        throw new Error('No suitable characteristic found for printing');
+      }
     } catch (error) {
       console.error('Bluetooth connection error:', error);
       this.toast.error('Failed to connect to the printer');
@@ -176,15 +272,37 @@ export class ReceiptComponent {
       throw new Error('No printer connected');
     }
 
-    // For large data, we need to chunk it
-    const CHUNK_SIZE = 20; // Common BLE MTU size
+    try {
+      // For large data, we need to chunk it
+      const CHUNK_SIZE = 20; // Common BLE MTU size
 
-    for (let i = 0; i < data.length; i += CHUNK_SIZE) {
-      const chunk = data.slice(i, i + CHUNK_SIZE);
-      await device.characteristic.writeValue(chunk);
+      // Get properties to determine write method
+      const props = await device.characteristic.getProperties();
+      const useWriteWithoutResponse = props.writeWithoutResponse;
 
-      // Small delay between chunks to avoid buffer overflow
-      await new Promise(resolve => setTimeout(resolve, 50));
+      console.log(`Sending data using ${useWriteWithoutResponse ? 'writeValueWithoutResponse' : 'writeValue'}`);
+
+      for (let i = 0; i < data.length; i += CHUNK_SIZE) {
+        const chunk = data.slice(i, i + CHUNK_SIZE);
+
+        if (useWriteWithoutResponse && device.characteristic.writeValueWithoutResponse) {
+          await device.characteristic.writeValueWithoutResponse(chunk);
+        } else {
+          await device.characteristic.writeValue(chunk);
+        }
+
+        // Small delay between chunks to avoid buffer overflow
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+    } catch (error: unknown) {
+      console.error('Error sending data to printer:', error);
+
+      // Fix the TypeScript error by proper handling of unknown type
+      const errorMessage = error instanceof Error
+        ? error.message
+        : 'Unknown error occurred';
+
+      throw new Error(`Failed to send data to printer: ${errorMessage}`);
     }
   }
 
@@ -311,4 +429,77 @@ export class ReceiptComponent {
       this.isPreviewLoading.set(false);
     }
   }
+
+
+  async tryManualConnection() {
+    if (!this.manualCharacteristicUUID || this.bluetoothDevices().length === 0) {
+      this.toast.error('Please enter a UUID and select a device first');
+      return;
+    }
+
+    const device = this.bluetoothDevices()[0];
+
+    try {
+      this.loadingService.start('Connecting with manual UUID...');
+      const btDevice = device.device;
+
+      // Connect to the GATT server
+      const server = await btDevice.gatt.connect();
+
+      // Get all services
+      const services = await server.getPrimaryServices();
+
+      if (services.length === 0) {
+        throw new Error('No services found on device');
+      }
+
+      // Try the manual UUID with each service
+      let characteristic = null;
+      let service = null;
+
+      for (const svc of services) {
+        try {
+          // Try with and without the full UUID format
+          const fullUUID = this.manualCharacteristicUUID.includes('-')
+            ? this.manualCharacteristicUUID
+            : `0000${this.manualCharacteristicUUID}-0000-1000-8000-00805f9b34fb`;
+
+          // Try both formats
+          try {
+            characteristic = await svc.getCharacteristic(fullUUID);
+          } catch {
+            characteristic = await svc.getCharacteristic(this.manualCharacteristicUUID);
+          }
+
+          if (characteristic) {
+            service = svc;
+            break;
+          }
+        } catch (e) {
+          console.log(`Manual UUID not found in service ${svc.uuid}`);
+        }
+      }
+
+      if (characteristic) {
+        this.connectedDevice.set({
+          ...device,
+          characteristic,
+          service
+        });
+
+        this.toast.success(`Connected using manual UUID`);
+        this.showBluetoothDialog.set(false);
+      } else {
+        throw new Error(`Characteristic with UUID ${this.manualCharacteristicUUID} not found`);
+      }
+    } catch (error: unknown) {
+      console.error('Manual connection error:', error);
+      this.toast.error('Manual connection failed');
+    } finally {
+      this.loadingService.clear();
+    }
+  }
+
+
+
 }

@@ -196,6 +196,7 @@
 @if (showBluetoothDialog()) {
   <div class="fixed inset-0 bg-black/70 z-50 flex items-start md:items-center justify-center p-4">
     <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-xl max-w-md w-full p-4 animate-fade-in-up mt-8 md:mt-0">
+      <!-- Dialog Header -->
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-bold text-text-light-primary dark:text-white">
           Connect Bluetooth Printer
@@ -205,12 +206,14 @@
         </button>
       </div>
 
+      <!-- Scanning State -->
       @if (isScanning()) {
         <div class="py-8 flex flex-col items-center justify-center">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mb-4"></div>
           <p class="text-text-light-secondary dark:text-gray-300">Scanning for printers...</p>
         </div>
       } @else if (bluetoothDevices().length === 0) {
+        <!-- Empty State -->
         <div class="py-6 text-center">
           <p class="text-text-light-secondary dark:text-gray-300 mb-4">No Bluetooth printers found.</p>
           <button
@@ -221,16 +224,17 @@
           </button>
         </div>
       } @else {
+        <!-- Device List -->
         <div class="mb-4">
           <p class="text-sm text-text-light-tertiary dark:text-gray-400 mb-2">
             Select your 58mm thermal printer from the list below:
           </p>
-          <div class="max-h-60 overflow-y-auto">
+          <div class="max-h-48 overflow-y-auto border border-gray-100 dark:border-gray-700 rounded-lg">
             @for (device of bluetoothDevices(); track device.id) {
               <button
                 (click)="connectToDevice(device)"
                 class="w-full text-left p-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between
-                      hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg mb-1"
+                      hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors last:border-b-0"
               >
                 <div class="flex items-center">
                   <span class="material-icons text-primary-500 mr-2">print</span>
@@ -245,18 +249,59 @@
           </div>
         </div>
 
-        <div class="flex justify-between">
+        <!-- Manual Connection Section -->
+        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <h4 class="text-sm font-medium text-text-light-primary dark:text-white mb-2">Manual Connection</h4>
+          <p class="text-xs text-text-light-tertiary dark:text-gray-400 mb-2">
+            If automatic connection fails, enter your printer's characteristic UUID:
+          </p>
+          <div class="flex space-x-2">
+            <input
+              type="text"
+              [(ngModel)]="manualCharacteristicUUID"
+              placeholder="e.g. ffe1 or fff2"
+              class="flex-1 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600
+                   bg-white dark:bg-gray-900 text-sm"
+            />
+            <button
+              (click)="tryManualConnection()"
+              class="px-3 py-1.5 bg-primary-500 text-white rounded-lg hover:bg-primary-600 text-sm"
+            >
+              Connect
+            </button>
+          </div>
+        </div>
+
+        <!-- Replace the debugging information in the dialog -->
+        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <details class="text-xs text-text-light-tertiary dark:text-gray-400">
+            <summary class="cursor-pointer hover:text-primary-500 pb-2">Show debugging information</summary>
+            <div class="bg-gray-50 dark:bg-gray-800 p-2 rounded-lg overflow-auto max-h-24">
+              @if (bluetoothDevices().length > 0) {
+                <p>Device ID: {{ bluetoothDevices()[0].id }}</p>
+                <p>Device Name: {{ bluetoothDevices()[0].name || 'Unnamed Device' }}</p>
+              } @else {
+                <p>No devices found</p>
+              }
+              <p>Manual UUID: {{ manualCharacteristicUUID }}</p>
+              <p>Check console logs for more details</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Dialog Actions -->
+        <div class="flex justify-between mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
           <button
             (click)="scanForBluetoothDevices()"
             class="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg
-                   text-text-light-secondary dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm"
+                 text-text-light-secondary dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm"
           >
             Refresh
           </button>
           <button
             (click)="showBluetoothDialog.set(false)"
             class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-text-light-secondary dark:text-gray-300 rounded-lg
-                   hover:bg-gray-200 dark:hover:bg-gray-700 text-sm"
+                 hover:bg-gray-200 dark:hover:bg-gray-700 text-sm"
           >
             Cancel
           </button>
