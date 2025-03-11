@@ -502,5 +502,40 @@ export class ReceiptComponent {
   }
 
 
+  // Alternative scanning approach for all Bluetooth devices
+  async scanForAllBluetoothDevices() {
+    this.isScanning.set(true);
+    this.bluetoothDevices.set([]);
+
+    try {
+      // Request ALL Bluetooth devices and let user select
+      const device = await (navigator as any).bluetooth.requestDevice({
+        acceptAllDevices: true,
+        optionalServices: [
+          '000018f0-0000-1000-8000-00805f9b34fb',
+          'e7810a71-73ae-499d-8c15-faa9aef0c3f2',
+          '0000ffe0-0000-1000-8000-00805f9b34fb',
+          '49535343-fe7d-4ae5-8fa9-9fafd205e455',
+          '0000fff0-0000-1000-8000-00805f9b34fb'
+        ]
+      });
+
+      if (device) {
+        console.log("Found device:", device.name, device.id);
+        this.bluetoothDevices.update(devices => [...devices, {
+          id: device.id,
+          name: device.name,
+          device: device
+        }]);
+      }
+    } catch (error) {
+      console.error('Bluetooth scan error:', error);
+      this.toast.error(`Bluetooth error: ${(error as Error).message}`);
+    } finally {
+      this.isScanning.set(false);
+    }
+  }
+
+
 
 }
