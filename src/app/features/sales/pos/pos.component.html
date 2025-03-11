@@ -72,7 +72,7 @@
         } @else {
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
             @for (product of getFilteredProducts(); track product.$id) {
-              <div class="group relative rounded-lg bg-white dark:bg-surface-dark-secondary shadow-soft
+              <div class="group relative rounded-lg bg-white dark:bg-surface-dark-secondary shadow-primary-600 shadow-sm
                           hover:shadow-md transition-all duration-200 overflow-hidden"
                    [class.opacity-60]="product.stockQuantity <= 0">
                 <button
@@ -90,7 +90,7 @@
                   </div>
 
                   <!-- Product Info -->
-                  <div class="w-full">
+                  <div class="w-full ">
                     <h3 class="font-medium text-text-light-primary dark:text-white truncate text-sm">
                       {{ product.name }}
                     </h3>
@@ -400,9 +400,9 @@
       </h2>
       <button
         (click)="closeCartPanel()"
-        class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        class="p-1.5 rounded-lg hover:bg-gray-100 dark:bg-zinc-800 border border-primary-600/50 transition-colors"
       >
-        <span class="material-icons">close</span>
+        <span class="material-icons text-red-400">close</span>
       </button>
     </div>
 
@@ -640,30 +640,28 @@
   </div>
 </div>
 
-<!-- Customer Selection Modal -->
+<!-- Customer Selection Modal - Optimized for Mobile -->
 @if (showCustomerModal()) {
-  <div class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-3" autoAnimate>
+  <div class="fixed inset-0 bg-black/90 flex md:items-center md:justify-center items-start justify-center z-50 p-3 md:p-4" autoAnimate>
     <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-xl w-full max-w-lg
-                max-h-[90vh] overflow-hidden animate-fade-in-up">
-      <!-- Modal Header -->
-      <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark-secondary sticky top-0 z-10">
-        <div class="flex justify-between items-center">
-          <h3 class="text-lg font-bold text-text-light-primary dark:text-white flex items-center">
-            <span class="material-icons mr-1.5 text-primary-500 text-sm">{{ showNewCustomerForm() ? 'person_add' : 'person' }}</span>
-            {{ showNewCustomerForm() ? 'Add New Customer' : 'Select Customer' }}
-          </h3>
-          <button
-            (click)="showCustomerModal.set(false)"
-            class="p-1.5 w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors flex items-center justify-center"
-          >
-            <span class="material-icons text-sm">close</span>
-          </button>
-        </div>
+                mt-2 md:mt-0 max-h-[85vh] md:max-h-[90vh] overflow-hidden animate-fade-in-up">
+      <!-- Modal Header - Sticky to remain visible -->
+      <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark-secondary sticky top-0 z-10 flex justify-between items-center">
+        <h3 class="text-base md:text-lg font-bold text-text-light-primary dark:text-white flex items-center">
+          <span class="material-icons mr-1.5 text-primary-500 text-sm">{{ showNewCustomerForm() ? 'person_add' : 'person' }}</span>
+          {{ showNewCustomerForm() ? 'Add New Customer' : 'Select Customer' }}
+        </h3>
+        <button
+          (click)="showCustomerModal.set(false)"
+          class="p-1.5 w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors flex items-center justify-center"
+        >
+          <span class="material-icons text-sm text-error-DEFAULT">close</span>
+        </button>
       </div>
 
       @if (showNewCustomerForm()) {
         <!-- New Customer Form -->
-        <div class="p-4 overflow-y-auto max-h-[calc(90vh-60px)]">
+        <div class="p-4 overflow-y-auto max-h-[calc(85vh-60px)] md:max-h-[calc(90vh-60px)]">
           <form [formGroup]="newCustomerForm" (ngSubmit)="createCustomer()" class="space-y-3">
             <!-- Name Field -->
             <div>
@@ -671,9 +669,9 @@
                 Full Name <span class="text-error-DEFAULT">*</span>
               </label>
               <div class="relative">
-               <span class="absolute inset-y-0 left-2.5 flex items-center text-gray-400">
-                 <span class="material-icons text-sm">person</span>
-               </span>
+                <span class="absolute inset-y-0 left-2.5 flex items-center text-gray-400">
+                  <span class="material-icons text-sm">person</span>
+                </span>
                 <input
                   type="text"
                   formControlName="name"
@@ -694,9 +692,9 @@
                 Email <span class="text-error-DEFAULT">*</span>
               </label>
               <div class="relative">
-               <span class="absolute inset-y-0 left-2.5 flex items-center text-gray-400">
-                 <span class="material-icons text-sm">email</span>
-               </span>
+                <span class="absolute inset-y-0 left-2.5 flex items-center text-gray-400">
+                  <span class="material-icons text-sm">email</span>
+                </span>
                 <input
                   type="email"
                   formControlName="email"
@@ -719,9 +717,9 @@
                 Phone <span class="text-error-DEFAULT">*</span>
               </label>
               <div class="relative">
-               <span class="absolute inset-y-0 left-2.5 flex items-center text-gray-400">
-                 <span class="material-icons text-sm">phone</span>
-               </span>
+                <span class="absolute inset-y-0 left-2.5 flex items-center text-gray-400">
+                  <span class="material-icons text-sm">phone</span>
+                </span>
                 <input
                   type="tel"
                   formControlName="phone"
@@ -742,9 +740,9 @@
                 Address <span class="text-error-DEFAULT">*</span>
               </label>
               <div class="relative">
-               <span class="absolute top-2.5 left-2.5 flex items-center text-gray-400">
-                 <span class="material-icons text-sm">home</span>
-               </span>
+                <span class="absolute top-2.5 left-2.5 flex items-center text-gray-400">
+                  <span class="material-icons text-sm">home</span>
+                </span>
                 <textarea
                   formControlName="address"
                   rows="2"
@@ -788,10 +786,10 @@
               </button>
             </div>
           </form>
-      </div>
+        </div>
       } @else {
-        <!-- Phone Search Bar -->
-        <div class="p-3 border-b border-gray-200 dark:border-gray-700">
+        <!-- Phone Search Bar - Sticky on scroll -->
+        <div class="p-3 border-b border-gray-200 dark:border-gray-700 sticky top-[53px] z-10 bg-white dark:bg-surface-dark-secondary">
           <div class="relative">
             <input
               type="tel"
@@ -804,8 +802,8 @@
                     focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
             >
             <span class="material-icons absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
-             phone
-           </span>
+              phone
+            </span>
             @if (phoneSearchInput) {
               <button
                 (click)="createNewFromPhone()"
@@ -825,7 +823,7 @@
         </div>
 
         <!-- Customer List -->
-        <div class="overflow-y-auto max-h-[calc(90vh-110px)]">
+        <div class="overflow-y-auto max-h-[calc(85vh-110px)] md:max-h-[calc(90vh-110px)]">
           <div class="p-2" autoAnimate>
             @if (filteredCustomers().length) {
               @for (customer of filteredCustomers(); track customer.$id) {
@@ -857,8 +855,8 @@
                       </div>
                     </div>
                     <span class="material-icons text-gray-400 group-hover:text-primary-500 transform group-hover:translate-x-1 transition-all text-sm">
-                     chevron_right
-                   </span>
+                      chevron_right
+                    </span>
                   </div>
                 </button>
               }

@@ -6,11 +6,12 @@ import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
 import { ClickOutsideDirective } from '../../Directives/clickOutside.directive';
 import {MobileService} from '../../services/mobile.service';
+import {AutoAnimationDirective} from '../../Directives/auto-Animate.directive';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink,  ClickOutsideDirective],
+  imports: [CommonModule, RouterLink, ClickOutsideDirective, AutoAnimationDirective],
   templateUrl: './header.component.html'
 })
 export class HeaderComponent {
