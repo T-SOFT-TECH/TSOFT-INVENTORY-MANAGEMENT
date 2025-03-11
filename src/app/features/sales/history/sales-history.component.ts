@@ -43,6 +43,7 @@ export class SalesHistoryComponent implements OnInit {
   currentSaleId = signal<string | null>(null);
   selectedPaymentMethod = signal<'cash' | 'card' | 'transfer'>('cash');
 
+  showFilters = signal(false);
 
 
   // Sorting
@@ -75,6 +76,10 @@ export class SalesHistoryComponent implements OnInit {
   ngOnInit() {
     this.loadInitialData();
     //this.setupFilterListeners();
+  }
+
+  toggleFilters() {
+    this.showFilters.update(v => !v);
   }
 
   private async loadInitialData() {
