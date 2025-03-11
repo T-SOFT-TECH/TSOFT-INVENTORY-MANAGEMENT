@@ -795,70 +795,85 @@ export class InvoiceService {
    * This creates a binary command sequence that most ESC/POS printers understand
    */
 
-// Enhanced method to generate ESC/POS commands with better formatting
+// Professional receipt design for 58mm thermal printer
   private generateESCPOSCommands(textContent: string, sale: SaleWithDetails): Uint8Array {
     // Initialize command array
     const parts: Uint8Array[] = [];
 
-    // Basic ESC/POS commands
+    // ESC/POS Commands
     const ESC = 0x1B;  // Escape
     const GS = 0x1D;   // Group Separator
     const LF = 0x0A;   // Line Feed
+    const FS = 0x1C;   // Field Separator
 
-    // Company information
-    const companyName = this.settingsService.settings()?.company?.companyName || 'Your Company';
-    const companyPhone = this.settingsService.settings()?.company?.phone || '';
+    // Company information from settings
+    const companyName = this.settingsService.settings()?.company?.companyName || 'TSOFT-TECHNOLOGIES';
+    const companyAddress = this.settingsService.settings()?.company?.address || 'Jajo Estate \n Mowo-Nla, Ikorodu \n Lagos State, Nigeria';
+    const companyPhone = this.settingsService.settings()?.company?.phone || '+234 123 456 7890';
+    const companyEmail = this.settingsService.settings()?.company?.email || 'sales@tsoftechnologies.com';
 
-    // For 58mm printer - typically 32 characters per line
-    const CHARS_PER_LINE = 32;
-    const divider = '-'.repeat(CHARS_PER_LINE);
+    // Constants for receipt layout
+    const CHARS_PER_LINE = 32; // Character limit for 58mm paper
+    const DOUBLE_LINE = '================================';
+    const SINGLE_LINE = '--------------------------------';
 
-    // Format currency
+    // Format currency with Naira sign
     const formatCurrency = (amount: number | undefined): string => {
-      if (amount === undefined || amount === null) return '₦0.00';
-      return `₦${Number(amount).toFixed(2)}`;
+      if (amount === undefined || amount === null || isNaN(Number(amount))) return '₦0.00';
+
+      // Format with thousand separators and fixed decimal places
+      const formatter = new Intl.NumberFormat('en-NG', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+      return '₦' + formatter.format(Number(amount));
     };
 
-    // Build receipt content manually instead of using the text template
+    // Center text function
+    const centerText = (text: string, width: number = CHARS_PER_LINE): string => {
+      const padLength = Math.max(0, (width - text.length) / 2);
+      return ' '.repeat(Math.floor(padLength)) + text;
+    };
+
+    // Right align text
+    const rightAlign = (text: string, width: number = CHARS_PER_LINE): string => {
+      const padLength = Math.max(0, width - text.length);
+      return ' '.repeat(padLength) + text;
+    };
+
+    // Function to build receipt
     const buildReceipt = () => {
-      const lines: string[] = [];
+      // 1. INITIALIZE PRINTER
+      parts.push(new Uint8Array([ESC, 0x40])); // Initialize printer
 
-      // 1. HEADER SECTION
-      // Initialize printer
-      parts.push(new Uint8Array([ESC, 0x40]));
+      // 2. HEADER SECTION WITH LOGO (if supported)
+      parts.push(new Uint8Array([ESC, 0x61, 0x01])); // Center alignment
 
-      // Center alignment
-      parts.push(new Uint8Array([ESC, 0x61, 0x01]));
+      // Optional: Print logo if your printer supports it
+      // This is a bitmap printing command - may need to be adjusted for your specific printer
+      // For now we'll use text-based logo rendering
 
-      // Emphasized mode (bold) for company name
-      parts.push(new Uint8Array([ESC, 0x21, 0x08]));
+      // Company Name - Large bold text
+      parts.push(new Uint8Array([ESC, 0x21, 0x30])); // Double width, double height
       parts.push(this.textToUint8Array(companyName + '\n'));
 
-      // Normal mode for other header info
-      parts.push(new Uint8Array([ESC, 0x21, 0x00]));
+      // Reset text formatting
+      parts.push(new Uint8Array([ESC, 0x21, 0x00])); // Normal size
 
-      if (companyPhone) {
-        parts.push(this.textToUint8Array(companyPhone + '\n'));
-      }
+      // Company contact details
+      parts.push(this.textToUint8Array(companyAddress + '\n'));
+      parts.push(this.textToUint8Array('Tel: ' + companyPhone + '\n'));
+      parts.push(this.textToUint8Array(companyEmail + '\n'));
+      parts.push(this.textToUint8Array(DOUBLE_LINE + '\n'));
 
-      parts.push(this.textToUint8Array('\n'));
-
-      // 2. RECEIPT INFO SECTION
-      // Title centered and bold
-      parts.push(new Uint8Array([ESC, 0x21, 0x08]));
+      // 3. RECEIPT INFORMATION
+      parts.push(new Uint8Array([ESC, 0x21, 0x08])); // Bold
       parts.push(this.textToUint8Array('RECEIPT\n'));
-      parts.push(new Uint8Array([ESC, 0x21, 0x00]));
-
-      parts.push(this.textToUint8Array(divider + '\n'));
-
-      // Left align for details
-      parts.push(new Uint8Array([ESC, 0x61, 0x00]));
-
-      // Invoice number and date
-      parts.push(this.textToUint8Array(`Inv #: ${sale.invoiceNumber || 'N/A'}\n`));
+      parts.push(new Uint8Array([ESC, 0x21, 0x00])); // Normal
 
       // Format date nicely
-      const dateStr = sale.date ? new Date(sale.date).toLocaleString('en-US', {
+      const dateStr = sale.date ? new Date(sale.date).toLocaleString('en-NG', {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
@@ -866,86 +881,160 @@ export class InvoiceService {
         minute: '2-digit'
       }) : 'N/A';
 
-      parts.push(this.textToUint8Array(`Date: ${dateStr}\n`));
+      // Switch to left align for details
+      parts.push(new Uint8Array([ESC, 0x61, 0x00])); // Left align
 
-      // Payment status with emphasis
-      parts.push(this.textToUint8Array(`Status: ${sale.paymentStatus?.toUpperCase() || 'PENDING'}\n`));
+      // Receipt details
+      parts.push(this.textToUint8Array('Invoice #: ' + (sale.invoiceNumber || 'N/A') + '\n'));
+      parts.push(this.textToUint8Array('Date: ' + dateStr + '\n'));
 
-      // Customer info if available
+      // Payment status with highlight
+      parts.push(new Uint8Array([ESC, 0x21, 0x08])); // Bold
+      parts.push(this.textToUint8Array('Status: ' + (sale.paymentStatus?.toUpperCase() || 'PENDING') + '\n'));
+      parts.push(new Uint8Array([ESC, 0x21, 0x00])); // Normal
+
+      // 4. CUSTOMER SECTION
       if (sale.customer) {
-        parts.push(this.textToUint8Array(divider + '\n'));
-        parts.push(this.textToUint8Array(`Customer: ${sale.customer.name || 'N/A'}\n`));
+        parts.push(this.textToUint8Array(SINGLE_LINE + '\n'));
+        parts.push(new Uint8Array([ESC, 0x21, 0x08])); // Bold
+        parts.push(this.textToUint8Array('CUSTOMER DETAILS\n'));
+        parts.push(new Uint8Array([ESC, 0x21, 0x00])); // Normal
+        parts.push(this.textToUint8Array('Name: ' + (sale.customer.name || 'N/A') + '\n'));
+
         if (sale.customer.phone) {
-          parts.push(this.textToUint8Array(`Phone: ${sale.customer.phone}\n`));
+          parts.push(this.textToUint8Array('Tel: ' + sale.customer.phone + '\n'));
+        }
+
+        if (sale.customer.email) {
+          parts.push(this.textToUint8Array('Email: ' + sale.customer.email + '\n'));
         }
       }
 
-      // 3. ITEMS SECTION
-      parts.push(this.textToUint8Array(divider + '\n'));
+      // 5. ITEMS SECTION
+      parts.push(this.textToUint8Array(DOUBLE_LINE + '\n'));
 
-      // Item header with columns
+      // Item header with emphasis
       parts.push(new Uint8Array([ESC, 0x21, 0x08])); // Bold
-      parts.push(this.textToUint8Array('ITEM              QTY   PRICE\n'));
+      parts.push(this.textToUint8Array('ITEM DESCRIPTION\n'));
       parts.push(new Uint8Array([ESC, 0x21, 0x00])); // Normal
-      parts.push(this.textToUint8Array(divider + '\n'));
+      parts.push(this.textToUint8Array(SINGLE_LINE + '\n'));
 
-      // Items
+      // Items with optimized layout
       const saleItems = Array.isArray(sale.saleItems) ? sale.saleItems : [];
       for (const item of saleItems) {
         const price = item.priceAtSale || (item.product && item.product.price) || 0;
         const quantity = item.quantity || 1;
         const total = price * quantity;
-        const productName = (item.product && item.product.name) || 'Unknown';
+        const productName = (item.product && item.product.name) || 'Unknown Product';
 
-        // Truncate and format product name to fit
-        let name = productName;
-        if (name.length > 16) {
-          name = name.substring(0, 14) + '..';
+        // Product name - can be longer since it's on its own line
+        parts.push(new Uint8Array([ESC, 0x21, 0x08])); // Bold
+
+        // Truncate name if too long
+        if (productName.length > CHARS_PER_LINE) {
+          parts.push(this.textToUint8Array(productName.substring(0, CHARS_PER_LINE - 3) + '...\n'));
         } else {
-          name = name.padEnd(16);
+          parts.push(this.textToUint8Array(productName + '\n'));
         }
 
-        // Format quantity and price with padding
-        const qtyStr = String(quantity).padStart(3);
-        const priceStr = formatCurrency(price).padStart(9);
+        parts.push(new Uint8Array([ESC, 0x21, 0x00])); // Normal
 
-        parts.push(this.textToUint8Array(`${name} ${qtyStr} ${priceStr}\n`));
+        // Price details with tabular format
+        const qtyPrice = `${quantity} x ${formatCurrency(price)}`;
+        const subtotal = formatCurrency(total);
 
-        // Optional - item total on its own line with indent
-        parts.push(this.textToUint8Array(`    Subtotal: ${formatCurrency(total).padStart(16)}\n`));
+        // Format to align the subtotal to the right
+        const detailLine = qtyPrice + ' '.repeat(Math.max(0, CHARS_PER_LINE - qtyPrice.length - subtotal.length)) + subtotal;
+        parts.push(this.textToUint8Array(detailLine + '\n'));
+
+        // Add a separator between items
+        if (saleItems.indexOf(item) < saleItems.length - 1) {
+          parts.push(this.textToUint8Array('-  -  -  -  -  -  -  -  -  -  -  -\n'));
+        }
       }
 
-      // 4. SUMMARY SECTION
-      parts.push(this.textToUint8Array(divider + '\n'));
+      // 6. SUMMARY SECTION
+      parts.push(this.textToUint8Array(DOUBLE_LINE + '\n'));
 
-      // Right align for totals
-      parts.push(new Uint8Array([ESC, 0x61, 0x02])); // Right align
+      // Create a structured summary with right-aligned values
+      const subtotalText = 'Subtotal:';
+      const subtotalValue = formatCurrency(sale.subtotal);
+      const subtotalLine = subtotalText + ' '.repeat(Math.max(0, CHARS_PER_LINE - subtotalText.length - subtotalValue.length)) + subtotalValue;
+      parts.push(this.textToUint8Array(subtotalLine + '\n'));
 
-      parts.push(this.textToUint8Array(`Subtotal: ${formatCurrency(sale.subtotal)}\n`));
-      parts.push(this.textToUint8Array(`Tax (${this.settingsService.settings()?.invoice?.taxRate || 0}%): ${formatCurrency(sale.tax)}\n`));
+      const taxText = `Tax (${this.settingsService.settings()?.invoice?.taxRate || 0}%):`;
+      const taxValue = formatCurrency(sale.tax);
+      const taxLine = taxText + ' '.repeat(Math.max(0, CHARS_PER_LINE - taxText.length - taxValue.length)) + taxValue;
+      parts.push(this.textToUint8Array(taxLine + '\n'));
 
-      // Total amount with double height and width
-      parts.push(new Uint8Array([ESC, 0x21, 0x30])); // Double height/width
-      parts.push(this.textToUint8Array(`TOTAL: ${formatCurrency(sale.totalAmount)}\n`));
-      parts.push(new Uint8Array([ESC, 0x21, 0x00])); // Back to normal
+      parts.push(this.textToUint8Array(SINGLE_LINE + '\n'));
+
+      // Total with emphasis
+      const totalText = 'TOTAL:';
+      const totalValue = formatCurrency(sale.totalAmount);
+
+      parts.push(new Uint8Array([ESC, 0x21, 0x10])); // Double height for total
+      const totalLine = totalText + ' '.repeat(Math.max(0, CHARS_PER_LINE - totalText.length - totalValue.length - 8)) + totalValue;
+      parts.push(this.textToUint8Array(totalLine + '\n'));
+      parts.push(new Uint8Array([ESC, 0x21, 0x00])); // Normal
 
       // Payment method
-      parts.push(this.textToUint8Array(`Payment: ${sale.paymentMethod ? sale.paymentMethod.toUpperCase() : 'CASH'}\n`));
+      const paymentText = 'Payment:';
+      const paymentValue = sale.paymentMethod ? sale.paymentMethod.toUpperCase() : 'CASH';
+      const paymentLine = paymentText + ' '.repeat(Math.max(0, CHARS_PER_LINE - paymentText.length - paymentValue.length)) + paymentValue;
+      parts.push(this.textToUint8Array(paymentLine + '\n'));
 
-      // 5. FOOTER
+      // 7. FOOTER
+      parts.push(this.textToUint8Array(DOUBLE_LINE + '\n'));
       parts.push(new Uint8Array([ESC, 0x61, 0x01])); // Center align
-      parts.push(this.textToUint8Array('\n'));
-      parts.push(this.textToUint8Array('Thank you for your business!\n'));
-      parts.push(this.textToUint8Array(new Date().toLocaleDateString() + '\n'));
 
-      // Additional line feeds before cutting
+      // QR Code for invoice lookup (if printer supports it)
+      if (sale.invoiceNumber) {
+        try {
+          // Model selection (model 2 QR Code)
+          parts.push(new Uint8Array([GS, 0x28, 0x6B, 0x04, 0x00, 0x31, 0x41, 0x32, 0x00]));
+
+          // Size of QR code (1-16) - set to 4 for 58mm paper
+          parts.push(new Uint8Array([GS, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x43, 0x04]));
+
+          // Store QR data - generate a simple URL or invoice reference
+          const qrData = `INV:${sale.invoiceNumber}`;
+          const qrLength = qrData.length + 3;
+          parts.push(new Uint8Array([
+            GS, 0x28, 0x6B, qrLength & 0xff, (qrLength >> 8) & 0xff,
+            0x31, 0x50, 0x30
+          ]));
+          parts.push(this.textToUint8Array(qrData));
+
+          // Print QR code
+          parts.push(new Uint8Array([GS, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x51, 0x30]));
+        } catch (e) {
+          console.log('QR code printing not supported or failed');
+        }
+      }
+
+      // Thank you message
+      parts.push(this.textToUint8Array('\nThank you for your business!\n'));
+      parts.push(this.textToUint8Array('Please come again\n\n'));
+
+      // Current date and time as transaction timestamp
+      const now = new Date().toLocaleString('en-NG', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      parts.push(this.textToUint8Array(now + '\n'));
+
+      // Extra space before cutting
       parts.push(this.textToUint8Array('\n\n\n'));
 
       // Cut paper
       parts.push(new Uint8Array([GS, 0x56, 0x00]));
     };
 
-    // Build the receipt
+    // Execute the receipt building
     buildReceipt();
 
     // Combine all parts into a single Uint8Array

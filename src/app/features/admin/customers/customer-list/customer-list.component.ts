@@ -38,7 +38,7 @@ export class CustomerListComponent {
   async loadCustomers() {
     try {
       this.isLoading.set(true);
-      this.loadingService.start('Loading customers...');
+
       const customers = await this.customerService.getCustomers();
       this.customers.set(customers);
     } catch (err) {
@@ -46,7 +46,7 @@ export class CustomerListComponent {
       this.toast.error('Could not load customers');
     } finally {
       this.isLoading.set(false);
-      this.loadingService.clear();
+
     }
   }
 
