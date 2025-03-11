@@ -1,7 +1,7 @@
 import { CategoryFormConfig } from './product-form.types';
 
 export const pcCasesConfig: CategoryFormConfig = {
-  id: 'pc-cases',
+  id: 'pc_cases',
   name: 'PC Cases',
   fields: [
     {

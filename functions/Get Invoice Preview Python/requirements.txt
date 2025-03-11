@@ -1,2 +1,2 @@
 appwrite
-fpdf
+xhtml2pdf

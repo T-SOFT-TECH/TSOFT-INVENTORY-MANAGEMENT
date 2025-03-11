@@ -3,6 +3,7 @@ import { Component, Input, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import {AuthService} from '../../services/auth.service';
+import {MobileService} from '../../services/mobile.service';
 
 interface MenuItem {
   icon: string;
@@ -24,8 +25,8 @@ interface MenuSection {
 })
 export class SidebarComponent {
 
-  isMobileMenuOpen = signal(false);
   private authService = inject(AuthService);
+  protected mobileService = inject(MobileService);
   currentUser = this.authService.currentUser;
 
   staffMenu: MenuSection[] = [
@@ -33,17 +34,17 @@ export class SidebarComponent {
       title: 'SALES',
       items: [
         { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-        { label: 'POS', icon: 'point_of_sale', route: '/sales' },
-        { label: 'Sales History', icon: 'receipt_long', route: '/sales/history' },
+        { label: 'POS', icon: 'point_of_sale', route: '/pos' },
+        { label: 'Sales History', icon: 'receipt_long', route: '/sales-history' },
 
       ]
     },
     {
-      title: 'REPORTS',
+      title: 'ANALYTICS & REPORTS',
       items: [
-        { label: 'Analytics', icon: 'analytics', route: '/sales/analytics' },
-        { label: 'Sales Report', icon: 'assessment', route: '/reports/sales' },
-        { label: 'Inventory Report', icon: 'inventory', route: '/reports/inventory' }
+        { label: 'Sales Analytics', icon: 'analytics', route: '/analytics' },
+        { label: 'Inventory Status', icon: 'inventory', route: '/inventory-status' },
+        { label: 'Customer Insights', icon: 'people_alt', route: '/customer-insights' }
       ]
     }
   ];
@@ -53,7 +54,7 @@ export class SidebarComponent {
     {
       title: 'ADMINISTRATION',
       items: [
-        { label: 'Stock', icon: 'dashboard', route: '/admin/stock' },
+        { label: 'Stock', icon: 'inventory', route: '/admin/stock' },
         { label: 'Products', icon: 'inventory_2', route: '/admin/products' },
         { label: 'Categories', icon: 'category', route: '/admin/categories' },
         { label: 'Brands', icon: 'business', route: '/admin/brands' },
@@ -63,14 +64,6 @@ export class SidebarComponent {
     }
   ];
 
-  toggleMobileMenu() {
-    this.isMobileMenuOpen.update(value => !value);
-  }
-
-  // Close mobile menu when navigating
-  closeMobileMenu() {
-    this.isMobileMenuOpen.set(false);
-  }
 
   isAdmin() {
     return this.currentUser()?.labels?.includes('admin');

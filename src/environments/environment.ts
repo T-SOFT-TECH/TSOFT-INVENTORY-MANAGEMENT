@@ -9,7 +9,7 @@ export const environment = {
 
   // Appwrite Configuration
   appwrite: {
-    endpoint: 'http://172.30.128.1/v1',
+    endpoint: 'https://appwrite.tsoft-tech.dev/v1',
     projectId: 'tsoftmart-inventory-invoice-system',
     databaseId: 'inventory-invoice-db',
     collections: {

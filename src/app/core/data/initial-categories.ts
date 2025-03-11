@@ -1,3 +1,4 @@
+/*
 export const initialCategories = [
   {
     name: 'Computers',
@@ -52,7 +53,6 @@ export const initialCategories = [
       { name: 'Network Switches', description: 'Network expansion devices', level: 1, order: 2 },
       { name: 'Network Cards', description: 'WiFi and ethernet adapters', level: 1, order: 3 },
       { name: 'Enterprise Switches', description: 'Business-grade network switches', level: 1, order: 4 },
-      { name: 'Enterprise Routers', description: 'Business-grade routers', level: 1, order: 5 },
       { name: 'Network Security', description: 'Hardware firewalls and security', level: 1, order: 6 }
     ]
   },
@@ -75,14 +75,10 @@ export const initialCategories = [
     level: 0,
     order: 6,
     children: [
-      { name: 'Universal Chargers', description: 'Multi-brand compatible chargers', level: 1, order: 1 },
-      { name: 'Brand Specific Chargers', description: 'Original manufacturer chargers', level: 1, order: 2 },
-      { name: 'Wall Chargers', description: 'AC power adapters', level: 1, order: 3 },
-      { name: 'Car Chargers', description: 'Vehicle charging adapters', level: 1, order: 4 },
-      { name: 'Wireless Chargers', description: 'Qi charging pads and stands', level: 1, order: 5 },
-      { name: 'Power Banks', description: 'Portable charging solutions', level: 1, order: 6 },
-      { name: 'UPS Systems', description: 'Uninterruptible power supplies', level: 1, order: 7 },
-      { name: 'Surge Protectors', description: 'Power surge protection strips', level: 1, order: 8 }
+      { name: ' Chargers And Adapters', description: 'Chargers And Adapters', level: 1, order: 1 },
+      { name: 'Power Banks', description: 'Portable charging solutions', level: 1, order: 2 },
+      { name: 'UPS Systems', description: 'Uninterruptible power supplies', level: 1, order: 3 },
+      { name: 'Surge Protectors', description: 'Power surge protection strips', level: 1, order: 4 }
     ]
   },
   {
@@ -165,6 +161,108 @@ export const initialCategories = [
       { name: 'Watch Bands', description: 'Replacement watch straps', level: 1, order: 3 },
       { name: 'Watch Chargers', description: 'Charging accessories', level: 1, order: 4 },
       { name: 'Watch Protectors', description: 'Screen protectors and cases', level: 1, order: 5 }
+    ]
+  },
+];
+*/
+
+
+export const initialCategories = [
+  {
+    name: 'Cables & Connectivity',
+    description: 'Essential cables for video, audio, data, and power connectivity',
+    level: 0,
+    order: 1,
+    children: [
+      {
+        name: 'Video Cables',
+        description: 'Cables for connecting displays and video devices',
+        level: 1,
+        order: 1,
+        children: [
+          { name: 'HDMI Cables', description: 'Standard, High-Speed, 4K, 8K HDMI cables', level: 2, order: 1 },
+          { name: 'DisplayPort Cables', description: 'DP 1.4, DP 2.0 cables for high-performance displays', level: 2, order: 2 },
+          { name: 'VGA Cables', description: 'Cables for older monitors and projectors', level: 2, order: 3 },
+          { name: 'Thunderbolt Cables', description: 'High-speed data and display connectivity', level: 2, order: 4 }
+        ]
+      },
+      {
+        name: 'Audio Cables',
+        description: 'Cables for audio connections and professional sound systems',
+        level: 1,
+        order: 2,
+        children: [
+          { name: 'Auxiliary Cables', description: '3.5mm cables for headphones and car audio', level: 2, order: 1 },
+          { name: 'Optical Audio Cables', description: 'Digital audio cables for home theaters', level: 2, order: 2 },
+          { name: 'RCA Cables', description: 'Analog stereo (Red/White) and video (Yellow)', level: 2, order: 3 },
+          { name: 'XLR Cables', description: 'Professional audio cables for microphones', level: 2, order: 4 },
+          {name: 'TRS Cables', description: 'Professional Tip-Ring-Sleeve (TRS) audio cables for high-quality balanced signal', level: 2, order: 5 },
+          {name: 'TS Cables', description: 'Professional Tip-Ring-Sleeve (TRS) audio cables for high-quality unbalanced signal', level: 2, order: 6 }
+        ]
+      },
+      {
+        name: 'Data & Charging Cables',
+        description: 'Cables for charging and data transfer',
+        level: 1,
+        order: 3,
+        children: [
+          { name: 'USB-C Cables', description: 'Fast charging and data transfer', level: 2, order: 1 },
+          { name: 'Lightning Cables', description: 'Apple device cables (iPhones, iPads)', level: 2, order: 2 },
+          { name: 'Micro-USB Cables', description: 'For older mobile devices and accessories', level: 2, order: 3 },
+          { name: 'MagSafe Charging Cables', description: 'Apple’s magnetic charging solution', level: 2, order: 4 }
+        ]
+      },
+      {
+        name: 'Network & Communication Cables',
+        description: 'Cables for networking and high-speed internet',
+        level: 1,
+        order: 4,
+        children: [
+          { name: 'Ethernet Cables', description: 'Cat6, Cat7 cables for wired networking', level: 2, order: 1 },
+          { name: 'Fiber Optic Cables', description: 'High-speed internet connections', level: 2, order: 2 },
+          { name: 'Coaxial Cables', description: 'Used for cable TV and internet', level: 2, order: 3 }
+        ]
+      },
+      {
+        name: 'Power Cables',
+        description: 'Power supply cables and extension solutions',
+        level: 1,
+        order: 5,
+        children: [
+          { name: 'Laptop Power Cables', description: 'AC adapters for major brands', level: 2, order: 1 },
+          { name: 'Extension Cords', description: 'Power management solutions', level: 2, order: 2 },
+          { name: 'DC Power Cables', description: 'Universal power adapters', level: 2, order: 3 },
+          { name: 'AC Power Cables', description: 'AC power adapters for older devices', level: 2, order: 4 }
+        ]
+      }
+    ]
+  },
+  {
+    name: 'Converters & Adapters',
+    description: 'Adapters and converters for seamless connectivity',
+    level: 0,
+    order: 2,
+    children: [
+      { name: 'USB to Ethernet Adapters', description: 'Wired internet via USB', level: 1, order: 1 },
+      { name: 'USB-C to HDMI Adapters', description: 'Connect USB-C devices to HDMI displays', level: 1, order: 2 },
+      { name: 'HDMI to VGA Adapters', description: 'Convert HDMI output to VGA', level: 1, order: 3 },
+      { name: 'OTG (On-The-Go) Cables', description: 'Connect USB devices to mobile devices', level: 1, order: 4 },
+      { name: 'Micro-USB to USB-A', description: 'Connect micro-USB devices to standard USB-A ports', level: 1, order: 5 },
+      { name: 'Micro-USB to USB-C', description: 'Connect micro-USB devices to USB-C ports', level: 1, order: 6 },
+      { name: 'USB-C to USB-A', description: 'Use older USB devices with USB-C ports', level: 1, order: 7 },
+      { name: 'Lightning to 3.5mm Adapter', description: 'Connect wired headphones to Apple devices', level: 1, order: 8 },
+      { name: 'USB-C to 3.5mm Adapter', description: 'For devices without a headphone jack', level: 1, order: 9 },
+      { name: 'DVI to HDMI Adapters', description: 'Convert DVI signals to HDMI', level: 1, order: 10 },
+      { name: 'Lightning to USB-A', description: 'Connect Lightning devices to USB-A ports', level: 1, order: 11 },
+      { name: 'Memory Card Readers', description: 'Devices for accessing data on memory cards', level: 1, order: 12 },
+      { name: 'USB-C Docking Stations', description: 'Expand connectivity options via USB-C', level: 1, order: 13 },
+      { name: 'USB-C Hubs', description: 'Add multiple ports to USB-C devices', level: 1, order: 14 },
+      { name: 'USB-A Hubs', description: 'Expand USB-A ports for multiple devices', level: 1, order: 15 },
+      { name: 'Hybrid USB-A & USB-C Hubs', description: 'Combined USB-A and USB-C port expansion', level: 1, order: 16 },
+      { name: 'Lightning Docking Stations', description: 'Docks for Apple devices with Lightning ports', level: 1, order: 17 },
+      { name: 'Surface Docking Stations', description: 'Docking stations for Microsoft Surface devices', level: 1, order: 18 },
+      { name: 'Hard Disk Enclosures', description: 'External cases for HDD storage', level: 1, order: 19 },
+      { name: 'SSD Enclosures', description: 'External cases for SSD storage', level: 1, order: 20 }
     ]
   }
 ];

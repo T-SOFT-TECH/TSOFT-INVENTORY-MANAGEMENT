@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const hdmiCablesConfig: CategoryFormConfig = {
-  id: 'hdmi-cables',
+  id: 'hdmi_cables',
   name: 'HDMI Cables',
   fields: [
     {

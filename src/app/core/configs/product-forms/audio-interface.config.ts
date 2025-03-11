@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const audioInterfaceConfig: CategoryFormConfig = {
-  id: 'audio-interface',
+  id: 'audio_interface',
   name: 'Audio Interface',
   fields: [
     {

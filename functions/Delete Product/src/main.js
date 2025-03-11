@@ -5,7 +5,7 @@ const PRODUCT_BUCKET = "productImages";
 
 export default async ({ req, res, log, error }) => {
   const client = new Client()
-    .setEndpoint('http://172.30.128.1/v1')
+    .setEndpoint(process.env.APPWRITE_ENDPOINT)
     .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
     .setKey(req.headers['x-appwrite-key']);
 

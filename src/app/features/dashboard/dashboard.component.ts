@@ -1,4 +1,4 @@
-// dashboard.component.ts
+// sales-dashboard.component.ts
 import {Component, inject, OnInit, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Chart } from 'chart.js/auto';
@@ -17,7 +17,7 @@ interface DashboardMetrics {
 }
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-sales-dashboard',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './dashboard.component.html'

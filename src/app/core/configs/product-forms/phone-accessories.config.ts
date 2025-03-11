@@ -1,7 +1,7 @@
 import { CategoryFormConfig} from './product-form.types';
 
 export const phoneAccessoriesConfig: CategoryFormConfig = {
-  id: 'phone-accessories',
+  id: 'phone_accessories',
   name: 'Phone Accessories',
   fields: [
 

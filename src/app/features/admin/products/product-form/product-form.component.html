@@ -4,10 +4,11 @@
   </div>
 } @else {
 
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/80 dark:to-gray-800/80 p-3 sm:p-4 md:p-6 lg:p-8">
-    <div class="max-w-7xl mx-auto">
+  <div class="min-h-screen bg-surface-light-tertiary dark:bg-surface-dark-tertiary  p-3 sm:p-4 md:p-6 lg:p-8">
+    <div class="max-w-7xl mx-auto" autoAnimate>
       <!-- Header -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-6">
+      <div
+        class="bg-white dark:bg-surface-dark-secondary  border border-green-200/20 rounded-xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-6">
         <div class="flex items-center justify-between">
           <button
             routerLink="/admin/products"
@@ -18,7 +19,8 @@
           </button>
 
           <div class="text-center">
-            <h1 class="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-primary-600">
+            <h1
+              class="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-primary-600">
               {{ isEditMode() ? 'Edit Product' : 'New Product' }}
             </h1>
             <p class="text-sm text-gray-500 dark:text-gray-400">
@@ -31,7 +33,8 @@
 
       <!-- Basic Information -->
       <div class="mb-4 sm:mb-6">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6">
+        <div
+          class="bg-white dark:bg-surface-dark-secondary  border border-green-200/20 rounded-xl shadow-lg p-4 sm:p-6">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
             <span class="material-icons text-primary-500">info</span>
             Basic Information
@@ -80,7 +83,7 @@
                       focus:ring-2 focus:ring-primary-500 focus:border-transparent">
               </div>
 
-            
+
               <!-- Brand Field -->
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -90,15 +93,15 @@
                   formControlName="brand"
                   class="w-full px-4 py-3 sm:py-2 text-base sm:text-sm rounded-lg border border-gray-300
                       dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white
-                      focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                      focus:ring-2 focus:ring-primary-500 focus:border-transparent" autoAnimate>
                   <option value="">Select Brand</option>
                   @for (brand of brands(); track brand.$id) {
-                    <option [value]="brand.$id">{{brand.name}}</option>
+                    <option [value]="brand.$id">{{ brand.name }}</option>
                   }
                 </select>
               </div>
 
-             
+
               <!-- Low Stock Threshold Field -->
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -128,12 +131,59 @@
         </div>
       </div>
       <!-- Category Selection Section -->
-      <div class="mb-4 sm:mb-6">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6" autoAnimate>
+      <div class="mb-4 sm:mb-6" autoAnimate>
+        <div class="bg-white dark:bg-surface-dark-secondary  border border-green-200/20 rounded-xl shadow-lg p-4 sm:p-6"
+             autoAnimate>
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
             <span class="material-icons text-primary-500">category</span>
             Select Category
           </h3>
+
+
+          <!-- New Category Search Section -->
+          <div class="mb-6">
+            <div class="relative">
+              <input
+                type="text"
+                [(ngModel)]="categorySearchQuery"
+                (input)="searchCategories()"
+                placeholder="Search for any category or subcategory..."
+                class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600
+                     bg-white dark:bg-gray-900 text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+              <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+            </div>
+
+            <!-- Search Results -->
+            @if (categorySearchQuery && searchResults().length > 0) {
+              <div class="mt-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700
+                        shadow-lg max-h-60 overflow-y-auto">
+                @for (result of searchResults(); track result.$id) {
+                  <button
+                    (click)="selectSearchResult(result)"
+                    class="w-full px-4 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700
+                         transition-colors flex items-center justify-between group"
+                  >
+                    <span class="text-sm font-medium text-gray-900 dark:text-white">{{ result.name }}</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                    <span class="material-icons text-xs">subdirectory_arrow_right</span>
+                      {{ getFullCategoryPath(result) }}
+                      <span class="material-icons text-gray-400 group-hover:text-primary-500
+                                transform group-hover:translate-x-1 transition-all text-sm">
+                      chevron_right
+                    </span>
+                  </span>
+                  </button>
+                }
+              </div>
+            } @else if (categorySearchQuery && searchResults().length === 0) {
+              <div class="mt-2 text-sm text-gray-500 dark:text-gray-400 text-center py-3">
+                No matching categories found
+              </div>
+            }
+          </div>
+
 
           <!-- Parent Categories Grid -->
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3" autoAnimate>
@@ -153,7 +203,8 @@
                   <p class="text-sm font-medium text-gray-900 dark:text-white line-clamp-2">{{ category.name }}</p>
                 </div>
                 @if (category.children?.length) {
-                  <span class="absolute top-2 right-2 text-xs px-2 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
+                  <span
+                    class="absolute top-2 right-2 text-xs px-2 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
              {{ category.children?.length }}
            </span>
                 }
@@ -164,21 +215,24 @@
           <!-- Subcategories -->
           @if (selectedParentCategory() && subCategories().length > 0) {
             <div class="mt-6 space-y-6">
+
               <ng-template #categoryLevel let-categories let-depth="depth">
                 <div class="space-y-4">
-                  <!-- Category header -->
+                  <!-- Category header - updated to show appropriate level -->
                   <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                     <span class="material-icons text-base">subdirectory_arrow_right</span>
-                    <span>Select {{ depth === 0 ? 'a subcategory' : 'an option' }}</span>
+                    <span>Select {{ depth === 0 ? 'a subcategory' : depth === 1 ? 'a type' : 'a specific item' }}</span>
                   </div>
 
                   <!-- Categories grid -->
-                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" autoAnimate>
                     @for (category of categories; track category.$id) {
                       <div class="relative">
-                        <div class="border-l-2 border-t-2 border-gray-200 dark:border-gray-700 absolute h-1/2 w-4 -left-4 top-0"></div>
+                        <div
+                          class="border-l-2 border-t-2 border-gray-200 dark:border-gray-700 absolute h-1/2 w-4 -left-4 top-0"></div>
                         @if (!$last) {
-                          <div class="border-l-2 border-gray-200 dark:border-gray-700 absolute h-1/2 -left-4 bottom-0"></div>
+                          <div
+                            class="border-l-2 border-gray-200 dark:border-gray-700 absolute h-1/2 -left-4 bottom-0"></div>
                         }
 
                         <button
@@ -186,30 +240,42 @@
                           (click)="onSubCategorySelect(category)"
                           class="w-full p-4 rounded-xl border transition-all duration-300 flex items-center gap-3"
                           [class]="selectedCategory() === category.$id ?
-           'bg-primary-50 dark:bg-primary-900/20 border-primary-500 ring-2 ring-primary-500/20' :
-           'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-primary-500/50'">
-  <span class="material-icons text-primary-500">
-    {{ selectedCategory() === category.$id ? 'check_circle' : 'radio_button_unchecked' }}
-  </span>
-                          <span class="text-sm font-medium text-gray-900 dark:text-white">{{ category.name }}</span>
+    'bg-primary-50 dark:bg-primary-900/20 border-primary-500 ring-2 ring-primary-500/20' :
+    'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-primary-500/50'">
+
+                          <!-- Visual indicator if category is selectable -->
+                          <span class="material-icons text-primary-500">
+                            {{ selectedCategory() === category.$id ? 'check_circle' : (isCategorySelectable(category) ? 'radio_button_unchecked' : 'folder') }}
+                            </span>
+
+                          <!-- Category name with visual indicator if it's selectable -->
+                          <span class="text-sm font-medium"
+                                [class]="isCategorySelectable(category) ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400'">
+                            {{ category.name }}
+                            @if (!isCategorySelectable(category) && category.children?.length) {
+                              <span class="text-xs ml-1 text-gray-500">(folder)</span>
+                            }
+                            </span>
+
                           @if (category.children?.length) {
                             <span class="ml-auto material-icons text-gray-400">
-      {{ category.isExpanded ? 'expand_less' : 'expand_more' }}
-    </span>
+                               {{ category.isExpanded ? 'expand_less' : 'expand_more' }}
+                            </span>
                           }
                         </button>
+
                       </div>
                     }
                   </div>
 
-                  <!-- Nested categories -->
+                  <!-- Nested categories - Ensure this properly recurses -->
                   @for (category of categories; track category.$id) {
                     @if (category.isExpanded && category.children?.length) {
                       <div class="ml-8 mt-4">
                         <ng-container *ngTemplateOutlet="categoryLevel; context: {
-                   $implicit: category.children,
-                   depth: depth + 1
-                 }">
+            $implicit: category.children,
+            depth: depth + 1
+          }">
                         </ng-container>
                       </div>
                     }
@@ -248,7 +314,8 @@
 
       <!-- Dynamic Form Section -->
       @if (selectedCategory()) {
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg" autoAnimate>
+        <div class="bg-white dark:bg-surface-dark-secondary  border border-green-200/20 rounded-xl shadow-lg"
+             autoAnimate>
           <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="p-4 sm:p-6 space-y-6">
             <!-- Dynamic Fields -->
             @for (group of objectKeys(groupedFields()); track group) {
@@ -468,7 +535,8 @@
             </div>
 
             <!-- Form Actions -->
-            <div class="flex flex-col sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div
+              class="flex flex-col sm:flex-row items-center justify-end gap-3 sm:gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
               <button
                 type="button"
                 routerLink="/admin/products"
@@ -493,7 +561,6 @@
                 }
               </button>
             </div>
-
 
 
           </form>

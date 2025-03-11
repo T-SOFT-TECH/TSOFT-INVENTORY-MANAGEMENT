@@ -2,7 +2,7 @@
 import { CategoryFormConfig } from './product-form.types';
 
 export const businessLaptopsConfig: CategoryFormConfig = {
-  id: 'business-laptops',
+  id: 'business_laptops',
   name: 'Business Laptops',
   fields: [
     {

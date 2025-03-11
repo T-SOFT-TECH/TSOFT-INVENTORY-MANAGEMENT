@@ -1,7 +1,7 @@
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6">
-  <div class="max-w-7xl mx-auto" autoAnimate>
+<div class="min-h-screen ">
+  <div class="p-6 mx-auto" autoAnimate>
     <!-- Header Section -->
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8">
+    <div class="bg-white dark:bg-surface-dark-secondary  border border-green-200/20 rounded-2xl shadow-lg p-8 mb-8">
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-primary-600">
@@ -23,7 +23,7 @@
     </div>
 
     @if (showScanner()) {
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8">
+      <div class="bg-white dark:bg-surface-dark-secondary  border border-green-200/20 rounded-2xl shadow-lg p-8 mb-8">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
           Scan Barcode/QR Code
         </h2>
@@ -35,7 +35,7 @@
 
 
     @if(showBatchUpload()) {
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8">
+      <div class="bg-white dark:bg-surface-dark-secondary  border border-green-200/20 rounded-2xl shadow-lg p-8 mb-8">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
           Batch Upload
         </h2>
@@ -72,7 +72,7 @@
 
     <form [formGroup]="stockForm" (ngSubmit)="onSubmit()" class="space-y-6">
       <!-- Stock Items Section -->
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg" formArrayName="items">
+      <div class="bg-white dark:bg-surface-dark-secondary  border border-green-200/20 rounded-2xl shadow-lg" formArrayName="items">
         <div class="p-8">
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Stock Items</h2>
@@ -106,7 +106,7 @@
                     <div class="relative hs-select-wrapper">
                       <button type="button"
                               (click)="toggleDropdown(i)"
-                              class="w-full flex justify-between items-center text-gray-800 dark:text-gray-200 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900">
+                              class="w-full flex justify-between items-center text-gray-800 dark:text-gray-200 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark-secondary  border border-green-200/20 hover:bg-gray-50 dark:hover:bg-gray-900">
                         <span class="truncate">
                           @if (item.get('productId')?.value) {
                             {{ getSelectedProductName(i) }}
@@ -123,14 +123,14 @@
                       </button>
 
                       <!-- Dropdown -->
-                      <div class="absolute z-50 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg"
+                      <div class="absolute z-50 w-full mt-2 bg-white dark:bg-surface-dark-secondary  border border-green-200/20 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg"
                            [class.hidden]="!openStates.get(i)">
                         <div class="p-2">
                           <input type="search"
                                  (input)="onSearchInput($event, i)"
                                  [value]="searchInputValues.get(i) || ''"
                                  placeholder="Search products..."
-                                 class="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-sm focus:border-primary-500 focus:ring-primary-500 dark:text-gray-400">
+                                 class="w-full px-3 py-2 bg-white dark:bg-surface-dark-secondary  border border-green-200/20 border border-gray-200 dark:border-gray-700 rounded-md text-sm focus:border-primary-500 focus:ring-primary-500 dark:text-gray-400">
                         </div>
 
                         <div class="max-h-96 overflow-y-auto">
@@ -228,7 +228,7 @@
                       </button>
                     }
                     <div class="text-sm font-medium text-gray-900 dark:text-white">
-                      {{ calculateSubtotal($index) | currency }}
+                      {{ formatCurrency(calculateSubtotal($index)) }}
                     </div>
                   </div>
                 </div>
@@ -242,7 +242,7 @@
               <div class="bg-primary-50 dark:bg-primary-900/20 px-6 py-4 rounded-xl">
                 <span class="text-sm text-gray-600 dark:text-gray-400">Total Cost:</span>
                 <span class="ml-2 text-2xl font-bold text-primary-600 dark:text-primary-400">
-                  {{ calculateTotal() | currency }}
+                  {{ formatCurrency(calculateTotal()) }}
                 </span>
               </div>
             </div>
@@ -251,7 +251,7 @@
       </div>
 
       <!-- Transaction Details -->
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+      <div class="bg-white dark:bg-surface-dark-secondary  border border-green-200/20 rounded-2xl shadow-lg p-8">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
           Transaction Details
         </h2>
@@ -332,7 +332,7 @@
       </div>
 
 
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+      <div class="bg-white dark:bg-surface-dark-secondary  border border-green-200/20 rounded-2xl shadow-lg p-8">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
           Receipt Images
         </h2>

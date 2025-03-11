@@ -5,12 +5,12 @@ import { RouterModule } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { SalesService } from '../../../core/services/sales.service';
 import { LoadingService } from '../../../core/services/loading.service';
-import { InvoiceService } from '../../../core/services/invoice.service';
 import { CustomerService } from '../../../core/services/customer.service';
-import { Sale, SaleWithDetails, SalesQueryOptions } from '../../../core/interfaces/sales/sales.interfaces';
+import { Sale, SaleWithDetails, SalesQueryOptions, } from '../../../core/interfaces/sales/sales.interfaces';
 import { Customer } from '../../../core/interfaces/customer/customer.interfaces';
 import {ReceiptComponent} from '../../../core/components/receipt/receipt.component';
-
+import {PaymentStatus} from '../../../core/interfaces/base/base.interfaces';
+import {AutoAnimationDirective} from '../../../core/Directives/auto-Animate.directive';
 
 @Component({
   selector: 'app-sales-history',
@@ -21,13 +21,13 @@ import {ReceiptComponent} from '../../../core/components/receipt/receipt.compone
     ReactiveFormsModule,
     RouterModule,
     ReceiptComponent,
+    AutoAnimationDirective,
   ],
   templateUrl: './sales-history.component.html'
 })
 export class SalesHistoryComponent implements OnInit {
   private salesService = inject(SalesService);
   private customerService = inject(CustomerService);
-  private invoiceService = inject(InvoiceService);
   private toast = inject(HotToastService);
   private loadingService = inject(LoadingService);
   private fb = inject(FormBuilder);
@@ -38,13 +38,24 @@ export class SalesHistoryComponent implements OnInit {
   selectedSale = signal<SaleWithDetails | null>(null);
   showReceiptModal = signal(false);
 
+
+  showPaymentModal = signal(false);
+  currentSaleId = signal<string | null>(null);
+  selectedPaymentMethod = signal<'cash' | 'card' | 'transfer'>('cash');
+
+
+
+  // Sorting
+  sortField = signal<string>('date');
+  sortDirection = signal<'asc' | 'desc'>('desc');
+
   //  filterForm structure
   filterForm = this.fb.group({
     dateRange: this.fb.group({
       start: [''],
       end: ['']
     }),
-    customerId: [''],  // These are at the top level, not inside dateRange
+    customerId: [''],
     status: [''],
     searchTerm: ['']
   });
@@ -59,9 +70,11 @@ export class SalesHistoryComponent implements OnInit {
   ];
   selectedPeriod = signal('month');
 
+
+
   ngOnInit() {
     this.loadInitialData();
-    this.setupFilterListeners();
+    //this.setupFilterListeners();
   }
 
   private async loadInitialData() {
@@ -78,6 +91,9 @@ export class SalesHistoryComponent implements OnInit {
 
       // Set default period filter (this month)
       this.applyPeriodFilter('month');
+
+      // Apply default sorting (newest first)
+      this.sortSales('date');
 
     } catch (error) {
       console.error('Failed to load sales data:', error);
@@ -101,12 +117,12 @@ export class SalesHistoryComponent implements OnInit {
 
     switch(period) {
       case 'today':
-        startDate = new Date(now.setHours(0, 0, 0, 0));
+        // Just use today's date without manipulating it further
+        startDate = new Date(now);
         break;
       case 'week':
         startDate = new Date(now);
-        startDate.setDate(now.getDate() - now.getDay()); // Start of week (Sunday)
-        startDate.setHours(0, 0, 0, 0);
+        startDate.setDate(now.getDate() - now.getDay());
         break;
       case 'month':
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -119,10 +135,13 @@ export class SalesHistoryComponent implements OnInit {
         break;
     }
 
+    // For all periods except 'all', the end date is today
+    const endDate = period !== 'all' ? new Date(now) : null;
+
     this.filterForm.patchValue({
       dateRange: {
         start: startDate ? this.formatDateForInput(startDate) : '',
-        end: period !== 'all' ? this.formatDateForInput(new Date()) : ''
+        end: endDate ? this.formatDateForInput(endDate) : ''
       }
     });
 
@@ -130,7 +149,11 @@ export class SalesHistoryComponent implements OnInit {
   }
 
   private formatDateForInput(date: Date): string {
-    return date.toISOString().split('T')[0];
+    // Format the date in YYYY-MM-DD format using local timezone
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // +1 because months are 0-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   private applyFilters() {
@@ -139,11 +162,17 @@ export class SalesHistoryComponent implements OnInit {
 
     // Date range
     if (filters.dateRange?.start) {
-      queryOptions.startDate = new Date(filters.dateRange.start);
+      const startDate = new Date(filters.dateRange.start);
+      // Make sure we're using the start of the day (00:00:00.000)
+      startDate.setHours(0, 0, 0, 0);
+      queryOptions.startDate = startDate;
     }
 
     if (filters.dateRange?.end) {
-      queryOptions.endDate = new Date(filters.dateRange.end);
+      const endDate = new Date(filters.dateRange.end);
+      // Make sure we're using the end of the day (23:59:59.999)
+      endDate.setHours(23, 59, 59, 999);
+      queryOptions.endDate = endDate;
     }
 
     // Customer filter
@@ -153,7 +182,12 @@ export class SalesHistoryComponent implements OnInit {
 
     // Status filter
     if (filters.status) {
-      queryOptions.status = filters.status as any;
+      queryOptions.status = filters.status as PaymentStatus;
+    }
+
+    // Search term
+    if (filters.searchTerm) {
+      queryOptions.searchTerm = filters.searchTerm;
     }
 
     this.loadSalesWithFilters(queryOptions);
@@ -164,6 +198,9 @@ export class SalesHistoryComponent implements OnInit {
       this.loadingService.start('Applying filters...');
       const sales = await this.salesService.fetchSales(options);
       this.sales.set(sales);
+
+      // Re-apply current sorting
+      this.sortSales(this.sortField());
     } catch (error) {
       console.error('Failed to apply filters:', error);
       this.toast.error('Failed to apply filters');
@@ -172,14 +209,61 @@ export class SalesHistoryComponent implements OnInit {
     }
   }
 
-// In the viewSaleDetails method
+  sortSales(field: string) {
+    if (this.sortField() === field) {
+      // Toggle direction if clicking the same field
+      this.sortDirection.update(current => current === 'asc' ? 'desc' : 'asc');
+    } else {
+      // Set new field and default to descending
+      this.sortField.set(field);
+      this.sortDirection.set('desc');
+    }
+
+    // Apply sorting
+    this.sales.update(currentSales => {
+      return [...currentSales].sort((a, b) => {
+        const direction = this.sortDirection() === 'asc' ? 1 : -1;
+
+        switch (field) {
+          case 'date':
+            return (new Date(a.date).getTime() - new Date(b.date).getTime()) * direction;
+          case 'amount':
+            return (a.totalAmount - b.totalAmount) * direction;
+          case 'invoiceNumber':
+            // Extract numeric part if invoice numbers follow a pattern like INV-00001
+            const numA = parseInt(a.invoiceNumber.replace(/\D/g, '') || '0');
+            const numB = parseInt(b.invoiceNumber.replace(/\D/g, '') || '0');
+            return (numA - numB) * direction;
+          case 'status':
+            return a.paymentStatus.localeCompare(b.paymentStatus) * direction;
+          case 'customer':
+            return a.customer.name.localeCompare(b.customer.name) * direction;
+          case 'paymentMethod':
+            return (a.paymentMethod || '').localeCompare(b.paymentMethod || '') * direction;
+          case 'salesRep':
+            return a.salesRep.localeCompare(b.salesRep) * direction;
+          default:
+            return 0;
+        }
+      });
+    });
+  }
+
+  getSortIndicator(field: string): string {
+    if (this.sortField() !== field) return '';
+    return this.sortDirection() === 'asc' ? '↑' : '↓';
+  }
+
   async viewSaleDetails(sale: Sale) {
     try {
       this.loadingService.start('Loading sale details...');
-      console.log('Original sale data:', sale);
 
       const saleDetails = await this.salesService.getSaleDetails(sale.$id);
-      console.log('Fetched sale details:', saleDetails);
+      console.log('Sale details structure:', {
+        hasProducts: !!saleDetails.products,
+        productCount: saleDetails.products?.length,
+        firstProduct: saleDetails.products?.[0]
+      });
 
       this.selectedSale.set(saleDetails);
       this.showReceiptModal.set(true);
@@ -204,12 +288,12 @@ export class SalesHistoryComponent implements OnInit {
 
     switch (normalizedStatus) {
       case 'paid':
-        return 'bg-success-100 text-success-800 dark:bg-success-900/20 dark:text-success-400';
+        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
       case 'pending':
-        return 'bg-warning-100 text-warning-800 dark:bg-warning-900/20 dark:text-warning-400';
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
       case 'failed':
       case 'cancelled':
-        return 'bg-error-100 text-error-800 dark:bg-error-900/20 dark:text-error-400';
+        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
       default:
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400';
     }
@@ -223,22 +307,9 @@ export class SalesHistoryComponent implements OnInit {
   formatCurrency(amount: number): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'NGN',
+      currencyDisplay: 'narrowSymbol'
     }).format(amount);
-  }
-
-  getCustomerName(customerId: string): string {
-    if (!customerId) return 'No Customer';
-
-    const customer = this.customers().find(c => c.$id === customerId);
-
-    // Log for debugging
-    if (!customer) {
-      console.log(`Customer not found for ID: ${customerId}`);
-      console.log('Available customer IDs:', this.customers().map(c => c.$id));
-    }
-
-    return customer?.name || 'Unknown Customer';
   }
 
   exportToCsv() {
@@ -252,14 +323,15 @@ export class SalesHistoryComponent implements OnInit {
         return;
       }
 
-      // Create CSV content
-      const headers = ['Invoice #', 'Date', 'Customer', 'Total', 'Status'];
+      // Create CSV content with payment method included
+      const headers = ['Invoice #', 'Date', 'Customer', 'Total', 'Status', 'Payment Method'];
       const rows = sales.map(sale => [
         sale.invoiceNumber,
         new Date(sale.date).toLocaleDateString(),
-        this.getCustomerName(sale.customerId),
+        sale.customer.name,
         sale.totalAmount.toFixed(2),
-        sale.paymentStatus
+        sale.paymentStatus,
+        sale.paymentMethod || 'N/A'
       ]);
 
       // Combine headers and rows
@@ -283,4 +355,44 @@ export class SalesHistoryComponent implements OnInit {
       this.loadingService.clear();
     }
   }
+
+  openPaymentModal(saleId: string) {
+    this.currentSaleId.set(saleId);
+    this.selectedPaymentMethod.set('cash'); // Reset to default
+    this.showPaymentModal.set(true);
+  }
+
+
+
+  async updatePaymentStatus(saleId: string, newStatus: PaymentStatus, paymentMethod?: string) {
+    try {
+      this.loadingService.start(`Updating payment status...`);
+
+      // Pass payment method if provided
+      await this.salesService.updatePaymentStatus(saleId, newStatus, paymentMethod);
+
+      // Refresh the sales list
+      await this.loadInitialData();
+
+      this.showPaymentModal.set(false);
+      this.toast.success(`Payment status updated successfully`);
+    } catch (error) {
+      console.error('Failed to update payment status:', error);
+      this.toast.error('Failed to update payment status');
+    } finally {
+      this.loadingService.clear();
+    }
+  }
+
+
+  confirmPayment() {
+    if (!this.currentSaleId()) return;
+    this.updatePaymentStatus(
+      this.currentSaleId()!,
+      'paid',
+      this.selectedPaymentMethod()
+    );
+  }
+
 }
+

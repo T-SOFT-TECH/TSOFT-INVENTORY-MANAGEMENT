@@ -13,9 +13,9 @@ export interface SaleItem {
 
 // Core sale interface
 export interface Sale extends BaseDocument {
-  customerId: string;
+  customer: Customer;
   invoiceNumber: string;
-  products: SaleItem[];
+  saleItems: SaleItem[];
   totalAmount: number;
   subtotal?: number; // Optional for backward compatibility
   tax?: number; // Optional for backward compatibility
@@ -23,14 +23,11 @@ export interface Sale extends BaseDocument {
   paymentMethod?: 'cash' | 'card' | 'transfer';
   paymentStatus: PaymentStatus;
   status: 'completed' | 'pending' | 'cancelled';
+  paidAt: string;
   notes?: string;
+  salesRep: string;
 
-  // Optional customer data (populated when needed)
-  customer?: Partial<Customer> | {
-    id: string;
-    name: string;
-    email: string;
-  };
+
 }
 
 // Query options for filtering sales
@@ -39,16 +36,11 @@ export interface SalesQueryOptions {
   endDate?: Date;
   customerId?: string;
   status?: PaymentStatus;
+  searchTerm?: string;
 }
 
 // Keep SaleWithDetails for backward compatibility
 export interface SaleWithDetails extends Sale {
-  customer: {
-    id: string;
-    name: string;
-    email: string;
-    phone: string;
-  };
   products: (SaleItem & {
     product: {
       id: string;

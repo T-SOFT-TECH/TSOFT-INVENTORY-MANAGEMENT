@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const paperShreddersConfig: CategoryFormConfig = {
-  id: 'paper-shredders',
+  id: 'paper_shredders',
   name: 'Paper Shredders',
   fields: [
     {

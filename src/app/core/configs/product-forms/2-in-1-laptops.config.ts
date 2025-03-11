@@ -2,7 +2,7 @@
 import { CategoryFormConfig } from './product-form.types';
 
 export const twoInOneLaptopsConfig: CategoryFormConfig = {
-  id: '2-in-1-laptops',
+  id: '2_in_1_laptops',
   name: '2-in-1 Laptops',
   fields: [
     {

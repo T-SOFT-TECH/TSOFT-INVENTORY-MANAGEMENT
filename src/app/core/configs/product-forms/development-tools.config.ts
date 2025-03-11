@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const developmentToolsConfig: CategoryFormConfig = {
-  id: 'development-tools',
+  id: 'development_tools',
   name: 'Development Tools',
   fields: [
     {

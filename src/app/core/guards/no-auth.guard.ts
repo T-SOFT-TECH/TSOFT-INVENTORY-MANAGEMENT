@@ -1,8 +1,8 @@
 import { inject } from '@angular/core';
-import { 
-  CanActivateFn, 
-  Router, 
-  UrlTree 
+import {
+  CanActivateFn,
+  Router,
+  UrlTree
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -14,7 +14,7 @@ export const noAuthGuard: CanActivateFn = (): Observable<boolean | UrlTree> => {
   const appwrite = inject(AppwriteService);
 
   return from(appwrite.account.get()).pipe(
-    map(() => router.createUrlTree(['/dashboard'])),
+    map(() => router.createUrlTree(['/sales-dashboard'])),
     catchError(() => of(true))
   );
-}; 
+};

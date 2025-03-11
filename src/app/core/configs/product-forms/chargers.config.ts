@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const chargersConfig: CategoryFormConfig = {
-  id: 'chargers-power-adapters',
+  id: 'chargersAndAdapters',
   name: 'Chargers & Power Adapters',
   fields: [
     {

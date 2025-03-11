@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import {ApplicationConfig, provideExperimentalZonelessChangeDetection, provideZoneChangeDetection} from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHotToastConfig } from '@ngxpert/hot-toast';
@@ -13,9 +13,10 @@ import '@preline/select';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+
     provideRouter(routes, withViewTransitions()),
     provideHotToastConfig(),
+    provideExperimentalZonelessChangeDetection(),
     provideAnimations(),
     provideHttpClient(withInterceptors([LoadingInterceptor])),
     ThemeService,

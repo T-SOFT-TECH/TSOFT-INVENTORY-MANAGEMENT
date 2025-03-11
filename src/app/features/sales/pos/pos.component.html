@@ -1,4 +1,4 @@
-<div class="h-screen bg-surface-light-tertiary dark:bg-surface-dark-primary relative">
+<div class="h-screen  relative">
   <!-- Main content container -->
   <div class="h-full flex flex-col md:flex-row">
     <!-- Left Side - Products (Full width on mobile) -->
@@ -56,7 +56,7 @@
       </div>
 
       <!-- Products Grid -->
-      <div class="flex-1 overflow-y-auto p-2 md:p-3 bg-surface-light-tertiary dark:bg-surface-dark-primary">
+      <div class="flex-1 overflow-y-auto p-2 md:p-3 bg-surface-light-tertiary dark:bg-surface-dark-primary" autoAnimate>
         @if (isLoading()) {
           <div class="flex justify-center items-center h-full">
             <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-500"></div>
@@ -161,7 +161,7 @@
             </div>
             <div class="flex items-center">
               <button
-                (click)="showCustomerModal.set(true)"
+                (click)="toggleCustomerModal(true)"
                 class="p-1.5 rounded-lg text-primary-500 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 title="Change customer"
               >
@@ -178,7 +178,7 @@
           </div>
         } @else {
           <button
-            (click)="showCustomerModal.set(true)"
+            (click)="toggleCustomerModal(true)"
             class="w-full p-2 rounded-lg border-2 border-dashed
                  border-gray-200 dark:border-gray-700 text-text-light-secondary dark:text-gray-300
                  hover:border-primary-500 hover:text-primary-500 transition-all duration-200
@@ -249,7 +249,7 @@
               <!-- Item Total & Remove (slide-in on hover) -->
               <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 px-2 py-1 text-xs group-hover:translate-y-0 translate-y-full transition-transform duration-200">
                 <span class="font-medium text-text-light-secondary dark:text-gray-300">
-                  Subtotal: {{ (item.quantity * item.product.price) | currency : 'NGN': 'symbol-narrow' }}
+                  Subtotal:  {{formatCurrency( (item.quantity * item.product.price))}}
                 </span>
                 <button
                   (click)="removeFromCart(item.product.$id)"
@@ -270,11 +270,11 @@
         <div class="space-y-2 mb-4">
           <div class="flex justify-between text-text-light-secondary dark:text-gray-300 text-sm">
             <span>Subtotal</span>
-            <span>{{ subtotal() | currency : 'NGN': 'symbol-narrow' }}</span>
+            <span>{{ formatCurrency(subtotal()) }}</span>
           </div>
           <div class="flex justify-between text-text-light-secondary dark:text-gray-300 text-sm">
-            <span>Tax (10%)</span>
-            <span>{{ tax() | currency : 'NGN': 'symbol-narrow' }}</span>
+            <span>Tax ({{settings.settings()?.invoice?.taxRate}}%)</span>
+            <span>{{formatCurrency(tax())}}</span>
           </div>
           <div class="flex justify-between text-lg font-bold text-text-light-primary dark:text-white pt-2 border-t border-gray-200 dark:border-gray-700">
             <span>Total</span>
@@ -282,49 +282,76 @@
           </div>
         </div>
 
-        <!-- Payment Method Selection (Add this before the Checkout Button in both desktop and mobile cart panels) -->
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-text-light-secondary dark:text-gray-300 mb-2">
-            Payment Method
+
+
+        <div class="mb-3">
+          <label class="block text-xs font-medium text-text-light-secondary dark:text-gray-300 mb-1">
+            Payment
           </label>
-          <div class="grid grid-cols-3 gap-2">
-            <button
-              type="button"
-              (click)="selectPaymentMethod('cash')"
-              class="flex flex-col items-center justify-center p-2 rounded-lg border transition-all"
-              [class]="posService.paymentMethod() === 'cash'
-        ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-500 text-primary-700 dark:text-primary-300'
-        : 'border-gray-200 dark:border-gray-700 hover:border-primary-400 dark:text-gray-500'"
-            >
-              <span class="material-icons text-xl mb-1">payments</span>
-              <span class="text-xs">Cash</span>
+
+          <div class="flex items-center p-1 bg-surface-light-tertiary dark:bg-gray-800 rounded-lg " >
+            <!-- Toggle Payment Status with enhanced styling -->
+            <button type="button" (click)="togglePaymentStatus()"
+                    class="flex-shrink-0 flex items-center px-2.5 py-1.5 rounded-md text-xs mr-1.5 transition-all duration-200"
+                    [ngClass]="hasPaid() ?
+                  'bg-success-light/30 text-success-dark dark:bg-success-dark/20 dark:text-success-light shadow-soft' :
+                  'bg-warning-light/30 text-warning-dark dark:bg-warning-dark/20 dark:text-warning-light shadow-soft'">
+              <span class="material-icons text-xs mr-1">{{ hasPaid() ? 'check_circle' : 'pending' }}</span>
+              {{ hasPaid() ? 'Paid' : 'Pending' }}
             </button>
 
-            <button
-              type="button"
-              (click)="selectPaymentMethod('card')"
-              class="flex flex-col items-center justify-center p-2 rounded-lg border transition-all"
-              [class]="posService.paymentMethod() === 'card'
-        ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-500 text-primary-700 dark:text-primary-300'
-        : 'border-gray-200 dark:border-gray-700 hover:border-primary-400 dark:text-gray-500'"
-            >
-              <span class="material-icons text-xl mb-1">credit_card</span>
-              <span class="text-xs">Card</span>
-            </button>
+            <!-- Segmented Control for Payment Method -->
+            <div class="flex flex-1 bg-white dark:bg-surface-dark-secondary rounded-md shadow-soft overflow-hidden">
+              <!-- Cash Button -->
+              <button type="button" (click)="selectPaymentMethod('cash')" [disabled]="!hasPaid()"
+                      class="flex-1 py-1.5 text-xs first:rounded-l border-r border-gray-200 dark:border-gray-700
+                     transition-colors flex items-center justify-center gap-1.5 relative overflow-hidden"
+                      [ngClass]="posService.paymentMethod() === 'cash' && hasPaid() ?
+                       'bg-primary-500 text-white font-medium' :
+                       'text-text-light-secondary dark:text-gray-300 hover:bg-surface-light-tertiary dark:hover:bg-gray-800'"
+                      [class.opacity-50]="!hasPaid()"
+                      [class.cursor-not-allowed]="!hasPaid()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                </svg>
+                <span>Cash</span>
+              </button>
 
-            <button
-              type="button"
-              (click)="selectPaymentMethod('transfer')"
-              class="flex flex-col items-center justify-center p-2 rounded-lg border transition-all"
-              [class]="posService.paymentMethod() === 'transfer'
-        ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-500 text-primary-700 dark:text-primary-300'
-        : 'border-gray-200 dark:border-gray-700 hover:border-primary-400 dark:text-gray-500'"
-            >
-              <span class="material-icons text-xl mb-1">account_balance</span>
-              <span class="text-xs">Transfer</span>
-            </button>
+              <!-- Card Button -->
+              <button type="button" (click)="selectPaymentMethod('card')" [disabled]="!hasPaid()"
+                      class="flex-1 py-1.5 text-xs border-r border-gray-200 dark:border-gray-700
+                     transition-colors flex items-center justify-center gap-1.5"
+                      [ngClass]="posService.paymentMethod() === 'card' && hasPaid() ?
+                       'bg-primary-500 text-white font-medium' :
+                       'text-text-light-secondary dark:text-gray-300 hover:bg-surface-light-tertiary dark:hover:bg-gray-800'"
+                      [class.opacity-50]="!hasPaid()"
+                      [class.cursor-not-allowed]="!hasPaid()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                </svg>
+                <span>Card</span>
+              </button>
+
+              <!-- Transfer Button -->
+              <button type="button" (click)="selectPaymentMethod('transfer')" [disabled]="!hasPaid()"
+                      class="flex-1 py-1.5 text-xs first:rounded-l last:rounded-r
+                     transition-colors flex items-center justify-center gap-1.5"
+                      [ngClass]="posService.paymentMethod() === 'transfer' && hasPaid() ?
+                       'bg-primary-500 text-white font-medium' :
+                       'text-text-light-secondary dark:text-gray-300 hover:bg-surface-light-tertiary dark:hover:bg-gray-800'"
+                      [class.opacity-50]="!hasPaid()"
+                      [class.cursor-not-allowed]="!hasPaid()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>
+                </svg>
+                <span>Transfer</span>
+              </button>
+            </div>
           </div>
         </div>
+
+
+
 
         <!-- Checkout Button -->
         <button
@@ -398,7 +425,7 @@
           </div>
           <div class="flex items-center">
             <button
-              (click)="showCustomerModal.set(true)"
+              (click)="toggleCustomerModal(true)"
               class="p-1.5 rounded-lg text-primary-500 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               title="Change customer"
             >
@@ -415,7 +442,7 @@
         </div>
       } @else {
         <button
-          (click)="showCustomerModal.set(true)"
+          (click)="toggleCustomerModal(true)"
           class="w-full p-2 rounded-lg border-2 border-dashed
                border-gray-200 dark:border-gray-700 text-text-light-secondary dark:text-gray-300
                hover:border-primary-500 hover:text-primary-500 transition-all duration-200
@@ -456,7 +483,7 @@
                 </h3>
                 <div class="flex justify-between items-center mt-0.5">
                   <p class="text-primary-600 dark:text-primary-400 font-medium text-sm">
-                    {{ item.product.price | currency : 'NGN': 'symbol-narrow' }}
+                    {{ formatCurrency(item.product.price) }}
                   </p>
                   <div class="flex items-center space-x-1">
                     <button
@@ -486,7 +513,7 @@
             <!-- Item Total & Remove (slide-in on hover) -->
             <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 px-2 py-1 text-xs group-hover:translate-y-0 translate-y-full transition-transform duration-200">
               <span class="font-medium text-text-light-secondary dark:text-gray-300">
-                Subtotal: {{ (item.quantity * item.product.price) | currency : 'NGN': 'symbol-narrow' }}
+                Subtotal: {{ formatCurrency((item.quantity * item.product.price)) }}
               </span>
               <button
                 (click)="removeFromCart(item.product.$id)"
@@ -507,15 +534,15 @@
       <div class="space-y-2 mb-4">
         <div class="flex justify-between text-text-light-secondary dark:text-gray-300 text-sm">
           <span>Subtotal</span>
-          <span>{{ subtotal() | currency : 'NGN': 'symbol-narrow' }}</span>
+          <span>{{ formatCurrency(subtotal()) }}</span>
         </div>
         <div class="flex justify-between text-text-light-secondary dark:text-gray-300 text-sm">
-          <span>Tax (10%)</span>
-          <span>{{ tax() | currency : 'NGN': 'symbol-narrow' }}</span>
+          <span>Tax ({{settings.settings()?.invoice?.taxRate }}%)</span>
+          <span>{{ formatCurrency(tax()) }}</span>
         </div>
         <div class="flex justify-between text-lg font-bold text-text-light-primary dark:text-white pt-2 border-t border-gray-200 dark:border-gray-700">
           <span>Total</span>
-          <span class="text-primary-600 dark:text-primary-400">{{ total() | currency : 'NGN': 'symbol-narrow' }}</span>
+          <span class="text-primary-600 dark:text-primary-400">{{ formatCurrency(total())}}</span>
         </div>
       </div>
 
@@ -592,7 +619,7 @@
 
 <!-- Customer Selection Modal -->
 @if (showCustomerModal()) {
-  <div class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-3">
+  <div class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-3" autoAnimate>
     <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-xl w-full max-w-lg
                 max-h-[90vh] overflow-hidden animate-fade-in-up">
       <!-- Modal Header -->
@@ -745,6 +772,7 @@
           <div class="relative">
             <input
               type="tel"
+              #searchInput
               [(ngModel)]="phoneSearchInput"
               (input)="searchCustomerByPhone()"
               placeholder="Search by phone number..."
@@ -775,7 +803,7 @@
 
         <!-- Customer List -->
         <div class="overflow-y-auto max-h-[calc(90vh-110px)]">
-          <div class="p-2">
+          <div class="p-2" autoAnimate>
             @if (filteredCustomers().length) {
               @for (customer of filteredCustomers(); track customer.$id) {
                 <button
@@ -868,7 +896,7 @@
         </h2>
         <button
           (click)="closeReceiptModal()"
-          class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          class="p-1.5 h-12 w-12 rounded-lg hover:bg-primary-6000 dark:bg-primary-600  transition-colors"
         >
           <span class="material-icons">close</span>
         </button>

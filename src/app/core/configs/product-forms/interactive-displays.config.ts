@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const interactiveDisplaysConfig: CategoryFormConfig = {
-  id: 'interactive-displays',
+  id: 'interactive_displays',
   name: 'Interactive Displays',
   fields: [
     {

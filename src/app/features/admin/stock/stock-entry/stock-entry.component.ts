@@ -337,4 +337,15 @@ export class StockEntryComponent implements OnInit {
     this.stockForm.patchValue({ receiptImages: files });
   }
 
+  formatCurrency(amount: number | undefined): string {
+    if (amount === undefined || amount === null) {
+      return '₦0.00'; // Return a default value when amount is undefined
+    }
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'NGN',
+      currencyDisplay: 'narrowSymbol' // For compact currency symbol
+    }).format(amount);
+  }
+
 }

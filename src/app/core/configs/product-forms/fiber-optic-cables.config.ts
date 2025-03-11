@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const fiberOpticCablesConfig: CategoryFormConfig = {
-  id: 'fiber-optic-cables',
+  id: 'fiber_optic_cables',
   name: 'Fiber Optic Cables',
   fields: [
     {

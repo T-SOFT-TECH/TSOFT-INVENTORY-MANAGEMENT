@@ -110,834 +110,6 @@
                     "default": null
                 },
                 {
-                    "key": "all_in_one_pcs_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "all_in_one_pcs_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "antivirus_software_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "antivirus_software_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "audio_interface_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "audio_interface_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "business_laptops_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "business_laptops_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "chargersAndAdapters_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "chargersAndAdapters_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "conference_systems_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "conference_systems_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "cooling_systems_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "cooling_systems_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "design_software_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "design_software_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "development_tools_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "development_tools_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "displayport_cables_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "displayport_cables_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "document_cameras_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "document_cameras_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "document_scanners_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "document_scanners_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "drawing_tablets_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "drawing_tablets_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "educational_tablets_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "educational_tablets_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "ereaders_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "ereaders_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "enterprise_switches_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "enterprise_switches_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "ethernet_cables_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "ethernet_cables_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "fiber_optic_cables_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "fiber_optic_cables_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "gaming_desktops_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "gaming_desktops_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "gaming_laptops_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "gaming_laptops_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "graphics_cards_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "graphics_cards_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "hdmi_cables_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "hdmi_cables_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "headphones_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "headphones_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "interactive_displays_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "interactive_displays_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "keyboards_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "keyboards_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "label_printers_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "label_printers_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "lightning_cables_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "lightning_cables_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "mice_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "mice_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "microphones_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "microphones_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "mini_pcs_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "mini_pcs_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "monitors_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "monitors_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "motherboards_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "motherboards_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "network_cards_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "network_cards_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "network_security_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "network_security_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "office_software_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "office_software_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "operating_systems_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "operating_systems_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "paper_shredders_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "paper_shredders_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "pc_cases_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "pc_cases_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "phone_accessories_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "phone_accessories_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "power_banks_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "power_banks_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "power_supplies_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "power_supplies_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "printers_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "printers_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "processors_cpus_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "processors_cpus_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "projectors_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "projectors_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "ram_memory_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "ram_memory_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "routers_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "routers_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "scanners_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "scanners_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "security_cameras_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "security_cameras_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "smart_appliances_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "smart_appliances_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "smart_bands_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "smart_bands_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "smart_doorbells_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "smart_doorbells_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "smart_lighting_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "smart_lighting_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "smart_locks_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "smart_locks_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "smart_plugs_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "smart_plugs_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "smart_speakers_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "smart_speakers_specs",
-                    "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "workstations_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "workstations_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "speakers_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "speakers_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "webcams_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "webcams_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "watch_protectors_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "watch_protectors_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "watch_chargers_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "watch_chargers_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "watch_bands_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "watch_bands_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "usb_c_cables_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "usb_c_cables_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "ups_systems_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "ups_systems_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "ultrabooks_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "ultrabooks_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "2_in_1_laptops_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "2_in_1_laptops_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "tablets_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "tablets_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "surge_protectors_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "surge_protectors_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "smartphones_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "smartphones_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
-                    "key": "storage_devices_specs",
-                    "type": "relationship",
-                    "required": false,
-                    "array": false,
-                    "relatedCollection": "storage_devices_specs",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "product",
-                    "onDelete": "cascade",
-                    "side": "child"
-                },
-                {
                     "key": "category",
                     "type": "relationship",
                     "required": false,
@@ -984,13 +156,48 @@
                 {
                     "key": "description",
                     "type": "string",
-                    "required": true,
+                    "required": false,
                     "array": false,
                     "size": 1000,
                     "default": null
                 },
                 {
                     "key": "imageId",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "totalQuantitySold",
+                    "type": "integer",
+                    "required": false,
+                    "array": false,
+                    "min": -9223372036854775808,
+                    "max": 9223372036854775807,
+                    "default": null
+                },
+                {
+                    "key": "totalRevenue",
+                    "type": "double",
+                    "required": false,
+                    "array": false,
+                    "min": -1.7976931348623157e+308,
+                    "max": 1.7976931348623157e+308,
+                    "default": null
+                },
+                {
+                    "key": "cost",
+                    "type": "double",
+                    "required": false,
+                    "array": false,
+                    "min": -999999999,
+                    "max": 999999999,
+                    "default": null
+                },
+                {
+                    "key": "imageUrl",
                     "type": "string",
                     "required": false,
                     "array": false,
@@ -1023,27 +230,11 @@
             "documentSecurity": false,
             "attributes": [
                 {
-                    "key": "customerId",
-                    "type": "string",
-                    "required": true,
-                    "array": false,
-                    "size": 255,
-                    "default": null
-                },
-                {
                     "key": "invoiceNumber",
                     "type": "string",
                     "required": false,
                     "array": false,
                     "size": 50,
-                    "default": null
-                },
-                {
-                    "key": "products",
-                    "type": "string",
-                    "required": false,
-                    "array": false,
-                    "size": 5000,
                     "default": null
                 },
                 {
@@ -1088,20 +279,81 @@
                     ],
                     "format": "enum",
                     "default": null
+                },
+                {
+                    "key": "customer",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "customers",
+                    "relationType": "oneToMany",
+                    "twoWay": true,
+                    "twoWayKey": "sales",
+                    "onDelete": "setNull",
+                    "side": "child"
+                },
+                {
+                    "key": "subtotal",
+                    "type": "double",
+                    "required": false,
+                    "array": false,
+                    "min": -1.7976931348623157e+308,
+                    "max": 1.7976931348623157e+308,
+                    "default": null
+                },
+                {
+                    "key": "tax",
+                    "type": "double",
+                    "required": false,
+                    "array": false,
+                    "min": -1.7976931348623157e+308,
+                    "max": 1.7976931348623157e+308,
+                    "default": null
+                },
+                {
+                    "key": "paymentMethod",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "elements": [
+                        "cash",
+                        "card",
+                        "transfer"
+                    ],
+                    "format": "enum",
+                    "default": null
+                },
+                {
+                    "key": "saleItems",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "sale-items",
+                    "relationType": "manyToOne",
+                    "twoWay": true,
+                    "twoWayKey": "saleId",
+                    "onDelete": "setNull",
+                    "side": "child"
+                },
+                {
+                    "key": "idempotencyKey",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 40,
+                    "default": null
+                },
+                {
+                    "key": "taxRate",
+                    "type": "double",
+                    "required": false,
+                    "array": false,
+                    "min": -1.7976931348623157e+308,
+                    "max": 1.7976931348623157e+308,
+                    "default": null
                 }
             ],
             "indexes": [
-                {
-                    "key": "customerId",
-                    "type": "key",
-                    "status": "available",
-                    "attributes": [
-                        "customerId"
-                    ],
-                    "orders": [
-                        "ASC"
-                    ]
-                },
                 {
                     "key": "invoiceNumber",
                     "type": "unique",
@@ -1250,6 +502,14 @@
                     ],
                     "format": "enum",
                     "default": "pending"
+                },
+                {
+                    "key": "receiptImageIds",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "size": 2000,
+                    "default": null
                 }
             ],
             "indexes": [
@@ -1291,15 +551,117 @@
             "documentSecurity": false,
             "attributes": [
                 {
-                    "key": "general",
+                    "key": "storeName",
                     "type": "string",
-                    "required": true,
+                    "required": false,
                     "array": false,
-                    "size": 5000,
+                    "size": 50,
                     "default": null
                 },
                 {
-                    "key": "company",
+                    "key": "currency",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 5,
+                    "default": null
+                },
+                {
+                    "key": "dateFormat",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 15,
+                    "default": null
+                },
+                {
+                    "key": "timezone",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 10,
+                    "default": null
+                },
+                {
+                    "key": "theme",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "elements": [
+                        "light",
+                        "dark",
+                        "system"
+                    ],
+                    "format": "enum",
+                    "default": "dark"
+                },
+                {
+                    "key": "companyName",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "address",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 300,
+                    "default": null
+                },
+                {
+                    "key": "phone",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 16,
+                    "default": null
+                },
+                {
+                    "key": "email",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "website",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "taxId",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 20,
+                    "default": null
+                },
+                {
+                    "key": "invoicePrefix",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 6,
+                    "default": null
+                },
+                {
+                    "key": "nextInvoiceNumber",
+                    "type": "integer",
+                    "required": false,
+                    "array": false,
+                    "min": -9223372036854775808,
+                    "max": 9223372036854775807,
+                    "default": null
+                },
+                {
+                    "key": "termsAndConditions",
                     "type": "string",
                     "required": false,
                     "array": false,
@@ -1307,19 +669,80 @@
                     "default": null
                 },
                 {
-                    "key": "invoice",
+                    "key": "showLogo",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": true
+                },
+                {
+                    "key": "logo",
                     "type": "string",
                     "required": false,
                     "array": false,
-                    "size": 3000,
+                    "size": 200,
                     "default": null
                 },
                 {
-                    "key": "notifications",
+                    "key": "emailNotifications",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": true
+                },
+                {
+                    "key": "lowStockAlerts",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": true
+                },
+                {
+                    "key": "lowStockThreshold",
+                    "type": "integer",
+                    "required": false,
+                    "array": false,
+                    "min": -9223372036854775808,
+                    "max": 9223372036854775807,
+                    "default": 10
+                },
+                {
+                    "key": "orderConfirmations",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": true
+                },
+                {
+                    "key": "paymentReminders",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": true
+                },
+                {
+                    "key": "language",
                     "type": "string",
                     "required": false,
                     "array": false,
-                    "size": 2000,
+                    "size": 30,
+                    "default": null
+                },
+                {
+                    "key": "notes",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 5000,
+                    "default": null
+                },
+                {
+                    "key": "taxRate",
+                    "type": "double",
+                    "required": false,
+                    "array": false,
+                    "min": -1.7976931348623157e+308,
+                    "max": 1.7976931348623157e+308,
                     "default": null
                 }
             ],
@@ -1637,7 +1060,11 @@
                 "create(\"any\")",
                 "read(\"any\")",
                 "update(\"any\")",
-                "delete(\"any\")"
+                "delete(\"any\")",
+                "create(\"label:admin\")",
+                "read(\"label:admin\")",
+                "update(\"label:admin\")",
+                "delete(\"label:admin\")"
             ],
             "databaseId": "inventory-invoice-db",
             "name": "Categories Collection",
@@ -1875,8 +1302,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "all_in_one_pcs_specs",
+                    "twoWay": false,
+                    "twoWayKey": "all_in_one_pcs_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -1944,8 +1371,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "antivirus_software_specs",
+                    "twoWay": false,
+                    "twoWayKey": "antivirus_software_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -2061,8 +1488,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "audio_interface_specs",
+                    "twoWay": false,
+                    "twoWayKey": "audio_interface_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -2212,8 +1639,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "business_laptops_specs",
+                    "twoWay": false,
+                    "twoWayKey": "business_laptops_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -2338,8 +1765,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "chargersAndAdapters_specs",
+                    "twoWay": false,
+                    "twoWayKey": "chargersAndAdapters_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -2423,8 +1850,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "conference_systems_specs",
+                    "twoWay": false,
+                    "twoWayKey": "conference_systems_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -2629,8 +2056,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "cooling_systems_specs",
+                    "twoWay": false,
+                    "twoWayKey": "cooling_systems_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -2689,8 +2116,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "design_software_specs",
+                    "twoWay": false,
+                    "twoWayKey": "design_software_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -2749,8 +2176,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "development_tools_specs",
+                    "twoWay": false,
+                    "twoWayKey": "development_tools_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -2810,8 +2237,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "displayport_cables_specs",
+                    "twoWay": false,
+                    "twoWayKey": "displayport_cables_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -2943,8 +2370,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "document_cameras_specs",
+                    "twoWay": false,
+                    "twoWayKey": "document_cameras_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -3030,8 +2457,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "document_scanners_specs",
+                    "twoWay": false,
+                    "twoWayKey": "document_scanners_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -3225,8 +2652,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "drawing_tablets_specs",
+                    "twoWay": false,
+                    "twoWayKey": "drawing_tablets_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -3369,8 +2796,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "educational_tablets_specs",
+                    "twoWay": false,
+                    "twoWayKey": "educational_tablets_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -3504,8 +2931,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "ereaders_specs",
+                    "twoWay": false,
+                    "twoWayKey": "ereaders_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -3580,8 +3007,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "enterprise_switches_specs",
+                    "twoWay": false,
+                    "twoWayKey": "enterprise_switches_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -3641,8 +3068,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "ethernet_cables_specs",
+                    "twoWay": false,
+                    "twoWayKey": "ethernet_cables_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -3710,8 +3137,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "fiber_optic_cables_specs",
+                    "twoWay": false,
+                    "twoWayKey": "fiber_optic_cables_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -3888,8 +3315,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "gaming_desktops_specs",
+                    "twoWay": false,
+                    "twoWayKey": "gaming_desktops_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -4059,8 +3486,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "gaming_laptops_specs",
+                    "twoWay": false,
+                    "twoWayKey": "gaming_laptops_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -4249,8 +3676,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "graphics_cards_specs",
+                    "twoWay": false,
+                    "twoWayKey": "graphics_cards_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -4318,8 +3745,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "hdmi_cables_specs",
+                    "twoWay": false,
+                    "twoWayKey": "hdmi_cables_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -4429,8 +3856,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "headphones_specs",
+                    "twoWay": false,
+                    "twoWayKey": "headphones_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -4565,8 +3992,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "interactive_displays_specs",
+                    "twoWay": false,
+                    "twoWayKey": "interactive_displays_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -4739,8 +4166,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "keyboards_specs",
+                    "twoWay": false,
+                    "twoWayKey": "keyboards_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -4818,8 +4245,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "label_printers_specs",
+                    "twoWay": false,
+                    "twoWayKey": "label_printers_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -4880,8 +4307,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "lightning_cables_specs",
+                    "twoWay": false,
+                    "twoWayKey": "lightning_cables_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -5077,8 +4504,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "mice_specs",
+                    "twoWay": false,
+                    "twoWayKey": "mice_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -5170,8 +4597,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "microphones_specs",
+                    "twoWay": false,
+                    "twoWayKey": "microphones_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -5346,8 +4773,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "mini_pcs_specs",
+                    "twoWay": false,
+                    "twoWayKey": "mini_pcs_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -5523,8 +4950,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "monitors_specs",
+                    "twoWay": false,
+                    "twoWayKey": "monitors_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -5707,8 +5134,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "motherboards_specs",
+                    "twoWay": false,
+                    "twoWayKey": "motherboards_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -5817,8 +5244,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "network_cards_specs",
+                    "twoWay": false,
+                    "twoWayKey": "network_cards_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -5912,8 +5339,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "network_security_specs",
+                    "twoWay": false,
+                    "twoWayKey": "network_security_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -5972,8 +5399,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "office_software_specs",
+                    "twoWay": false,
+                    "twoWayKey": "office_software_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -6048,8 +5475,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "operating_systems_specs",
+                    "twoWay": false,
+                    "twoWayKey": "operating_systems_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -6127,8 +5554,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "paper_shredders_specs",
+                    "twoWay": false,
+                    "twoWayKey": "paper_shredders_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -6326,8 +5753,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "pc_cases_specs",
+                    "twoWay": false,
+                    "twoWayKey": "pc_cases_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -6411,8 +5838,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "phone_accessories_specs",
+                    "twoWay": false,
+                    "twoWayKey": "phone_accessories_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -6489,8 +5916,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "power_banks_specs",
+                    "twoWay": false,
+                    "twoWayKey": "power_banks_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -6668,8 +6095,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "power_supplies_specs",
+                    "twoWay": false,
+                    "twoWayKey": "power_supplies_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -6870,8 +6297,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "printers_specs",
+                    "twoWay": false,
+                    "twoWayKey": "printers_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -7052,8 +6479,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "processors_cpus_specs",
+                    "twoWay": false,
+                    "twoWayKey": "processors_cpus_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -7130,8 +6557,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "projectors_specs",
+                    "twoWay": false,
+                    "twoWayKey": "projectors_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -7288,8 +6715,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "ram_memory_specs",
+                    "twoWay": false,
+                    "twoWayKey": "ram_memory_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -7399,8 +6826,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "routers_specs",
+                    "twoWay": false,
+                    "twoWayKey": "routers_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -7583,8 +7010,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "scanners_specs",
+                    "twoWay": false,
+                    "twoWayKey": "scanners_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -7675,8 +7102,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "security_cameras_specs",
+                    "twoWay": false,
+                    "twoWayKey": "security_cameras_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -7752,8 +7179,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "smart_appliances_specs",
+                    "twoWay": false,
+                    "twoWayKey": "smart_appliances_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -7863,8 +7290,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "smart_bands_specs",
+                    "twoWay": false,
+                    "twoWayKey": "smart_bands_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -7940,8 +7367,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "smart_doorbells_specs",
+                    "twoWay": false,
+                    "twoWayKey": "smart_doorbells_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -8018,8 +7445,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "smart_lighting_specs",
+                    "twoWay": false,
+                    "twoWayKey": "smart_lighting_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -8086,8 +7513,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "smart_locks_specs",
+                    "twoWay": false,
+                    "twoWayKey": "smart_locks_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -8147,8 +7574,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "smart_plugs_specs",
+                    "twoWay": false,
+                    "twoWayKey": "smart_plugs_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -8223,8 +7650,8 @@
                     "array": false,
                     "relatedCollection": "products",
                     "relationType": "oneToOne",
-                    "twoWay": true,
-                    "twoWayKey": "smart_speakers_specs",
+                    "twoWay": false,
+                    "twoWayKey": "smart_speakers_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -8307,9 +7734,9 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "speakers_specs",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "speakers_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -8378,9 +7805,9 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "surge_protectors_specs",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "surge_protectors_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -8551,9 +7978,9 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "tablets_specs",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "tablets_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -8695,9 +8122,9 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "2_in_1_laptops_specs",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "2_in_1_laptops_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -8841,9 +8268,9 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "ultrabooks_specs",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "ultrabooks_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -8929,9 +8356,9 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "ups_systems_specs",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "ups_systems_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -8999,9 +8426,9 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "usb_c_cables_specs",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "usb_c_cables_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -9081,9 +8508,9 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "watch_bands_specs",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "watch_bands_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -9167,9 +8594,9 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "watch_chargers_specs",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "watch_chargers_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -9252,9 +8679,9 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "watch_protectors_specs",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "watch_protectors_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -9427,9 +8854,9 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "webcams_specs",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "webcams_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -9603,9 +9030,9 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "workstations_specs",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "workstations_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -9764,9 +9191,9 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
-                    "relationType": "manyToOne",
-                    "twoWay": true,
-                    "twoWayKey": "smartphones_specs",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "smartphones_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -9945,9 +9372,761 @@
                     "required": false,
                     "array": false,
                     "relatedCollection": "products",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "storage_devices_pid",
+                    "onDelete": "cascade",
+                    "side": "parent"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "customers",
+            "$permissions": [
+                "create(\"any\")",
+                "read(\"any\")",
+                "update(\"any\")",
+                "delete(\"any\")"
+            ],
+            "databaseId": "inventory-invoice-db",
+            "name": "Customers Collection",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "name",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "phone",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 16,
+                    "default": null
+                },
+                {
+                    "key": "email",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "status",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "elements": [
+                        "active",
+                        "inactive"
+                    ],
+                    "format": "enum",
+                    "default": null
+                },
+                {
+                    "key": "totalOrders",
+                    "type": "integer",
+                    "required": false,
+                    "array": false,
+                    "min": -9223372036854775808,
+                    "max": 9223372036854775807,
+                    "default": null
+                },
+                {
+                    "key": "totalSpent",
+                    "type": "double",
+                    "required": false,
+                    "array": false,
+                    "min": -1.7976931348623157e+308,
+                    "max": 1.7976931348623157e+308,
+                    "default": null
+                },
+                {
+                    "key": "notes",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 1000,
+                    "default": null
+                },
+                {
+                    "key": "addresses",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "size": 2000,
+                    "default": null
+                },
+                {
+                    "key": "lastOrderDate",
+                    "type": "datetime",
+                    "required": false,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "sales",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "sales",
+                    "relationType": "oneToMany",
+                    "twoWay": true,
+                    "twoWayKey": "customer",
+                    "onDelete": "setNull",
+                    "side": "parent"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "sale-items",
+            "$permissions": [
+                "create(\"any\")",
+                "read(\"any\")",
+                "update(\"any\")",
+                "delete(\"any\")"
+            ],
+            "databaseId": "inventory-invoice-db",
+            "name": "Sale Items collection:",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "quantity",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": -9223372036854775808,
+                    "max": 9223372036854775807,
+                    "default": null
+                },
+                {
+                    "key": "priceAtSale",
+                    "type": "double",
+                    "required": false,
+                    "array": false,
+                    "min": -1.7976931348623157e+308,
+                    "max": 1.7976931348623157e+308,
+                    "default": null
+                },
+                {
+                    "key": "product",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "products",
+                    "relationType": "manyToOne",
+                    "twoWay": false,
+                    "twoWayKey": "saleItems",
+                    "onDelete": "restrict",
+                    "side": "parent"
+                },
+                {
+                    "key": "saleId",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "sales",
                     "relationType": "manyToOne",
                     "twoWay": true,
-                    "twoWayKey": "storage_devices_specs",
+                    "twoWayKey": "saleItems",
+                    "onDelete": "setNull",
+                    "side": "parent"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "network_switches_specs",
+            "$permissions": [
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "inventory-invoice-db",
+            "name": "Product networkSwitches Specifications",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "switchType",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "portCount",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": -999999999,
+                    "max": 999999999,
+                    "default": null
+                },
+                {
+                    "key": "portSpeed",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "poeSupport",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "poePower",
+                    "type": "integer",
+                    "required": false,
+                    "array": false,
+                    "min": -999999999,
+                    "max": 999999999,
+                    "default": null
+                },
+                {
+                    "key": "rackMountable",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": null
+                },
+                {
+                    "key": "features",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "switching",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": -999999999,
+                    "max": 999999999,
+                    "default": null
+                },
+                {
+                    "key": "macAddresses",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": -999999999,
+                    "max": 999999999,
+                    "default": null
+                },
+                {
+                    "key": "powerSupply",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "product",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "products",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "network_switches_pid",
+                    "onDelete": "cascade",
+                    "side": "parent"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "security_systems_specs",
+            "$permissions": [
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "inventory-invoice-db",
+            "name": "Product securitySystems Specifications",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "systemType",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "monitoringType",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "resolution",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "storageType",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "connectivity",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "sensors",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "accessControl",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "smartFeatures",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "certification",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "backupSystem",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "product",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "products",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "security_systems_pid",
+                    "onDelete": "cascade",
+                    "side": "parent"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "smartwatches_specs",
+            "$permissions": [
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "inventory-invoice-db",
+            "name": "Product smartwatches Specifications",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "displayType",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "screenSize",
+                    "type": "double",
+                    "required": true,
+                    "array": false,
+                    "min": -999999999,
+                    "max": 999999999,
+                    "default": null
+                },
+                {
+                    "key": "resolution",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "caseSize",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "caseMaterial",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "waterResistance",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "sensors",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "healthFeatures",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "batteryLife",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": -999999999,
+                    "max": 999999999,
+                    "default": null
+                },
+                {
+                    "key": "connectivity",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "compatibility",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "paymentSupport",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "storageCapacity",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": -999999999,
+                    "max": 999999999,
+                    "default": null
+                },
+                {
+                    "key": "speakerMic",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": null
+                },
+                {
+                    "key": "product",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "products",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "smartwatches_pid",
+                    "onDelete": "cascade",
+                    "side": "parent"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "sound_card_specs",
+            "$permissions": [
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "inventory-invoice-db",
+            "name": "Product soundCards Specifications",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "formFactor",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "channels",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "sampleRate",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "bitDepth",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "snr",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": -999999999,
+                    "max": 999999999,
+                    "default": null
+                },
+                {
+                    "key": "interfaces",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "chipset",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "features",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "softwareFeatures",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "driveSupport",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "product",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "products",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "sound_card_pid",
+                    "onDelete": "cascade",
+                    "side": "parent"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "student_response_systems_specs",
+            "$permissions": [
+                "read(\"users\")",
+                "create(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "inventory-invoice-db",
+            "name": "Product studentResponseSystems Specifications",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "systemType",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "responseTypes",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "connectivity",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "deviceSupport",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "maxUsers",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": -999999999,
+                    "max": 999999999,
+                    "default": null
+                },
+                {
+                    "key": "softwareFeatures",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "assessmentTools",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "integrationOptions",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "dataExport",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "batteryLife",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": -999999999,
+                    "max": 999999999,
+                    "default": null
+                },
+                {
+                    "key": "securityFeatures",
+                    "type": "string",
+                    "required": true,
+                    "array": true,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "product",
+                    "type": "relationship",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "products",
+                    "relationType": "oneToOne",
+                    "twoWay": false,
+                    "twoWayKey": "student_response_systems_pid",
                     "onDelete": "cascade",
                     "side": "parent"
                 }
@@ -10021,7 +10200,44 @@
             ],
             "events": [],
             "scopes": [
-                "users.read"
+                "sessions.write",
+                "users.read",
+                "users.write",
+                "teams.read",
+                "teams.write",
+                "databases.read",
+                "databases.write",
+                "collections.read",
+                "collections.write",
+                "attributes.read",
+                "attributes.write",
+                "indexes.read",
+                "indexes.write",
+                "documents.read",
+                "documents.write",
+                "files.read",
+                "files.write",
+                "buckets.read",
+                "buckets.write",
+                "functions.read",
+                "functions.write",
+                "execution.read",
+                "execution.write",
+                "targets.read",
+                "targets.write",
+                "providers.read",
+                "providers.write",
+                "messages.read",
+                "messages.write",
+                "topics.read",
+                "topics.write",
+                "subscribers.read",
+                "subscribers.write",
+                "locale.read",
+                "avatars.read",
+                "health.read",
+                "migrations.read",
+                "migrations.write"
             ],
             "schedule": "",
             "timeout": 15,
@@ -10062,7 +10278,22 @@
                 "functions.read",
                 "functions.write",
                 "execution.read",
-                "execution.write"
+                "execution.write",
+                "targets.read",
+                "targets.write",
+                "providers.read",
+                "providers.write",
+                "messages.read",
+                "messages.write",
+                "topics.read",
+                "topics.write",
+                "subscribers.read",
+                "subscribers.write",
+                "locale.read",
+                "avatars.read",
+                "health.read",
+                "migrations.read",
+                "migrations.write"
             ],
             "schedule": "",
             "timeout": 15,
@@ -10103,7 +10334,22 @@
                 "functions.read",
                 "functions.write",
                 "execution.read",
-                "execution.write"
+                "execution.write",
+                "targets.read",
+                "targets.write",
+                "providers.read",
+                "providers.write",
+                "messages.read",
+                "messages.write",
+                "topics.read",
+                "topics.write",
+                "subscribers.read",
+                "subscribers.write",
+                "locale.read",
+                "avatars.read",
+                "health.read",
+                "migrations.read",
+                "migrations.write"
             ],
             "schedule": "",
             "timeout": 15,
@@ -10137,10 +10383,29 @@
                 "indexes.write",
                 "documents.read",
                 "documents.write",
+                "files.read",
+                "files.write",
+                "buckets.read",
+                "buckets.write",
                 "functions.read",
                 "functions.write",
                 "execution.read",
-                "execution.write"
+                "execution.write",
+                "targets.read",
+                "targets.write",
+                "providers.read",
+                "providers.write",
+                "messages.read",
+                "messages.write",
+                "topics.read",
+                "topics.write",
+                "subscribers.read",
+                "subscribers.write",
+                "locale.read",
+                "avatars.read",
+                "health.read",
+                "migrations.read",
+                "migrations.write"
             ],
             "schedule": "",
             "timeout": 15,
@@ -10339,6 +10604,196 @@
             "entrypoint": "src/main.py",
             "commands": "pip install -r requirements.txt",
             "path": "functions/Get Invoice Preview Python"
+        },
+        {
+            "$id": "get-customer-analytics",
+            "name": "Get Customer Analytics",
+            "runtime": "node-16.0",
+            "execute": [
+                "any"
+            ],
+            "events": [],
+            "scopes": [
+                "sessions.write",
+                "users.read",
+                "users.write",
+                "teams.read",
+                "teams.write",
+                "databases.read",
+                "databases.write",
+                "collections.read",
+                "collections.write",
+                "attributes.read",
+                "attributes.write",
+                "indexes.read",
+                "indexes.write",
+                "documents.read",
+                "documents.write",
+                "files.read",
+                "files.write",
+                "buckets.read",
+                "buckets.write",
+                "functions.read",
+                "functions.write",
+                "execution.read",
+                "execution.write",
+                "targets.read",
+                "targets.write",
+                "providers.read",
+                "providers.write",
+                "messages.read",
+                "messages.write",
+                "topics.read",
+                "topics.write",
+                "subscribers.read",
+                "subscribers.write",
+                "locale.read",
+                "avatars.read",
+                "health.read",
+                "migrations.read",
+                "migrations.write"
+            ],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "path": "functions/Get Customer Analytics"
+        },
+        {
+            "$id": "get-inventory-analytics",
+            "name": "Get Inventory Analytics",
+            "runtime": "node-16.0",
+            "execute": [
+                "any"
+            ],
+            "events": [],
+            "scopes": [
+                "sessions.write",
+                "users.read",
+                "users.write",
+                "teams.read",
+                "teams.write",
+                "databases.read",
+                "databases.write",
+                "collections.read",
+                "collections.write",
+                "attributes.read",
+                "attributes.write",
+                "indexes.read",
+                "indexes.write",
+                "documents.read",
+                "documents.write",
+                "files.read",
+                "files.write",
+                "buckets.read",
+                "buckets.write",
+                "functions.read",
+                "functions.write",
+                "execution.read",
+                "execution.write",
+                "targets.read",
+                "targets.write",
+                "providers.read",
+                "providers.write",
+                "messages.read",
+                "messages.write",
+                "topics.read",
+                "topics.write",
+                "subscribers.read",
+                "subscribers.write",
+                "locale.read",
+                "avatars.read",
+                "health.read",
+                "migrations.read",
+                "migrations.write"
+            ],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "path": "functions/Get Inventory Analytics"
+        },
+        {
+            "$id": "get-sales-analytics",
+            "name": "Get Sales Analytics",
+            "runtime": "node-16.0",
+            "execute": [
+                "any"
+            ],
+            "events": [],
+            "scopes": [
+                "sessions.write",
+                "users.read",
+                "users.write",
+                "teams.read",
+                "teams.write",
+                "databases.read",
+                "databases.write",
+                "collections.read",
+                "collections.write",
+                "attributes.read",
+                "attributes.write",
+                "indexes.read",
+                "indexes.write",
+                "documents.read",
+                "documents.write",
+                "files.read",
+                "files.write",
+                "buckets.read",
+                "buckets.write",
+                "functions.read",
+                "functions.write",
+                "execution.read",
+                "execution.write"
+            ],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "path": "functions/Get Sales Analytics"
+        },
+        {
+            "$id": "payment-update",
+            "name": "Payment Update",
+            "runtime": "node-20.0",
+            "execute": [
+                "any"
+            ],
+            "events": [],
+            "scopes": [
+                "users.read",
+                "databases.read",
+                "databases.write",
+                "collections.read",
+                "collections.write",
+                "attributes.read",
+                "attributes.write",
+                "indexes.read",
+                "indexes.write",
+                "documents.read",
+                "documents.write",
+                "files.read",
+                "files.write",
+                "buckets.read",
+                "buckets.write",
+                "functions.read",
+                "functions.write",
+                "execution.read",
+                "execution.write"
+            ],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "path": "functions/Payment Update"
         }
     ],
     "buckets": [
@@ -10385,6 +10840,52 @@
                 "webp"
             ],
             "compression": "gzip",
+            "encryption": true,
+            "antivirus": true
+        },
+        {
+            "$id": "stock-receipts",
+            "$permissions": [
+                "create(\"any\")",
+                "read(\"any\")",
+                "update(\"any\")",
+                "delete(\"any\")"
+            ],
+            "fileSecurity": false,
+            "name": "Stock Receipts",
+            "enabled": true,
+            "maximumFileSize": 5000000,
+            "allowedFileExtensions": [
+                "jpg",
+                "png",
+                "jpeg",
+                "webp"
+            ],
+            "compression": "gzip",
+            "encryption": true,
+            "antivirus": true
+        },
+        {
+            "$id": "invoices-bucket",
+            "$permissions": [
+                "create(\"any\")",
+                "read(\"any\")",
+                "update(\"any\")",
+                "create(\"label:admin\")",
+                "read(\"label:admin\")",
+                "update(\"label:admin\")",
+                "delete(\"label:admin\")"
+            ],
+            "fileSecurity": false,
+            "name": "Invoices Bucket",
+            "enabled": true,
+            "maximumFileSize": 10000000,
+            "allowedFileExtensions": [
+                "jpg",
+                "png",
+                "pdf"
+            ],
+            "compression": "none",
             "encryption": true,
             "antivirus": true
         }

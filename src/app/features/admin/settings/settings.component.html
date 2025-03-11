@@ -1,516 +1,838 @@
-<div class="max-w-7xl mx-auto p-md">
-  <!-- Header -->
-  <div class="mb-lg">
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-sm">
-      Settings
-    </h1>
-    <p class="text-gray-600 dark:text-gray-400">
-      Manage your application preferences and configurations
-    </p>
-  </div>
+<!-- settings.component.html -->
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">
+        Configure your application preferences and customize your experience
+      </p>
+    </div>
 
-  <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-lg">
-    <!-- Tabs -->
-    <div class="border-b border-gray-200 dark:border-gray-700">
-      <nav class="flex overflow-x-auto">
+    <!-- Main Settings Area -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+      <!-- Tabs Navigation -->
+      <div class="flex overflow-x-auto border-b border-gray-200 dark:border-gray-700">
         @for (tab of tabs; track tab.id) {
           <button
             (click)="setActiveTab(tab.id)"
-            class="px-lg py-md border-b-2 text-sm font-medium whitespace-nowrap
-                   {{ activeTab() === tab.id
-                      ? 'border-primary-500 text-primary-500'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}"
+            class="flex items-center px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap"
+            [class]="activeTab() === tab.id ?
+              'border-primary-500 text-primary-600 dark:text-primary-400' :
+              'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'"
           >
-            <span class="material-icons mr-sm align-middle text-base">{{ tab.icon }}</span>
+            <span class="material-icons mr-2 text-[20px]">{{ tab.icon }}</span>
             {{ tab.label }}
           </button>
         }
-      </nav>
-    </div>
-
-    <!-- Success Message -->
-    @if (success()) {
-      <div class="m-md p-md bg-success-light text-success-dark rounded-lg">
-        {{ success() }}
       </div>
-    }
 
-    <!-- Error Message -->
-    @if (error()) {
-      <div class="m-md p-md bg-error-light text-error-dark rounded-lg">
-        {{ error() }}
-      </div>
-    }
+      <div class="p-6" autoAnimate>
+        <!-- System Settings Tab -->
+        @if (activeTab() === 'system') {
+          <form [formGroup]="systemForm" (ngSubmit)="saveSystemSettings()" class="space-y-8">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                <span class="material-icons mr-2 text-primary-500">settings</span>
+                System Preferences
+              </h2>
 
-    <!-- Tab Content -->
-    <div class="p-lg">
-      <!-- General Settings -->
-      @if (activeTab() === 'general') {
-        <form [formGroup]="generalForm" (ngSubmit)="saveSettings('general')" class="space-y-lg">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
-            <div class="space-y-md">
-              <div class="space-y-sm">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Store Name
-                </label>
-                <input
-                  type="text"
-                  formControlName="storeName"
-                  class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-              </div>
+              <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <!-- Language -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Language
+                  </label>
+                  <div class="relative">
+                    <select
+                      formControlName="language"
+                      class="w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600
+                             focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                             bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    >
+                      @for (lang of languages; track lang.code) {
+                        <option [value]="lang.code">{{ lang.name }}</option>
+                      }
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                      <span class="material-icons">expand_more</span>
+                    </div>
+                  </div>
+                </div>
 
-              <div class="space-y-sm">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Currency
-                </label>
-                <select
-                  formControlName="currency"
-                  class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="USD">USD ($)</option>
-                  <option value="EUR">EUR (€)</option>
-                  <option value="GBP">GBP (£)</option>
-                </select>
-              </div>
-            </div>
+                <!-- Timezone -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Timezone
+                  </label>
+                  <div class="relative">
+                    <select
+                      formControlName="timezone"
+                      class="w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600
+                             focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                             bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    >
+                      @for (tz of timezones; track tz.value) {
+                        <option [value]="tz.value">{{ tz.label }}</option>
+                      }
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                      <span class="material-icons">expand_more</span>
+                    </div>
+                  </div>
+                </div>
 
-            <div class="space-y-md">
-              <div class="space-y-sm">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Timezone
-                </label>
-                <select
-                  formControlName="timezone"
-                  class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="UTC">UTC</option>
-                  <option value="America/New_York">Eastern Time</option>
-                  <option value="America/Los_Angeles">Pacific Time</option>
-                </select>
-              </div>
+                <!-- Date Format -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Date Format
+                  </label>
+                  <div class="relative">
+                    <select
+                      formControlName="dateFormat"
+                      class="w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600
+                             focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                             bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    >
+                      @for (format of dateFormats; track format.value) {
+                        <option [value]="format.value">{{ format.label }}</option>
+                      }
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                      <span class="material-icons">expand_more</span>
+                    </div>
+                  </div>
+                </div>
 
-              <div class="space-y-sm">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Theme
-                </label>
-                <select
-                  formControlName="theme"
-                  class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="light">Light</option>
-                  <option value="dark">Dark</option>
-                  <option value="system">System Default</option>
-                </select>
-              </div>
-            </div>
-          </div>
+                <!-- Theme -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Theme
+                  </label>
+                  <div class="grid grid-cols-3 gap-3">
+                    <div class="flex items-center">
+                      <input
+                        type="radio"
+                        formControlName="theme"
+                        value="light"
+                        id="theme-light"
+                        class="hidden peer"
+                      />
+                      <label for="theme-light"
+                             class="flex flex-col items-center justify-center w-full p-3 bg-white border
+                               border-gray-200 rounded-lg cursor-pointer peer-checked:border-primary-500
+                               peer-checked:bg-primary-50 dark:bg-gray-800 dark:border-gray-700
+                               dark:peer-checked:bg-primary-900/20 hover:bg-gray-50 dark:hover:bg-gray-700
+                               transition-all">
+                        <span class="material-icons mb-2 text-3xl text-yellow-500">light_mode</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">Light</span>
+                      </label>
+                    </div>
 
-          <div class="flex justify-end">
-            <button
-              type="submit"
-              [disabled]="generalForm.invalid || isLoading()"
-              class="px-lg py-sm rounded-lg bg-primary-500 text-white
-                     hover:bg-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-                     disabled:opacity-50 disabled:cursor-not-allowed
-                     transition-colors"
-            >
-              @if (isLoading()) {
-                <span>Saving...</span>
-              } @else {
-                <span>Save Changes</span>
-              }
-            </button>
-          </div>
-        </form>
-      }
+                    <div class="flex items-center">
+                      <input
+                        type="radio"
+                        formControlName="theme"
+                        value="dark"
+                        id="theme-dark"
+                        class="hidden peer"
+                      />
+                      <label for="theme-dark"
+                             class="flex flex-col items-center justify-center w-full p-3 bg-white border
+                               border-gray-200 rounded-lg cursor-pointer peer-checked:border-primary-500
+                               peer-checked:bg-primary-50 dark:bg-gray-800 dark:border-gray-700
+                               dark:peer-checked:bg-primary-900/20 hover:bg-gray-50 dark:hover:bg-gray-700
+                               transition-all">
+                        <span class="material-icons mb-2 text-3xl text-indigo-500">dark_mode</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">Dark</span>
+                      </label>
+                    </div>
 
-      <!-- Company Information -->
-      @if (activeTab() === 'company') {
-        <form [formGroup]="companyForm" (ngSubmit)="saveSettings('company')" class="space-y-lg">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
-            <div class="space-y-md">
-              <div class="space-y-sm">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Company Name
-                </label>
-                <input
-                  type="text"
-                  formControlName="companyName"
-                  class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-              </div>
-
-              <div class="space-y-sm">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Address
-                </label>
-                <textarea
-                  formControlName="address"
-                  rows="3"
-                  class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                ></textarea>
-              </div>
-            </div>
-
-            <div class="space-y-md">
-              <div class="space-y-sm">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Phone
-                </label>
-                <input
-                  type="tel"
-                  formControlName="phone"
-                  class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-              </div>
-
-              <div class="space-y-sm">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  formControlName="email"
-                  class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-              </div>
-
-              <div class="space-y-sm">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Website
-                </label>
-                <input
-                  type="url"
-                  formControlName="website"
-                  class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
+                    <div class="flex items-center">
+                      <input
+                        type="radio"
+                        formControlName="theme"
+                        value="system"
+                        id="theme-system"
+                        class="hidden peer"
+                      />
+                      <label for="theme-system"
+                             class="flex flex-col items-center justify-center w-full p-3 bg-white border
+                               border-gray-200 rounded-lg cursor-pointer peer-checked:border-primary-500
+                               peer-checked:bg-primary-50 dark:bg-gray-800 dark:border-gray-700
+                               dark:peer-checked:bg-primary-900/20 hover:bg-gray-50 dark:hover:bg-gray-700
+                               transition-all">
+                        <span class="material-icons mb-2 text-3xl text-blue-500">devices</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">System</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="flex justify-end">
-            <button
-              type="submit"
-              [disabled]="companyForm.invalid || isLoading()"
-              class="px-lg py-sm rounded-lg bg-primary-500 text-white
-                     hover:bg-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-                     disabled:opacity-50 disabled:cursor-not-allowed
-                     transition-colors"
-            >
-              @if (isLoading()) {
-                <span>Saving...</span>
-              } @else {
-                <span>Save Changes</span>
-              }
-            </button>
-          </div>
-        </form>
-      }
-
-      <!-- Invoice Settings -->
-      @if (activeTab() === 'invoice') {
-        <form [formGroup]="invoiceForm" (ngSubmit)="saveSettings('invoice')" class="space-y-lg">
-          <!-- Logo Upload -->
-          <div class="space-y-md">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Company Logo
-            </label>
-            <div class="flex items-center space-x-md">
-              @if (invoiceForm.get('logoUrl')?.value) {
-                <img
-                  [src]="invoiceForm.get('logoUrl')?.value"
-                  alt="Company Logo"
-                  class="h-16 w-16 object-contain rounded-lg"
-                >
-              }
-              <div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  (change)="uploadLogo($event)"
-                  class="hidden"
-                  #fileInput
-                >
+            <div class="pt-5 border-t border-gray-200 dark:border-gray-700">
+              <div class="flex justify-end">
                 <button
-                  type="button"
-                  (click)="fileInput.click()"
-                  class="px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-surface-dark-primary
-                         focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-                         transition-colors"
+                  type="submit"
+                  [disabled]="systemForm.invalid || isLoading()"
+                  class="px-6 py-2.5 bg-primary-500 text-white rounded-lg shadow-md
+                         hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                         disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
                 >
-                  Upload Logo
+                  <span class="material-icons text-[18px]">save</span>
+                  Save Settings
                 </button>
               </div>
             </div>
-          </div>
+          </form>
+        }
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
-            <!-- Invoice Settings -->
-            <div class="space-y-md">
-              <div class="space-y-sm">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Invoice Prefix
+        <!-- Company Settings Tab -->
+        @if (activeTab() === 'company') {
+          <form [formGroup]="companyForm" (ngSubmit)="saveCompanySettings()" class="space-y-8">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
+                <span class="material-icons mr-2 text-primary-500">business</span>
+                Company Information
+              </h2>
+
+              <!-- Logo Upload Section -->
+              <div class="mb-8">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Company Logo
                 </label>
-                <input
-                  type="text"
-                  formControlName="invoicePrefix"
-                  class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-              </div>
+                <div class="flex items-center space-x-6">
+                  <div class="w-32 h-32 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-900/50 flex items-center justify-center">
+                    @if (companyForm.get('logo')?.value) {
+                      <img
+                        [src]="companyForm.get('logo')?.value"
+                        alt="Company Logo"
+                        class="max-w-full max-h-full object-contain"
+                      />
+                    } @else {
+                      <span class="material-icons text-gray-400 text-4xl">business</span>
+                    }
+                  </div>
 
-              <div class="space-y-sm">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Next Invoice Number
-                </label>
-                <input
-                  type="number"
-                  formControlName="nextInvoiceNumber"
-                  class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-              </div>
-
-              <div class="space-y-sm">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Tax Rate (%)
-                </label>
-                <input
-                  type="number"
-                  formControlName="taxRate"
-                  class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-              </div>
-            </div>
-
-            <div class="space-y-md">
-              <div class="space-y-sm">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Terms and Conditions
-                </label>
-                <textarea
-                  formControlName="termsAndConditions"
-                  rows="5"
-                  class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                ></textarea>
-              </div>
-
-              <div class="flex items-center space-x-sm">
-                <input
-                  type="checkbox"
-                  formControlName="showLogo"
-                  class="rounded border-gray-300 text-primary-500 focus:ring-primary-500"
-                >
-                <label class="text-sm text-gray-700 dark:text-gray-300">
-                  Show logo on invoices
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex justify-end">
-            <button
-              type="submit"
-              [disabled]="invoiceForm.invalid || isLoading()"
-              class="px-lg py-sm rounded-lg bg-primary-500 text-white
-                     hover:bg-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-                     disabled:opacity-50 disabled:cursor-not-allowed
-                     transition-colors"
-            >
-              @if (isLoading()) {
-                <span>Saving...</span>
-              } @else {
-                <span>Save Changes</span>
-              }
-            </button>
-          </div>
-        </form>
-      }
-
-      <!-- Notification Settings -->
-      @if (activeTab() === 'notifications') {
-        <form [formGroup]="notificationForm" (ngSubmit)="saveSettings('notifications')" class="space-y-lg">
-          <div class="space-y-md">
-            <div class="flex items-center justify-between py-sm">
-              <div>
-                <h4 class="text-sm font-medium text-gray-900 dark:text-white">
-                  Email Notifications
-                </h4>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  Receive email notifications for important updates
-                </p>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  formControlName="emailNotifications"
-                  class="rounded border-gray-300 text-primary-500 focus:ring-primary-500"
-                >
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between py-sm">
-              <div>
-                <h4 class="text-sm font-medium text-gray-900 dark:text-white">
-                  Low Stock Alerts
-                </h4>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  Get notified when product stock is running low
-                </p>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  formControlName="lowStockAlerts"
-                  class="rounded border-gray-300 text-primary-500 focus:ring-primary-500"
-                >
-              </div>
-            </div>
-
-            @if (notificationForm.get('lowStockAlerts')?.value) {
-              <div class="space-y-sm ml-lg">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Low Stock Threshold
-                </label>
-                <input
-                  type="number"
-                  formControlName="lowStockThreshold"
-                  class="w-32 px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                         bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-              </div>
-            }
-
-            <div class="flex items-center justify-between py-sm">
-              <div>
-                <h4 class="text-sm font-medium text-gray-900 dark:text-white">
-                  Order Confirmations
-                </h4>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  Send order confirmation emails to customers
-                </p>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  formControlName="orderConfirmations"
-                  class="rounded border-gray-300 text-primary-500 focus:ring-primary-500"
-                >
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between py-sm">
-              <div>
-                <h4 class="text-sm font-medium text-gray-900 dark:text-white">
-                  Payment Reminders
-                </h4>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  Send payment reminder emails for overdue invoices
-                </p>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  formControlName="paymentReminders"
-                  class="rounded border-gray-300 text-primary-500 focus:ring-primary-500"
-                >
-              </div>
-            </div>
-          </div>
-
-          <div class="flex justify-end">
-            <button
-              type="submit"
-              [disabled]="notificationForm.invalid || isLoading()"
-              class="px-lg py-sm rounded-lg bg-primary-500 text-white
-                     hover:bg-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-                     disabled:opacity-50 disabled:cursor-not-allowed
-                     transition-colors"
-            >
-              @if (isLoading()) {
-                <span>Saving...</span>
-              } @else {
-                <span>Save Changes</span>
-              }
-            </button>
-          </div>
-        </form>
-      }
-
-      @if (activeTab() === 'seed') {
-        <div class="space-y-4">
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-            Database Management
-          </h3>
-
-          @if (seedProgress().processed > 0) {
-            <div class="space-y-2">
-              <div class="flex justify-between text-sm">
-                <span>Seeding Progress: {{ getProgressPercentage() }}%</span>
-                <span>{{ seedProgress().processed }} / {{ seedProgress().total }}</span>
-              </div>
-              <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                <div class="bg-primary-500 h-2.5 rounded-full"
-                     [style.width.%]="getProgressPercentage()">
+                  <div class="flex flex-col space-y-2">
+                    <div class="relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        (change)="uploadLogo($event)"
+                        class="hidden"
+                        #logoInput
+                      />
+                      <button
+                        type="button"
+                        (click)="logoInput.click()"
+                        class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600
+                               rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300
+                               hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none
+                               focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors
+                               flex items-center gap-2"
+                      >
+                        <span class="material-icons text-[18px]">file_upload</span>
+                        Upload Logo
+                      </button>
+                    </div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                      Recommended: 512x512px PNG or JPG
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div class="text-sm text-gray-500">
-                Current: {{ seedProgress().current }}<br>
-                Added: {{ seedProgress().added }}<br>
-                Skipped: {{ seedProgress().skipped }}
+
+              <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <!-- Company Name -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Company Name <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    formControlName="companyName"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
+                           focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    placeholder="Your Company Name"
+                  />
+                </div>
+
+                <!-- Tax ID -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Tax ID / VAT Number
+                  </label>
+                  <input
+                    type="text"
+                    formControlName="taxId"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
+                           focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    placeholder="Your Tax/VAT ID"
+                  />
+                </div>
+
+                <!-- Phone -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Phone <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    formControlName="phone"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
+                           focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    placeholder="+1 (555) 123-4567"
+                  />
+                </div>
+
+                <!-- Email -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Email <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    formControlName="email"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
+                           focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    placeholder="contact@yourcompany.com"
+                  />
+                </div>
+
+                <!-- Website -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Website
+                  </label>
+                  <input
+                    type="url"
+                    formControlName="website"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
+                           focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    placeholder="https://www.yourcompany.com"
+                  />
+                </div>
+
+                <!-- Address -->
+                <div class="space-y-2 md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Address <span class="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    formControlName="address"
+                    rows="3"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
+                           focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    placeholder="123 Business St, Suite 101&#10;City, State, ZIP&#10;Country"
+                  ></textarea>
+                </div>
               </div>
             </div>
-          }
 
-          <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-            <div class="flex items-center justify-between">
-              <div>
-                <h4 class="text-base font-medium text-gray-900 dark:text-white">
-                  Seed Categories
-                </h4>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  Initialize default product categories
-                </p>
+            <div class="pt-5 border-t border-gray-200 dark:border-gray-700">
+              <div class="flex justify-end">
+                <button
+                  type="submit"
+                  [disabled]="companyForm.invalid || isLoading()"
+                  class="px-6 py-2.5 bg-primary-500 text-white rounded-lg shadow-md
+                         hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                         disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                >
+                  <span class="material-icons text-[18px]">save</span>
+                  Save Company Info
+                </button>
               </div>
+            </div>
+          </form>
+        }
 
-              <button
-                (click)="seedCategories()"
-                class="px-4 py-2 bg-primary-500 text-white rounded-lg
-               hover:bg-primary-600 focus:ring-2 focus:ring-primary-500
-               transition-colors">
-                Initialize Categories
-              </button>
+        <!-- Invoice Settings Tab -->
+        @if (activeTab() === 'invoice') {
+          <form [formGroup]="invoiceForm" (ngSubmit)="saveInvoiceSettings()" class="space-y-8">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
+                <span class="material-icons mr-2 text-primary-500">receipt</span>
+                Invoice Settings
+              </h2>
+
+              <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <!-- Invoice Prefix -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Invoice Prefix <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    formControlName="invoicePrefix"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
+                           focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    placeholder="INV-"
+                  />
+                </div>
+
+                <!-- Next Invoice Number -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Next Invoice Number <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number" formControlName="nextInvoiceNumber"
+                    min="1"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
+                          focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    placeholder="1001"
+                  />
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    This will be incremented automatically for each new invoice
+                  </p>
+                </div>
+
+                <!-- Currency -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Currency <span class="text-red-500">*</span>
+                  </label>
+                  <div class="relative">
+                    <select
+                      formControlName="currency"
+                      class="w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600
+                            focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    >
+                      @for (currency of currencies; track currency.code) {
+                        <option [value]="currency.code">{{ currency.code }} ({{ currency.symbol }}) - {{ currency.name }}</option>
+                      }
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                      <span class="material-icons">expand_more</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tax Rate -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Tax Rate (%) <span class="text-red-500">*</span>
+                  </label>
+                  <div class="relative">
+                    <input
+                      type="number"
+                      formControlName="taxRate"
+                      min="0"
+                      max="100"
+                      step="0.01"
+                      class="w-full pl-3 pr-10 py-2 border border-gray-300 dark:border-gray-600
+                            focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                      placeholder="10.00"
+                    />
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                      <span class="text-gray-500 dark:text-gray-400">%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Invoice Date Format -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Date Format
+                  </label>
+                  <div class="relative">
+                    <select
+                      formControlName="dateFormat"
+                      class="w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600
+                            focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    >
+                      @for (format of dateFormats; track format.value) {
+                        <option [value]="format.value">{{ format.label }}</option>
+                      }
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                      <span class="material-icons">expand_more</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="space-y-2 md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Terms & Conditions
+                  </label>
+                  <textarea
+                    formControlName="termsAndConditions"
+                    rows="4"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
+                          focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    placeholder="Enter your standard terms and conditions to be displayed on invoices"
+                  ></textarea>
+                </div>
+
+                <!-- Additional Notes -->
+                <div class="space-y-2 md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Additional Notes
+                  </label>
+                  <textarea
+                    formControlName="notes"
+                    rows="3"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
+                          focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                    placeholder="Enter any additional notes or information for invoices"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-5 border-t border-gray-200 dark:border-gray-700">
+              <div class="flex justify-end">
+                <button
+                  type="submit"
+                  [disabled]="invoiceForm.invalid || isLoading()"
+                  class="px-6 py-2.5 bg-primary-500 text-white rounded-lg shadow-md
+                        hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                        disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                >
+                  <span class="material-icons text-[18px]">save</span>
+                  Save Invoice Settings
+                </button>
+              </div>
+            </div>
+          </form>
+        }
+
+        <!-- Notification Settings Tab -->
+        @if (activeTab() === 'notifications') {
+          <form [formGroup]="notificationForm" (ngSubmit)="saveNotificationSettings()" class="space-y-8">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
+                <span class="material-icons mr-2 text-primary-500">notifications</span>
+                Notification Settings
+              </h2>
+
+              <div class="space-y-6">
+                <!-- Email Notifications -->
+                <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                        Email Notifications
+                      </h3>
+                      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Receive important updates and alerts via email
+                      </p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" formControlName="emailNotifications" class="sr-only peer">
+                      <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4
+                                 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer
+                                 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full
+                                 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px]
+                                 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5
+                                 after:transition-all dark:border-gray-600 peer-checked:bg-primary-500"></div>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Low Stock Alerts -->
+                <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                        Low Stock Alerts
+                      </h3>
+                      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Get notified when inventory items fall below threshold
+                      </p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" formControlName="inventoryAlerts" class="sr-only peer">
+                      <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4
+                                 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer
+                                 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full
+                                 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px]
+                                 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5
+                                 after:transition-all dark:border-gray-600 peer-checked:bg-primary-500"></div>
+                    </label>
+                  </div>
+
+                  @if (notificationForm.get('inventoryAlerts')?.value) {
+                    <div class="mt-4 ml-6 p-3 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                      <div class="flex items-center">
+                        <div class="w-48">
+                          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Low Stock Threshold
+                          </label>
+                          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Minimum quantity before alert is triggered
+                          </p>
+                        </div>
+                        <div>
+                          <input
+                            type="number"
+                            formControlName="lowStockThreshold"
+                            min="1"
+                            class="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600
+                                 focus:outline-none focus:ring-primary-500 focus:border-primary-500
+                                 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+
+                <!-- Sales Alerts -->
+                <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h3 class="text-base font-medium text-gray-900 dark:text-white">
+                        Sales Notifications
+                      </h3>
+                      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Receive alerts for new sales and payment status changes
+                      </p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" formControlName="salesAlerts" class="sr-only peer">
+                      <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4
+                                 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer
+                                 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full
+                                 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px]
+                                 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5
+                                 after:transition-all dark:border-gray-600 peer-checked:bg-primary-500"></div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-5 border-t border-gray-200 dark:border-gray-700">
+              <div class="flex justify-end">
+                <button
+                  type="submit"
+                  [disabled]="notificationForm.invalid || isLoading()"
+                  class="px-6 py-2.5 bg-primary-500 text-white rounded-lg shadow-md
+                        hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                        disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                >
+                  <span class="material-icons text-[18px]">save</span>
+                  Save Notification Settings
+                </button>
+              </div>
+            </div>
+          </form>
+        }
+
+        <!-- Integration Settings Tab -->
+        @if (activeTab() === 'integration') {
+          <div class="space-y-8">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
+                <span class="material-icons mr-2 text-primary-500">sync_alt</span>
+                Integrations
+              </h2>
+
+              <div class="space-y-6">
+                <!-- Payment Gateways -->
+                <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                      <span class="material-icons">payment</span>
+                    </div>
+                    <div class="ml-4">
+                      <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                        Payment Gateways
+                      </h3>
+                      <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Connect payment processors to accept online payments
+                      </p>
+                    </div>
+                    <div class="ml-auto">
+                     <span class="px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">
+                       Coming Soon
+                     </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Email Services -->
+                <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                      <span class="material-icons">email</span>
+                    </div>
+                    <div class="ml-4">
+                      <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                        Email Service
+                      </h3>
+                      <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Connect to SMTP server or third-party email providers
+                      </p>
+                    </div>
+                    <div class="ml-auto">
+                     <span class="px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">
+                       Coming Soon
+                     </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Cloud Storage -->
+                <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                      <span class="material-icons">cloud_upload</span>
+                    </div>
+                    <div class="ml-4">
+                      <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                        Cloud Storage
+                      </h3>
+                      <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Connect to cloud storage providers for backups and file storage
+                      </p>
+                    </div>
+                    <div class="ml-auto">
+                     <span class="px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">
+                       Coming Soon
+                     </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      }
+        }
+
+        <!-- Backup & Data Tab -->
+        @if (activeTab() === 'backup') {
+          <div class="space-y-8">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
+                <span class="material-icons mr-2 text-primary-500">cloud_download</span>
+                Backup & Data Management
+              </h2>
+
+              <div class="space-y-6">
+                <!-- Backup Options -->
+                <div class="p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    Data Backup
+                  </h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                    Create backup of your data and restore when needed
+                  </p>
+
+                  <div class="flex flex-wrap gap-4">
+                    <button
+                      type="button"
+                      (click)="backupData()"
+                      class="px-5 py-2.5 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300
+                            border border-primary-300 dark:border-primary-700 rounded-lg shadow-sm
+                            hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors
+                            flex items-center gap-2"
+                    >
+                      <span class="material-icons text-[18px]">save_alt</span>
+                      Create Backup
+                    </button>
+
+                    <button
+                      type="button"
+                      (click)="restoreData()"
+                      class="px-5 py-2.5 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300
+                            border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm
+                            hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors
+                            flex items-center gap-2"
+                    >
+                      <span class="material-icons text-[18px]">restore</span>
+                      Restore Backup
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Seed Data -->
+                <div class="p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    Initialize Sample Data
+                  </h3>
+
+                  @if (seedProgress().processed > 0) {
+                    <div class="mb-6 space-y-2">
+                      <div class="flex justify-between text-sm">
+                        <span>Progress: {{ getProgressPercentage() }}%</span>
+                        <span>{{ seedProgress().processed }} / {{ seedProgress().total }}</span>
+                      </div>
+                      <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div class="bg-primary-500 h-2.5 rounded-full"
+                             [style.width.%]="getProgressPercentage()"></div>
+                      </div>
+                      <div class="text-sm text-gray-500 dark:text-gray-400">
+                        Current: {{ seedProgress().current }}
+                      </div>
+                    </div>
+                  }
+
+                  <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                    <div>
+                      <h4 class="text-base font-medium text-gray-900 dark:text-white">
+                        Product Categories
+                      </h4>
+                      <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Seed database with standard product categories
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      (click)="seedCategories()"
+                      class="px-5 py-2.5 bg-primary-500 text-white rounded-lg shadow-md self-start md:self-auto
+                            hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                            transition-colors flex items-center gap-2"
+                    >
+                      <span class="material-icons text-[18px]">play_arrow</span>
+                      Start Initialization
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Reset Settings -->
+                <div class="p-6 rounded-lg border border-red-200 dark:border-red-900/30">
+                  <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    Reset Settings
+                  </h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                    Reset all settings to default values. This action cannot be undone.
+                  </p>
+
+                  <button
+                    type="button"
+                    (click)="resetSettings()"
+                    class="px-5 py-2.5 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400
+                          border border-red-300 dark:border-red-800 rounded-lg
+                          hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors
+                          flex items-center gap-2"
+                  >
+                    <span class="material-icons text-[18px]">restore_page</span>
+                    Reset to Defaults
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
     </div>
   </div>
 </div>

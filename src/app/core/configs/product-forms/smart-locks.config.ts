@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const smartLocksConfig: CategoryFormConfig = {
-  id: 'smart-locks',
+  id: 'smart_locks',
   name: 'Smart Locks',
   fields: [
     {

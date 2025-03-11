@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const operatingSystemsConfig: CategoryFormConfig = {
-  id: 'operating-systems',
+  id: 'operating_systems',
   name: 'Operating Systems',
   fields: [
     {

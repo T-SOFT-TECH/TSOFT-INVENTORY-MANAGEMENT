@@ -5,6 +5,7 @@ import { Query } from 'appwrite';
 import { InvoiceService } from './invoice.service';
 import { CustomerService } from './customer.service';
 import {Sale, SalesQueryOptions, SaleWithDetails} from '../interfaces/sales/sales.interfaces';
+import {PaymentStatus} from '../interfaces/base/base.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -47,45 +48,27 @@ export class SalesService {
     }
   }
 
-  async updateSale(id: string, data: Partial<Sale>): Promise<Sale> {
+  // In sales.service.ts
+  async updatePaymentStatus(saleId: string, newStatus: PaymentStatus, newPaymentMethod: string | undefined): Promise<Sale> {
     try {
-      const response = await this.appwrite.database.updateDocument(
-        environment.appwrite.databaseId,
-        environment.appwrite.collections.sales,
-        id,
-        data
+      const execution = await this.appwrite.functions.createExecution(
+        'payment-update',
+        JSON.stringify({ saleId, newPaymentStatus: newStatus, newPaymentMethod })
       );
 
-      return response as unknown as Sale;
+      const result = JSON.parse(execution.responseBody);
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to update payment status');
+      }
+
+      return await this.getSaleDetails(saleId);
     } catch (error) {
-      console.error('Error updating sale:', error);
+      console.error('Error updating payment status:', error);
       throw error;
     }
   }
 
 
-
-  async fetchSalesWithDetails(): Promise<Sale[]> {
-    try {
-      const sales = await this.fetchSales();
-      return await Promise.all(
-        sales.map(async (sale) => {
-          const customer = await this.customerService.getCustomer(sale.customerId);
-          return {
-            ...sale,
-            customer: {
-              id: customer.$id,
-              name: customer.name,
-              email: customer.email
-            }
-          };
-        })
-      );
-    } catch (error) {
-      console.error('Error fetching sales with details:', error);
-      throw error;
-    }
-  }
 
 
 async getSaleDetails(saleId: string): Promise<SaleWithDetails> {
@@ -107,39 +90,6 @@ async getSaleDetails(saleId: string): Promise<SaleWithDetails> {
   }
 }
 
-
-// Add fetchRecentSales method
-  async fetchRecentSales(limit: number = 5): Promise<Sale[]> {
-    try {
-      const response = await this.appwrite.database.listDocuments(
-        environment.appwrite.databaseId,
-        environment.appwrite.collections.sales,
-        [
-          Query.orderDesc('date'),
-          Query.limit(limit)
-        ]
-      );
-
-      // Map to include customer details
-      const sales = response.documents as unknown as Sale[];
-      return Promise.all(
-        sales.map(async (sale) => {
-          const customer = await this.customerService.getCustomer(sale.customerId);
-          return {
-            ...sale,
-            customer: {
-              id: customer.$id,
-              name: customer.name,
-              email: customer.email
-            }
-          };
-        })
-      );
-    } catch (error) {
-      console.error('Error fetching recent sales:', error);
-      throw error;
-    }
-  }
 
 
 }

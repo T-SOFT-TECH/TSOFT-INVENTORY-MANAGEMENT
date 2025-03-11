@@ -5,6 +5,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
 import { ClickOutsideDirective } from '../../Directives/clickOutside.directive';
+import {MobileService} from '../../services/mobile.service';
 
 @Component({
   selector: 'app-header',
@@ -13,14 +14,29 @@ import { ClickOutsideDirective } from '../../Directives/clickOutside.directive';
   templateUrl: './header.component.html'
 })
 export class HeaderComponent {
-  private themeService = inject(ThemeService);
+  protected themeService = inject(ThemeService);
   private authService = inject(AuthService);
+  protected mobileService = inject(MobileService);
 
-  isDarkMode = this.themeService.isDarkMode;
+
   currentUser = this.authService.currentUser;
 
   showProfileMenu = signal(false);
   showNotifications = signal(false);
+
+  isMobileMenuOpen = this.mobileService.isMobileMenuOpen;
+
+
+  toggleMobileMenu() {
+    this.mobileService.isMobileMenuOpen.update(value => !value);
+  }
+
+  // Close mobile menu when navigating
+  closeMobileMenu() {
+    this.mobileService.isMobileMenuOpen.set(false);
+  }
+
+
 
   toggleTheme() {
     this.themeService.toggleTheme();

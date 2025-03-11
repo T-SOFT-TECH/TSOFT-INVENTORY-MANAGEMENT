@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const soundCardConfig: CategoryFormConfig = {
-  id: 'sound-card',
+  id: 'sound_card',
   name: 'Sound Card',
   fields: [
     {

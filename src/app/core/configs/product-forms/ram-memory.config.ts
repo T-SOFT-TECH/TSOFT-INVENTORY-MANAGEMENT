@@ -1,7 +1,7 @@
 import { CategoryFormConfig } from './product-form.types';
 
 export const ramMemoryConfig: CategoryFormConfig = {
-  id: 'ram-memory',
+  id: 'ram_memory',
   name: 'RAM (Memory)',
   fields: [
     {

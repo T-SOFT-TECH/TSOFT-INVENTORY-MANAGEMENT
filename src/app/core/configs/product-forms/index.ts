@@ -90,6 +90,42 @@ import { operatingSystemsConfig } from './operating-systems.config';
 import { phoneAccessoriesConfig } from './phone-accessories.config';
 import { drawingTabletsConfig } from './drawing-tablets.config';
 import { soundCardConfig } from './sound-card.config';
+import {securitySystemsConfig} from './security-systems.config';
+import {acPowerCablesConfig} from './ac-power-cables.config';
+import {auxiliaryCablesConfig} from './auxiliary-cables.config';
+import {coaxialCablesConfig} from './coaxial-cables.config';
+import {dcPowerCablesConfig} from './dc-power-cables.config';
+import {extensionCordsConfig} from './extension-cords.config';
+import {laptopPowerCablesConfig} from './laptop-power-cables.config';
+import {magsafeCablesConfig} from './magsafe-cables.config';
+import {microUSBCablesConfig} from './micro-usb-cables.config';
+import {opticalAudioCablesConfig} from './optical-audio-cables.config';
+import {rcaCablesConfig} from './rca-cables.config';
+import {thunderboltCablesConfig} from './thunderbolt-cables.config';
+import {trsCablesConfig} from './trs-cables.config';
+import {tsCablesConfig} from './ts-cables.config';
+import {vgaCablesConfig} from './vga-cables.config';
+import {xlrCablesConfig} from './xlr-cables.config';
+import {usbToEthernetAdaptersConfig} from './usb-to-ethernet-adapters.config';
+import {usbcToHdmiAdaptersConfig} from './usbc-to-hdmi-adapters.config';
+import {hdmiToVgaAdaptersConfig} from './hdmi-to-vga-adapters.config';
+import {otgCablesConfig} from './otg-cables.config';
+import {microUsbToUsbAConfig} from './micro-usb-to-usb-a.config';
+import {microUsbToUsbCConfig} from './micro-usb-to-usb-c.config';
+import {usbCToUsbAConfig} from './usb-c-to-usb-a.config';
+import {lightningTo35mmConfig} from './lightning-to-35mm.config';
+import {lightningToUsbAConfig} from './lightning-to-usb-a.config';
+import {usbCTo35mmConfig} from './usb-c-to-35mm.config';
+import {dviToHdmiAdaptersConfig} from './dvi-to-hdmi-adapters.config';
+import {memoryCardReadersConfig} from './memory-card-readers.config';
+import {usbcDockingStationsConfig} from './usbc-docking-stations.config';
+import {usbcHubsConfig} from './usbc-hubs.config';
+import {usbAHubsConfig} from './usba-hubs.config';
+import {hybridUsbHubsConfig} from './hybrid-usb-hubs.config';
+import {lightningDockingStationsConfig} from './lightning-docking-stations.config';
+import {surfaceDockingStationsConfig} from './surface-docking-stations.config';
+import {hardDiskEnclosuresConfig} from './hard-disk-enclosures.config';
+import {ssdEnclosuresConfig} from './ssd-enclosure.config';
 
 export const productFormConfigs: Map<string, CategoryFormConfig> = new Map([
   // Computer & Components
@@ -165,8 +201,51 @@ export const productFormConfigs: Map<string, CategoryFormConfig> = new Map([
   [smartLocksConfig.id, smartLocksConfig],
   [smartPlugsConfig.id, smartPlugsConfig],
   [smartSpeakersConfig.id, smartSpeakersConfig],
+  [securitySystemsConfig.id, securitySystemsConfig],
 
   // Gaming
+
+
+  //Cables
+  [acPowerCablesConfig.id, acPowerCablesConfig],
+  [auxiliaryCablesConfig.id, auxiliaryCablesConfig],
+  [coaxialCablesConfig.id, coaxialCablesConfig],
+  [dcPowerCablesConfig.id, dcPowerCablesConfig],
+  [extensionCordsConfig.id, extensionCordsConfig],
+  [laptopPowerCablesConfig.id, laptopPowerCablesConfig],
+  [magsafeCablesConfig.id, magsafeCablesConfig],
+  [microUSBCablesConfig.id, microUSBCablesConfig],
+  [opticalAudioCablesConfig.id, opticalAudioCablesConfig],
+  [rcaCablesConfig.id, rcaCablesConfig],
+  [thunderboltCablesConfig.id, thunderboltCablesConfig],
+  [trsCablesConfig.id, trsCablesConfig],
+  [tsCablesConfig.id, tsCablesConfig],
+  [vgaCablesConfig.id, vgaCablesConfig],
+  [xlrCablesConfig.id, xlrCablesConfig],
+
+
+  // Adapters
+  [usbToEthernetAdaptersConfig.id, usbToEthernetAdaptersConfig],
+  [usbcToHdmiAdaptersConfig.id, usbcToHdmiAdaptersConfig ],
+  [hdmiToVgaAdaptersConfig.id, hdmiToVgaAdaptersConfig],
+  [otgCablesConfig.id, otgCablesConfig],
+  [microUsbToUsbAConfig.id, microUsbToUsbAConfig],
+  [microUsbToUsbCConfig.id, microUsbToUsbCConfig],
+  [usbCToUsbAConfig.id, usbCToUsbAConfig],
+  [lightningTo35mmConfig.id, lightningTo35mmConfig],
+  [lightningToUsbAConfig.id, lightningToUsbAConfig],
+  [usbCTo35mmConfig.id, usbCTo35mmConfig],
+  [dviToHdmiAdaptersConfig.id, dviToHdmiAdaptersConfig],
+  [memoryCardReadersConfig.id, memoryCardReadersConfig],
+  [usbcDockingStationsConfig.id, usbcDockingStationsConfig],
+  [usbcHubsConfig.id, usbcHubsConfig],
+  [usbAHubsConfig.id, usbAHubsConfig],
+  [hybridUsbHubsConfig.id, hybridUsbHubsConfig],
+  [lightningDockingStationsConfig.id, lightningDockingStationsConfig],
+  [surfaceDockingStationsConfig.id, surfaceDockingStationsConfig],
+  [hardDiskEnclosuresConfig.id, hardDiskEnclosuresConfig],
+  [ssdEnclosuresConfig.id, ssdEnclosuresConfig],
+
 
 
   // Others
@@ -259,8 +338,50 @@ export {
   smartLocksConfig,
   smartPlugsConfig,
   smartSpeakersConfig,
+  securitySystemsConfig,
+
+
+  // Cables
+  acPowerCablesConfig,
+  auxiliaryCablesConfig,
+  coaxialCablesConfig,
+  dcPowerCablesConfig,
+  extensionCordsConfig,
+  laptopPowerCablesConfig,
+  magsafeCablesConfig,
+  microUSBCablesConfig,
+  opticalAudioCablesConfig,
+  rcaCablesConfig,
+  thunderboltCablesConfig,
+  trsCablesConfig,
+  tsCablesConfig,
+  vgaCablesConfig,
+  xlrCablesConfig,
 
   // Gaming
+
+
+  // Adapters
+  usbToEthernetAdaptersConfig,
+  usbcToHdmiAdaptersConfig,
+  hdmiToVgaAdaptersConfig,
+  otgCablesConfig,
+  microUsbToUsbAConfig,
+  microUsbToUsbCConfig,
+  usbCToUsbAConfig,
+  lightningTo35mmConfig,
+  lightningToUsbAConfig,
+  usbCTo35mmConfig,
+  dviToHdmiAdaptersConfig,
+  memoryCardReadersConfig,
+  usbcDockingStationsConfig,
+  usbcHubsConfig,
+  usbAHubsConfig,
+  hybridUsbHubsConfig,
+  lightningDockingStationsConfig,
+  surfaceDockingStationsConfig,
+  hardDiskEnclosuresConfig,
+  ssdEnclosuresConfig,
 
 
   // Others
@@ -322,6 +443,22 @@ export * from './hdmi-cables.config';
 export * from './displayport-cables.config';
 export * from './usb-c-cables.config';
 export * from './lightning-cables.config';
+export * from './ac-power-cables.config';
+export * from './auxiliary-cables.config';
+export * from './coaxial-cables.config';
+export * from './dc-power-cables.config';
+export * from './extension-cords.config';
+export * from './laptop-power-cables.config';
+export * from './magsafe-cables.config';
+export * from './micro-usb-cables.config';
+export * from './optical-audio-cables.config';
+export * from './rca-cables.config';
+export * from './thunderbolt-cables.config';
+export * from './trs-cables.config';
+export * from './ts-cables.config';
+export * from './vga-cables.config';
+export * from './xlr-cables.config';
+export * from './laptop-power-cables.config';
 
 export * from './speakers.config';
 export * from './headphones.config';
@@ -347,6 +484,50 @@ export * from './smart-lighting.config';
 export * from './smart-locks.config';
 export * from './smart-plugs.config';
 export * from './smart-speakers.config';
+export * from './security-systems.config';
+
+
+// Cables
+export * from './ac-power-cables.config';
+export * from './auxiliary-cables.config';
+export * from './coaxial-cables.config';
+export * from './dc-power-cables.config';
+export * from './extension-cords.config';
+export * from './laptop-power-cables.config';
+export * from './magsafe-cables.config';
+export * from './micro-usb-cables.config';
+export * from './optical-audio-cables.config';
+export * from './rca-cables.config';
+export * from './thunderbolt-cables.config';
+export * from './trs-cables.config';
+export * from './ts-cables.config';
+export * from './vga-cables.config';
+export * from './xlr-cables.config';
+
+// Adapters
+export * from './usb-to-ethernet-adapters.config';
+export * from './usbc-to-hdmi-adapters.config';
+export * from './hdmi-to-vga-adapters.config';
+export * from './otg-cables.config';
+export * from './micro-usb-to-usb-a.config';
+export * from './micro-usb-to-usb-c.config';
+export * from './usb-c-to-usb-a.config';
+export * from './lightning-to-35mm.config';
+export * from './lightning-to-usb-a.config';
+export * from './usb-c-to-35mm.config';
+export * from './dvi-to-hdmi-adapters.config';
+export * from './memory-card-readers.config';
+export * from './usbc-docking-stations.config';
+export * from './usbc-hubs.config';
+export * from './usba-hubs.config';
+export * from './hybrid-usb-hubs.config';
+export * from './lightning-docking-stations.config';
+export * from './surface-docking-stations.config';
+export * from './hard-disk-enclosures.config';
+export * from './ssd-enclosure.config';
+
+// Others
+
 
 
 

@@ -1,163 +1,377 @@
-<div class="max-w-4xl mx-auto p-md">
-  <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-lg">
-    <!-- Header -->
-    <div class="px-lg py-md border-b border-gray-200 dark:border-gray-700">
-      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">
-        {{ isEditMode() ? 'Edit' : 'Create' }} Customer
-      </h2>
+<div class="min-h-screen" autoAnimate>
+  <div class="max-w-4xl mx-auto">
+    <!-- Back Button -->
+    <div class="mb-6">
+      <button
+        routerLink="/admin/customers"
+        class="group flex items-center text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+        <span class="material-icons mr-2 text-sm group-hover:-translate-x-1 transition-transform duration-200">
+          arrow_back
+        </span>
+        Back to Customers
+      </button>
     </div>
 
-    <!-- Form -->
-    <form [formGroup]="customerForm" (ngSubmit)="onSubmit()" class="p-lg">
-      @if (error()) {
-        <div class="bg-error-light text-error-dark p-md rounded-md mb-md">
-          {{ error() }}
+    <!-- Main Form Card -->
+    <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700" autoAnimate>
+      <!-- Header with progress steps -->
+      <div class="p-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-800/80 border-b border-gray-100 dark:border-gray-700" autoAnimate>
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-primary-50 dark:bg-primary-900/20 rounded-full">
+            <span class="material-icons text-primary-500 dark:text-primary-400">
+              {{ isEditMode() ? 'edit' : 'person_add' }}
+            </span>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ isEditMode() ? 'Edit Customer' : 'Add New Customer' }}
+            </h1>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              {{ isEditMode() ? 'Update customer information' : 'Create a new customer record' }}
+            </p>
+          </div>
         </div>
-      }
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
-        <!-- Left Column -->
-        <div class="space-y-md">
-          <!-- Name Field -->
-          <div class="space-y-sm">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Name *
-            </label>
-            <input
-              type="text"
-              formControlName="name"
-              class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
-                     bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              [class.border-error-DEFAULT]="customerForm.get('name')?.invalid && 
-                                         customerForm.get('name')?.touched"
-            >
-            @if (customerForm.get('name')?.invalid && customerForm.get('name')?.touched) {
-              <p class="text-sm text-error-DEFAULT">Name is required</p>
-            }
+        <!-- Form Progress Steps -->
+        <div class="flex mt-6 border-t border-gray-100 dark:border-gray-700 pt-4" autoAnimate>
+          <button
+            (click)="setActiveSection('basic')"
+            class="flex flex-col items-center flex-1 relative group"
+            [ngClass]="{'text-primary-600': activeSection() === 'basic', 'text-gray-400': activeSection() !== 'basic'}">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center mb-2"
+                 [ngClass]="{
+                   'bg-primary-100 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400': activeSection() === 'basic',
+                   'bg-gray-100 dark:bg-gray-800': activeSection() !== 'basic'
+                 }">
+              <span class="material-icons text-sm">person</span>
+            </div>
+            <span class="text-xs font-medium">Basic Info</span>
+            <div class="absolute -bottom-4 left-0 w-full h-0.5 transition-colors"
+                 [ngClass]="{
+                   'bg-primary-500 dark:bg-primary-400': activeSection() === 'basic',
+                   'bg-transparent': activeSection() !== 'basic'
+                 }">
+            </div>
+          </button>
+
+          <button
+            (click)="setActiveSection('contact')"
+            class="flex flex-col items-center flex-1 relative group"
+            [ngClass]="{'text-primary-600': activeSection() === 'contact', 'text-gray-400': activeSection() !== 'contact'}">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center mb-2"
+                 [ngClass]="{
+                   'bg-primary-100 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400': activeSection() === 'contact',
+                   'bg-gray-100 dark:bg-gray-800': activeSection() !== 'contact'
+                 }">
+              <span class="material-icons text-sm">contact_phone</span>
+            </div>
+            <span class="text-xs font-medium">Contact</span>
+            <div class="absolute -bottom-4 left-0 w-full h-0.5 transition-colors"
+                 [ngClass]="{
+                   'bg-primary-500 dark:bg-primary-400': activeSection() === 'contact',
+                   'bg-transparent': activeSection() !== 'contact'
+                 }">
+            </div>
+          </button>
+
+          <button
+            (click)="setActiveSection('details')"
+            class="flex flex-col items-center flex-1 relative group"
+            [ngClass]="{'text-primary-600': activeSection() === 'details', 'text-gray-400': activeSection() !== 'details'}">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center mb-2"
+                 [ngClass]="{
+                   'bg-primary-100 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400': activeSection() === 'details',
+                   'bg-gray-100 dark:bg-gray-800': activeSection() !== 'details'
+                 }">
+              <span class="material-icons text-sm">note_alt</span>
+            </div>
+            <span class="text-xs font-medium">Details</span>
+            <div class="absolute -bottom-4 left-0 w-full h-0.5 transition-colors"
+                 [ngClass]="{
+                   'bg-primary-500 dark:bg-primary-400': activeSection() === 'details',
+                   'bg-transparent': activeSection() !== 'details'
+                 }">
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Content -->
+      <form [formGroup]="customerForm" (ngSubmit)="onSubmit()" class="p-6" autoAnimate>
+        @if (error()) {
+          <div class="mb-6 bg-error-light/20 border border-error-light text-error-dark dark:text-error-light p-4 rounded-lg flex items-start">
+            <span class="material-icons text-error-DEFAULT mr-2 flex-shrink-0">error_outline</span>
+            <p>{{ error() }}</p>
+          </div>
+        }
+
+        <!-- Basic Info Section -->
+        <div [ngClass]="{'hidden': activeSection() !== 'basic'}" autoAnimate>
+          <div class="space-y-5">
+            <!-- Name Field -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                Full Name <span class="text-error-DEFAULT">*</span>
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span class="material-icons text-gray-400">person</span>
+                </div>
+                <input
+                  type="text"
+                  formControlName="name"
+                  class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
+                       bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                       focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  [ngClass]="{
+                    'border-error-DEFAULT focus:ring-error-DEFAULT focus:border-error-DEFAULT': isInvalidField('name')
+                  }"
+                  placeholder="John Doe"
+                >
+              </div>
+              @if (isInvalidField('name')) {
+                <p class="mt-1.5 text-sm text-error-DEFAULT flex items-center">
+                  <span class="material-icons text-[16px] mr-1">error_outline</span>
+                  {{ customerForm.get('name')?.errors?.['required'] ? 'Name is required' : 'Name must be at least 2 characters' }}
+                </p>
+              } @else {
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  The customer's full name
+                </p>
+              }
+            </div>
+
+            <!-- Status Field -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                Status
+              </label>
+              <div class="flex space-x-4">
+                <label class="inline-flex items-center">
+                  <input
+                    type="radio"
+                    formControlName="status"
+                    value="active"
+                    class="h-4 w-4 text-primary-500 focus:ring-primary-500 dark:focus:ring-primary-400 border-gray-300 dark:border-gray-600"
+                  >
+                  <span class="ml-2 text-gray-700 dark:text-gray-300">Active</span>
+                </label>
+                <label class="inline-flex items-center">
+                  <input
+                    type="radio"
+                    formControlName="status"
+                    value="inactive"
+                    class="h-4 w-4 text-primary-500 focus:ring-primary-500 dark:focus:ring-primary-400 border-gray-300 dark:border-gray-600"
+                  >
+                  <span class="ml-2 text-gray-700 dark:text-gray-300">Inactive</span>
+                </label>
+              </div>
+            </div>
           </div>
 
-          <!-- Email Field -->
-          <div class="space-y-sm">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Email *
-            </label>
-            <input
-              type="email"
-              formControlName="email"
-              class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
-                     bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              [class.border-error-DEFAULT]="customerForm.get('email')?.invalid && 
-                                         customerForm.get('email')?.touched"
+          <div class="mt-6 pt-4 flex justify-end border-t border-gray-100 dark:border-gray-700" >
+            <button
+              type="button"
+              (click)="setActiveSection('contact')"
+              class="px-6 py-2.5 rounded-lg bg-primary-500 text-white
+                   hover:bg-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                   transition-colors shadow-sm flex items-center gap-2"
             >
-            @if (customerForm.get('email')?.invalid && customerForm.get('email')?.touched) {
-              <p class="text-sm text-error-DEFAULT">
-                Please enter a valid email address
+              <span>Continue</span>
+              <span class="material-icons text-[18px]">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div [ngClass]="{'hidden': activeSection() !== 'contact'}">
+          <div class="space-y-5">
+            <!-- Email Field -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                Email Address <span class="text-error-DEFAULT">*</span>
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span class="material-icons text-gray-400">email</span>
+                </div>
+                <input
+                  type="email"
+                  formControlName="email"
+                  class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
+                       bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                       focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  [ngClass]="{
+                    'border-error-DEFAULT focus:ring-error-DEFAULT focus:border-error-DEFAULT': isInvalidField('email')
+                  }"
+                  placeholder="johndoe@example.com"
+                >
+              </div>
+              @if (isInvalidField('email')) {
+                <p class="mt-1.5 text-sm text-error-DEFAULT flex items-center">
+                  <span class="material-icons text-[16px] mr-1">error_outline</span>
+                  {{ customerForm.get('email')?.errors?.['required'] ? 'Email is required' : 'Please enter a valid email address' }}
+                </p>
+              } @else {
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  The customer's contact email
+                </p>
+              }
+            </div>
+
+            <!-- Phone Field -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                Phone Number <span class="text-error-DEFAULT">*</span>
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span class="material-icons text-gray-400">phone</span>
+                </div>
+                <input
+                  type="tel"
+                  formControlName="phone"
+                  class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
+                       bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                       focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  [ngClass]="{
+                    'border-error-DEFAULT focus:ring-error-DEFAULT focus:border-error-DEFAULT': isInvalidField('phone')
+                  }"
+                  placeholder="+1 (234) 567-8900"
+                >
+              </div>
+              @if (isInvalidField('phone')) {
+                <p class="mt-1.5 text-sm text-error-DEFAULT flex items-center">
+                  <span class="material-icons text-[16px] mr-1">error_outline</span>
+                  Phone number is required
+                </p>
+              } @else {
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  The customer's contact phone number
+                </p>
+              }
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 flex justify-between border-t border-gray-100 dark:border-gray-700">
+            <button
+              type="button"
+              (click)="setActiveSection('basic')"
+              class="px-6 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
+                   text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800
+                   focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                   transition-colors flex items-center gap-2"
+            >
+              <span class="material-icons text-[18px]">arrow_back</span>
+              <span>Previous</span>
+            </button>
+
+            <button
+              type="button"
+              (click)="setActiveSection('details')"
+              class="px-6 py-2.5 rounded-lg bg-primary-500 text-white
+                   hover:bg-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                   transition-colors shadow-sm flex items-center gap-2"
+            >
+              <span>Continue</span>
+              <span class="material-icons text-[18px]">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Details Section -->
+        <div [ngClass]="{'hidden': activeSection() !== 'details'}">
+          <div class="space-y-5">
+            <!-- Address Field -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                Address <span class="text-error-DEFAULT">*</span>
+              </label>
+              <div class="relative">
+                <div class="absolute top-3 left-3 flex items-center pointer-events-none">
+                  <span class="material-icons text-gray-400">home</span>
+                </div>
+                <textarea
+                  formControlName="address"
+                  rows="3"
+                  class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
+                       bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                       focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all resize-none"
+                  [ngClass]="{
+                    'border-error-DEFAULT focus:ring-error-DEFAULT focus:border-error-DEFAULT': isInvalidField('address')
+                  }"
+                  placeholder="123 Main St, Apt 4B&#10;Cityville, State 12345"
+                ></textarea>
+              </div>
+              @if (isInvalidField('address')) {
+                <p class="mt-1.5 text-sm text-error-DEFAULT flex items-center">
+                  <span class="material-icons text-[16px] mr-1">error_outline</span>
+                  Address is required
+                </p>
+              } @else {
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  The customer's mailing address
+                </p>
+              }
+            </div>
+
+            <!-- Notes Field -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                Notes
+              </label>
+              <div class="relative">
+                <div class="absolute top-3 left-3 flex items-center pointer-events-none">
+                  <span class="material-icons text-gray-400">note</span>
+                </div>
+                <textarea
+                  formControlName="notes"
+                  rows="3"
+                  class="block w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
+                       bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
+                       focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all resize-none"
+                  placeholder="Additional notes about this customer..."
+                ></textarea>
+              </div>
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Optional notes about this customer
               </p>
-            }
+            </div>
           </div>
 
-          <!-- Phone Field -->
-          <div class="space-y-sm">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Phone *
-            </label>
-            <input
-              type="tel"
-              formControlName="phone"
-              class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
-                     bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              [class.border-error-DEFAULT]="customerForm.get('phone')?.invalid && 
-                                         customerForm.get('phone')?.touched"
+          <!-- Form Actions -->
+          <div class="mt-6 pt-4 flex justify-between border-t border-gray-100 dark:border-gray-700">
+            <button
+              type="button"
+              (click)="setActiveSection('contact')"
+              class="px-6 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
+                   text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800
+                   focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                   transition-colors flex items-center gap-2"
             >
-            @if (customerForm.get('phone')?.invalid && customerForm.get('phone')?.touched) {
-              <p class="text-sm text-error-DEFAULT">Phone number is required</p>
-            }
+              <span class="material-icons text-[18px]">arrow_back</span>
+              <span>Previous</span>
+            </button>
+
+            <button
+              type="submit"
+              [disabled]="customerForm.invalid || isLoading()"
+              class="px-6 py-2.5 rounded-lg bg-primary-500 text-white
+                   hover:bg-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                   disabled:opacity-50 disabled:cursor-not-allowed
+                   transition-colors shadow-sm flex items-center gap-2"
+            >
+              @if (isLoading()) {
+                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <span>{{ isEditMode() ? 'Updating...' : 'Creating...' }}</span>
+              } @else {
+                <span class="material-icons text-[18px]">{{ isEditMode() ? 'save' : 'add_circle' }}</span>
+                <span>{{ isEditMode() ? 'Update Customer' : 'Create Customer' }}</span>
+              }
+            </button>
           </div>
         </div>
-
-        <!-- Right Column -->
-        <div class="space-y-md">
-          <!-- Address Field -->
-          <div class="space-y-sm">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Address *
-            </label>
-            <textarea
-              formControlName="address"
-              rows="3"
-              class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
-                     bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              [class.border-error-DEFAULT]="customerForm.get('address')?.invalid && 
-                                         customerForm.get('address')?.touched"
-            ></textarea>
-            @if (customerForm.get('address')?.invalid && customerForm.get('address')?.touched) {
-              <p class="text-sm text-error-DEFAULT">Address is required</p>
-            }
-          </div>
-
-          <!-- Status Field -->
-          <div class="space-y-sm">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Status
-            </label>
-            <select
-              formControlName="status"
-              class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
-                     bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-
-          <!-- Notes Field -->
-          <div class="space-y-sm">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Notes
-            </label>
-            <textarea
-              formControlName="notes"
-              rows="3"
-              class="w-full px-md py-sm rounded-lg border border-gray-300 dark:border-gray-600 
-                     bg-white dark:bg-surface-dark-primary text-gray-900 dark:text-white
-                     focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            ></textarea>
-          </div>
-        </div>
-      </div>
-
-      <!-- Form Actions -->
-      <div class="flex justify-end space-x-md mt-lg pt-lg border-t border-gray-200 dark:border-gray-700">
-        <button
-          type="button"
-          routerLink="/admin/customers"
-          class="px-lg py-sm rounded-lg border border-gray-300 dark:border-gray-600
-                 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-surface-dark-primary
-                 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-                 transition-colors"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          [disabled]="customerForm.invalid || isLoading()"
-          class="px-lg py-sm rounded-lg bg-primary-500 text-white
-                 hover:bg-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-                 disabled:opacity-50 disabled:cursor-not-allowed
-                 transition-colors"
-        >
-          @if (isLoading()) {
-            <span>Saving...</span>
-          } @else {
-            <span>{{ isEditMode() ? 'Update' : 'Create' }} Customer</span>
-          }
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>

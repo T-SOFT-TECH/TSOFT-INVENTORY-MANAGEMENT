@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const surgeProtectorsConfig: CategoryFormConfig = {
-  id: 'surge-protectors',
+  id: 'surge_protectors',
   name: 'Surge Protectors',
   fields: [
     {

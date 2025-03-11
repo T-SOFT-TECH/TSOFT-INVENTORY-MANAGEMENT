@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const officeSoftwareConfig: CategoryFormConfig = {
-  id: 'office-software',
+  id: 'office_software',
   name: 'Office Software',
   fields: [
     {

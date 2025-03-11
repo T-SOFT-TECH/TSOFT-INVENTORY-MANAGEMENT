@@ -20,31 +20,39 @@ export const routes: Routes = [
           .then(m => m.DashboardComponent)
       },
       {
-        path: 'sales',
-        children: [
-          {
-            path: '',
-            redirectTo: 'pos',
-            pathMatch: 'full'
-          },
-
-          {
-            path: 'pos',
-            loadComponent: () => import('./features/sales/pos/pos.component')
-              .then(m => m.PosComponent)
-          },
-          {
-            path: 'history',
-            loadComponent: () => import('./features/sales/history/sales-history.component')
-              .then(m => m.SalesHistoryComponent)
-          },
-          {
-            path: 'analytics',
-            loadComponent: () => import('./features/sales/dashboard/sales-dashboard.component')
-              .then(m => m.SalesDashboardComponent)
-          }
-        ]
+        path: 'sales-dashboard',
+        loadComponent: () => import('./features/dashboard/dashboard.component')
+          .then(m => m.DashboardComponent)
       },
+      {
+        path: 'pos',
+        loadComponent: () => import('./features/sales/pos/pos.component')
+          .then(m => m.PosComponent)
+      },
+
+      {
+        path: 'sales-history',
+        loadComponent: () => import('./features/sales/history/sales-history.component')
+          .then(m => m.SalesHistoryComponent)
+      },
+      {
+        path: 'analytics',
+        loadComponent: () => import('./features/analytics/sales-analytics/sales-analytics.component')
+          .then(m => m.SalesAnalyticsComponent)
+      },
+      {
+        path: 'inventory-status',
+        loadComponent: () => import('./features/analytics/inventory-status/inventory-status.component')
+          .then(m => m.InventoryStatusComponent)
+      },
+      {
+        path: 'customer-insights',
+        loadComponent: () => import('./features/analytics/customer-insights/customer-insights.component')
+          .then(m => m.CustomerInsightsComponent)
+      },
+
+
+
       {
         path: 'admin',
         canActivate: [adminGuard],

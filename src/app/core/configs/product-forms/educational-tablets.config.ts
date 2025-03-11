@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const educationalTabletsConfig: CategoryFormConfig = {
-  id: 'educational-tablets',
+  id: 'educational_tablets',
   name: 'Educational Tablets',
   fields: [
     {

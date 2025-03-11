@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const documentCamerasConfig: CategoryFormConfig = {
-  id: 'document-cameras',
+  id: 'document_cameras',
   name: 'Document Cameras',
   fields: [
     {

@@ -11,15 +11,15 @@ export const RoleGuard: CanActivateFn = async (route, state) => {
     const user = await appwrite.getCurrentUser();
     // Assuming user roles are stored in user.labels or similar
     const userRoles = user?.labels || [];
-    
+
     if (requiredRoles.some(role => userRoles.includes(role))) {
       return true;
     }
 
-    router.navigate(['/sales/pos']); // Redirect to sales dashboard if not admin
+    router.navigate(['/sales/pos']); // Redirect to sales sales-dashboard if not admin
     return false;
   } catch (error) {
     router.navigate(['/auth/login']);
     return false;
   }
-}; 
+};

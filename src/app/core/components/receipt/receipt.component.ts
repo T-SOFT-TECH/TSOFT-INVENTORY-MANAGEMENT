@@ -1,15 +1,15 @@
-import {Component, inject, Input, signal} from '@angular/core';
-import {SaleWithDetails} from '../../interfaces/sales/sales.interfaces';
-import {HotToastService} from '@ngxpert/hot-toast';
-import {InvoiceService} from '../../services/invoice.service';
-import {LoadingService} from '../../services/loading.service';
-import {CurrencyPipe, DatePipe, NgClass, TitleCasePipe} from '@angular/common';
-import {SafeResourceUrlPipe} from '../../Pipes/safe-resource-url.pipe';
+import { Component, inject, Input, signal } from '@angular/core';
+import {Sale, SaleWithDetails} from '../../interfaces/sales/sales.interfaces';
+import { HotToastService } from '@ngxpert/hot-toast';
+import { InvoiceService } from '../../services/invoice.service';
+import { LoadingService } from '../../services/loading.service';
+import { CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from '@angular/common';
+import { SafeResourceUrlPipe } from '../../Pipes/safe-resource-url.pipe';
+import {SettingsService} from '../../services/settings.service';
 
 @Component({
   selector: 'app-receipt',
   imports: [
-    CurrencyPipe,
     TitleCasePipe,
     NgClass,
     DatePipe,
@@ -19,56 +19,26 @@ import {SafeResourceUrlPipe} from '../../Pipes/safe-resource-url.pipe';
   styleUrl: './receipt.component.scss'
 })
 export class ReceiptComponent {
+  @Input() sale: Sale | null = null;
 
-
-
-  @Input() set sale(value: any) {
-    if (value) {
-      console.log('Raw sale data received by receipt:', value);
-      const normalizedSale = this.normalizeReceiptData(value);
-      console.log('Normalized sale data:', normalizedSale);
-      this._sale.set(normalizedSale);
-    }
-  }
-
-  private _sale = signal<SaleWithDetails | null>(null);
   isPreviewLoading = signal(false);
   previewUrl = signal<string | null>(null);
 
   private invoiceService = inject(InvoiceService);
   private toast = inject(HotToastService);
   private loadingService = inject(LoadingService);
+  protected settingService = inject(SettingsService);
 
   // For accessing sale in the template
   get saleData() {
-    return this._sale();
-  }
-
-  // Load preview only when requested
-  async loadPreview() {
-    if (this.previewUrl() || !this._sale()) return;
-
-    const sale = this._sale();
-    if (!sale) return;
-
-    try {
-      this.isPreviewLoading.set(true);
-      const url = await this.invoiceService.getInvoicePreviewUrl(sale.$id);
-      this.previewUrl.set(url);
-    } catch (error) {
-      console.error('Error loading preview:', error);
-      this.toast.error('Failed to load preview');
-    } finally {
-      this.isPreviewLoading.set(false);
-    }
+    return this.sale;
   }
 
   printReceipt() {
-    const sale = this._sale();
-    if (!sale) return;
+    if (!this.sale) return;
 
     this.loadingService.start('Preparing to print...');
-    this.invoiceService.printInvoice(sale.$id)
+    this.invoiceService.printInvoice(this.sale.$id)
       .then(() => {
         // Success is handled by the service opening the print dialog
       })
@@ -82,11 +52,10 @@ export class ReceiptComponent {
   }
 
   downloadPdf() {
-    const sale = this._sale();
-    if (!sale) return;
+    if (!this.sale) return;
 
     this.loadingService.start('Preparing download...');
-    this.invoiceService.downloadInvoice(sale.$id)
+    this.invoiceService.downloadInvoice(this.sale.$id)
       .then(() => {
         this.toast.success('Download started');
       })
@@ -100,10 +69,9 @@ export class ReceiptComponent {
   }
 
   async emailReceipt(emailAddress?: string) {
-    const sale = this._sale();
-    if (!sale) return;
+    if (!this.sale) return;
 
-    const email = emailAddress || sale.customer?.email;
+    const email = emailAddress || this.sale.customer?.email;
 
     if (!email) {
       this.toast.error('No email address provided');
@@ -113,7 +81,7 @@ export class ReceiptComponent {
     this.loadingService.start(`Sending receipt to ${email}...`);
 
     try {
-      await this.invoiceService.emailInvoice(sale.$id, email);
+      await this.invoiceService.emailInvoice(this.sale.$id, email);
       this.toast.success(`Receipt sent to ${email}`);
     } catch (error) {
       this.toast.error('Failed to send receipt');
@@ -123,87 +91,77 @@ export class ReceiptComponent {
     }
   }
 
-  // Helper methods to handle different item structures
+  // Helper method to get product name safely regardless of structure
   getProductName(item: any): string {
-    // Handle different possible structures
-    if (item.product?.name) {
-      return item.product.name;
-    } else if (item.productName) {
-      return item.productName;
-    } else {
-      return 'Unknown Product';
-    }
+    return item.product?.name || item.productName || 'Unknown Product';
   }
 
+  // Helper method to get item price safely regardless of structure
   getItemPrice(item: any): number {
-    // Handle different price fields
-    if (typeof item.priceAtSale === 'number') {
-      return item.priceAtSale;
-    } else if (typeof item.price === 'number') {
-      return item.price;
-    } else if (item.product?.price) {
-      return item.product.price;
-    } else {
-      return 0;
-    }
+    return item.priceAtSale || item.price || item.product?.price || 0;
   }
 
+  // Helper method to calculate item total safely
   calculateItemTotal(item: any): number {
     return this.getItemPrice(item) * (item.quantity || 1);
   }
 
-  private normalizeReceiptData(sale: any): SaleWithDetails {
-    // Create a normalized version of the sale data
-    return {
-      ...sale,
-      $id: sale.$id || sale.id,
-      invoiceNumber: sale.invoiceNumber || `INV-${Date.now()}`,
-      totalAmount: sale.totalAmount || sale.total || 0,
-      subtotal: sale.subtotal || (sale.totalAmount ? sale.totalAmount / 1.1 : 0),
-      tax: sale.tax || (sale.totalAmount ? sale.totalAmount * 0.1 : 0),
-      date: sale.date || new Date().toISOString(),
-      paymentStatus: sale.paymentStatus || 'paid',
-      status: sale.status || 'completed',
-      paymentMethod: sale.paymentMethod || 'cash',
-      customer: this.normalizeCustomer(sale.customer),
-      products: this.normalizeProducts(sale.products || sale.items || [])
-    };
+  formatCurrency(amount: number | undefined): string {
+    if (amount === undefined || amount === null) {
+      return '0.00'; // Return a default value when amount is undefined
+    }
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'NGN',
+      currencyDisplay: 'narrowSymbol' // For compact currency symbol
+    }).format(amount);
   }
 
-  private normalizeCustomer(customer: any): any {
-    if (!customer) return null;
+// Add this method to receipt.component.ts
+  async printToPos(): Promise<void> {
+    if (!this.sale) {
+      this.toast.error('No sale data available');
+      return;
+    }
 
-    // Ensure consistent customer structure
-    return {
-      id: customer.id || customer.$id,
-      name: customer.name || 'Customer',
-      email: customer.email || '',
-      phone: customer.phone || ''
-    };
+    try {
+      // Show loading indicator
+      this.loadingService.start('Sending to POS printer...');
+
+      // Call the invoice service method for POS printing
+      await this.invoiceService.testPrinter();
+
+      this.toast.success('Receipt sent to POS printer');
+    } catch (error) {
+      console.error('POS printing error:', error);
+      this.toast.error('Failed to print to POS printer');
+    } finally {
+      this.loadingService.clear();
+    }
   }
 
-  private normalizeProducts(items: any[]): any[] {
-    if (!items || !Array.isArray(items)) return [];
 
-    return items.map(item => {
-      // If item already has necessary structure, return as is
-      if (item.product && item.quantity && item.priceAtSale) {
-        return item;
+  async loadPreview() {
+    if (this.previewUrl() || !this.sale) return;
+
+    try {
+      // Validate the sale object
+      if (!this.sale.$id) {
+        this.toast.error('Invalid sale data - missing ID');
+        console.error('Invalid sale data:', this.sale);
+        return;
       }
 
-      // Otherwise create normalized structure
-      return {
-        productId: item.productId || item.product?.$id || '',
-        quantity: item.quantity || 1,
-        priceAtSale: this.getItemPrice(item),
-        product: {
-          id: item.productId || item.product?.$id || '',
-          name: this.getProductName(item),
-          sku: item.product?.sku || '',
-          imageUrl: item.product?.imageUrl || item.product?.imageId || ''
-        }
-      };
-    });
+      console.log("Loading preview for sale:", this.sale.$id);
+      this.isPreviewLoading.set(true);
+      const url = await this.invoiceService.getInvoicePreviewUrl(this.sale.$id);
+      this.previewUrl.set(url);
+    } catch (error) {
+      console.error('Error loading preview:', error);
+      this.toast.error('Failed to load preview');
+    } finally {
+      this.isPreviewLoading.set(false);
+    }
   }
 
 }

@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const studentResponseSystemsConfig: CategoryFormConfig = {
-  id: 'student-response-systems',
+  id: 'student_response_systems',
   name: 'Student Response Systems',
   fields: [
     {

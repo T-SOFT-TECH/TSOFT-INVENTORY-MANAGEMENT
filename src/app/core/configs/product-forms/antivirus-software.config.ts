@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const antivirusConfig: CategoryFormConfig = {
-  id: 'antivirus-software',
+  id: 'antivirus_software',
   name: 'Antivirus Software',
   fields: [
     {

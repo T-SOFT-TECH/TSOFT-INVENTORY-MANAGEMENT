@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const ethernetCablesConfig: CategoryFormConfig = {
-  id: 'ethernet-cables',
+  id: 'ethernet_cables',
   name: 'Ethernet Cables',
   fields: [
     {

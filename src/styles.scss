@@ -13,3 +13,9 @@
 .ql-toolbar.ql-snow {
   @apply rounded-t-lg text-white
 }
+
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(35%) sepia(85%) saturate(1350%) hue-rotate(85deg) brightness(95%) contrast(90%);
+  cursor: pointer;
+}

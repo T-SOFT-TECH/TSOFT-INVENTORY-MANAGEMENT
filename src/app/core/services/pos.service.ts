@@ -1,14 +1,12 @@
 import {Injectable, computed, signal, inject} from '@angular/core';
 import {Customer} from '../interfaces/customer/customer.interfaces';
 import {Product} from '../interfaces/product/product.interfaces';
-import {CartItem, POSTransaction} from '../interfaces/cart/cart.interfaces';
+import {CartItem,} from '../interfaces/cart/cart.interfaces';
 import {AppwriteService} from './appwrite.service';
-import {InvoiceService} from './invoice.service';
 import {HotToastService} from '@ngxpert/hot-toast';
 import {environment} from '../../../environments/environment';
-import {ID} from 'appwrite';
-import {ProcessSaleInput} from '../interfaces/pos/pos.interface';
 import {Sale} from '../interfaces/sales/sales.interfaces';
+import {SettingsService} from './settings.service';
 
 
 interface PaymentResult {
@@ -23,13 +21,16 @@ interface PaymentResult {
 export class PosService {
 
   private appwrite = inject(AppwriteService);
-  private invoiceService = inject(InvoiceService);
   private toast = inject(HotToastService);
+  private settingService = inject(SettingsService);
 
   // Core state signals
   private cartItems = signal<CartItem[]>([]);
   selectedCustomer = signal<Customer | null>(null);
   public paymentMethod = signal<'cash' | 'card' | 'transfer'>('cash');
+
+  private currentIdempotencyKey = signal<string | null>(null);
+
 
 
   // Computed values
@@ -45,7 +46,10 @@ export class PosService {
       sum + (item.quantity * item.priceAtSale), 0)
   );
 
-  readonly tax = computed(() => this.subtotal() * 0.10);
+  readonly tax = computed(() => {
+    const taxRate = this.settingService?.settings()?.invoice?.taxRate || 0;
+    return this.subtotal() * (taxRate / 100);
+  });
   readonly total = computed(() => this.subtotal() + this.tax());
 
   // Cart Management
@@ -110,6 +114,7 @@ export class PosService {
   clearCart() {
     this.cartItems.set([]);
     this.selectedCustomer.set(null);
+    this.resetIdempotencyKey(); // Reset idempotency key when cart is cleared
   }
 
   // Customer Management
@@ -117,12 +122,28 @@ export class PosService {
     this.selectedCustomer.set(customer);
   }
 
-  // Payment Processing
+
   setPaymentMethod(method: 'cash' | 'card' | 'transfer') {
     this.paymentMethod.set(method);
   }
 
-  async processPayment(): Promise<any> {
+
+  // Method to get the current key or generate a new one if needed
+  private getIdempotencyKey(): string {
+    if (!this.currentIdempotencyKey()) {
+      this.currentIdempotencyKey.set(crypto.randomUUID());
+    }
+    return this.currentIdempotencyKey()!;
+  }
+
+  private resetIdempotencyKey(): void {
+    this.currentIdempotencyKey.set(null);
+  }
+
+
+
+// Payment Processing
+  async processPayment(paymentStatus: string = 'paid', salesRep: string): Promise<any> {
     try {
       if (!this.selectedCustomer()) {
         this.toast.error('No customer selected');
@@ -141,7 +162,10 @@ export class PosService {
           quantity: item.quantity,
           priceAtSale: item.product.price
         })),
-        paymentMethod: this.paymentMethod()
+        paymentMethod: this.paymentMethod(),
+        paymentStatus: paymentStatus, // Use the provided payment status
+        salesRep: salesRep, // Include the sales rep info
+        idempotencyKey: this.getIdempotencyKey() // Use the signal-based method
       };
 
       // Call cloud function to process sale
@@ -159,6 +183,7 @@ export class PosService {
 
       // Clear cart after successful sale
       this.clearCart();
+      this.resetIdempotencyKey(); // Reset the key after successful processing
       this.toast.success('Sale completed successfully');
       return {
         success: true,

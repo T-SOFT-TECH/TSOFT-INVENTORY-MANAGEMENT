@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const networkSecurityConfig: CategoryFormConfig = {
-  id: 'network-security',
+  id: 'network_security',
   name: 'Network Security',
   fields: [
     {

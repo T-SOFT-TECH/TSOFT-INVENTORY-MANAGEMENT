@@ -10,10 +10,10 @@ const brandAttributes = [
     { key: 'description', type: 'string', required: false, size: 1000 },
     { key: 'websiteUrl', type: 'string', required: false, size: 255 },
     { key: 'logoUrl', type: 'string', required: false, size: 255 },
-    { 
-        key: 'status', 
-        type: 'string', 
-        required: false, 
+    {
+        key: 'status',
+        type: 'string',
+        required: false,
         elements: ['active', 'inactive'], // Define enum values
         array: false,
         default: 'active'
@@ -98,7 +98,7 @@ const initialBrands = [
         websiteUrl: '',
         status: 'active'
     },
-    
+
 
     // PC Components & Hardware
     {
@@ -207,7 +207,7 @@ const initialBrands = [
         websiteUrl: 'https://www.hiksemitech.com/en/hiksemi.html',
         status: 'active'
     },
-    
+
 
     // Networking
     {
@@ -228,7 +228,7 @@ const initialBrands = [
         websiteUrl: 'https://www.dlink.com',
         status: 'active'
     },
-    
+
 
     // Accessories & Power
     {
@@ -327,12 +327,280 @@ const initialBrands = [
         websiteUrl: 'https://www.hikvision.com/en/',
         status: 'active'
     },
-    
+
+  // Smartphone & Mobile Brands
+  {
+    name: 'Google',
+    description: 'Developer of Pixel smartphones and various tech products',
+    websiteUrl: 'https://www.google.com',
+    status: 'active'
+  },
+  {
+    name: 'OnePlus',
+    description: 'Manufacturer of high-performance smartphones',
+    websiteUrl: 'https://www.oneplus.com',
+    status: 'active'
+  },
+  {
+    name: 'Motorola',
+    description: 'Long-standing brand known for mobile phones and communication devices',
+    websiteUrl: 'https://www.motorola.com',
+    status: 'active'
+  },
+  {
+    name: 'Oppo',
+    description: 'Global smartphone brand known for innovative camera technology',
+    websiteUrl: 'https://www.oppo.com',
+    status: 'active'
+  },
+  {
+    name: 'Vivo',
+    description: 'Smartphone manufacturer focusing on audio and camera capabilities',
+    websiteUrl: 'https://www.vivo.com',
+    status: 'active'
+  },
+  {
+    name: 'Nokia',
+    description: 'Iconic brand producing smartphones via HMD Global',
+    websiteUrl: 'https://www.nokia.com',
+    status: 'active'
+  },
+  {
+    name: 'Realme',
+    description: 'Fast-growing brand offering affordable smartphones and accessories',
+    websiteUrl: 'https://www.realme.com',
+    status: 'active'
+  },
+
+  // Computer & Laptop Manufacturers
+  {
+    name: 'Alienware',
+    description: 'Dell’s sub-brand specializing in high-performance gaming PCs and laptops',
+    websiteUrl: 'https://www.alienware.com',
+    status: 'active'
+  },
+  {
+    name: 'Framework',
+    description: 'Innovator in modular, repairable laptops',
+    websiteUrl: 'https://frame.work',
+    status: 'active'
+  },
+
+  // PC Components & Hardware
+  {
+    name: 'ASRock',
+    description: 'Manufacturer of motherboards and PC hardware',
+    websiteUrl: 'https://www.asrock.com',
+    status: 'active'
+  },
+  {
+    name: 'Sapphire',
+    description: 'Specialist in AMD-based GPUs and graphics solutions',
+    websiteUrl: 'https://www.sapphiretech.com',
+    status: 'active'
+  },
+  {
+    name: 'Zotac',
+    description: 'Provider of GPUs, mini-PCs, and compact hardware solutions',
+    websiteUrl: 'https://www.zotac.com',
+    status: 'active'
+  },
+
+  // Gaming & Peripherals
+  {
+    name: 'Turtle Beach',
+    description: 'Specialist in gaming headsets and audio equipment',
+    websiteUrl: 'https://www.turtlebeach.com',
+    status: 'active'
+  },
+  {
+    name: 'Roccat',
+    description: 'Manufacturer of gaming mice, keyboards, and accessories',
+    websiteUrl: 'https://www.roccat.com',
+    status: 'active'
+  },
+  {
+    name: 'Thrustmaster',
+    description: 'Provider of racing and flight simulation peripherals',
+    websiteUrl: 'https://www.thrustmaster.com',
+    status: 'active'
+  },
+  {
+    name: 'Mad Catz',
+    description: 'Manufacturer of gaming accessories and peripherals',
+    websiteUrl: 'https://www.madcatz.com',
+    status: 'active'
+  },
+
+  // Storage Solutions
+  {
+    name: 'SanDisk',
+    description: 'Provider of flash memory storage solutions',
+    websiteUrl: 'https://www.sandisk.com',
+    status: 'active'
+  },
+  {
+    name: 'Adata',
+    description: 'Manufacturer of SSDs, memory products, and storage solutions',
+    websiteUrl: 'https://www.adata.com',
+    status: 'active'
+  },
+
+  // Networking
+  {
+    name: 'Cisco',
+    description: 'Global leader in networking hardware, software, and services',
+    websiteUrl: 'https://www.cisco.com',
+    status: 'active'
+  },
+  {
+    name: 'Ubiquiti',
+    description: 'Provider of high-performance networking equipment and solutions',
+    websiteUrl: 'https://www.ui.com',
+    status: 'active'
+  },
+  {
+    name: 'Linksys',
+    description: 'Manufacturer of consumer routers and networking devices',
+    websiteUrl: 'https://www.linksys.com',
+    status: 'active'
+  },
+
+  // Accessories & Power
+  {
+    name: 'Belkin',
+    description: 'Manufacturer of consumer electronics and accessories',
+    websiteUrl: 'https://www.belkin.com',
+    status: 'active'
+  },
+  {
+    name: 'Ugreen',
+    description: 'Provider of chargers, cables, and mobile accessories',
+    websiteUrl: 'https://www.ugreen.com',
+    status: 'active'
+  },
+  {
+    name: 'RavPower',
+    description: 'Specialist in power banks, chargers, and accessories',
+    websiteUrl: 'https://www.ravpower.com',
+    status: 'active'
+  },
+
+  // Printing & Imaging
+  {
+    name: 'Fujifilm',
+    description: 'Provider of cameras, imaging solutions, and photographic equipment',
+    websiteUrl: 'https://www.fujifilm.com',
+    status: 'active'
+  },
+  {
+    name: 'Polaroid',
+    description: 'Manufacturer of instant cameras and imaging products',
+    websiteUrl: 'https://www.polaroid.com',
+    status: 'active'
+  },
+  {
+    name: 'Ricoh',
+    description: 'Provider of printers, cameras, and imaging solutions',
+    websiteUrl: 'https://www.ricoh.com',
+    status: 'active'
+  },
+
+  // Audio Equipment
+  {
+    name: 'JBL',
+    description: 'Manufacturer of audio equipment, including speakers and headphones',
+    websiteUrl: 'https://www.jbl.com',
+    status: 'active'
+  },
+  {
+    name: 'Harman Kardon',
+    description: 'Premium audio brand known for speakers and sound systems',
+    websiteUrl: 'https://www.harmankardon.com',
+    status: 'active'
+  },
+  {
+    name: 'Audio-Technica',
+    description: 'Provider of high-quality headphones, microphones, and audio equipment',
+    websiteUrl: 'https://www.audio-technica.com',
+    status: 'active'
+  },
+  {
+    name: 'Shure',
+    description: 'Manufacturer of microphones and professional audio solutions',
+    websiteUrl: 'https://www.shure.com',
+    status: 'active'
+  },
+
+  // Smart Home
+  {
+    name: 'Nest',
+    description: 'Provider of smart home products, including thermostats and cameras',
+    websiteUrl: 'https://nest.com',
+    status: 'active'
+  },
+  {
+    name: 'Ecobee',
+    description: 'Manufacturer of smart thermostats and home automation devices',
+    websiteUrl: 'https://www.ecobee.com',
+    status: 'active'
+  },
+  {
+    name: 'Arlo',
+    description: 'Specialist in smart security cameras and home monitoring',
+    websiteUrl: 'https://www.arlo.com',
+    status: 'active'
+  },
+  {
+    name: 'Eufy',
+    description: 'Provider of smart home devices, including cameras and vacuums',
+    websiteUrl: 'https://www.eufy.com',
+    status: 'active'
+  },
+
+  // Emerging Tech
+  {
+    name: 'Oculus',
+    description: 'Leader in virtual reality headsets and technology',
+    websiteUrl: 'https://www.oculus.com',
+    status: 'active'
+  },
+  {
+    name: 'DJI',
+    description: 'Global leader in civilian drones and aerial imaging technology',
+    websiteUrl: 'https://www.dji.com',
+    status: 'active'
+  },
+  {
+    name: 'Cerebras',
+    description: 'Developer of AI hardware and large-scale computing solutions',
+    websiteUrl: 'https://www.cerebras.net',
+    status: 'active'
+  },
+  {
+    name: 'Graphcore',
+    description: 'Innovator in AI processors and machine learning hardware',
+    websiteUrl: 'https://www.graphcore.ai',
+    status: 'active'
+  },
+  {
+    name: 'Tesla',
+    description: 'Leader in electric vehicles, energy storage, and innovative tech',
+    websiteUrl: 'https://www.tesla.com',
+    status: 'active'
+  },
+  {
+    name: 'Magic Leap',
+    description: 'Developer of augmented reality hardware and solutions',
+    websiteUrl: 'https://www.magicleap.com',
+    status: 'active'
+  }
+
 ];
 // Appwrite client setup
 const client = new sdk.Client();
 client
-    .setEndpoint(process.env.APPWRITE_ENDPOINT || 'http://172.30.128.1/v1')
+    .setEndpoint(process.env.APPWRITE_ENDPOINT )
     .setProject(process.env.APPWRITE_PROJECT_ID)
     .setKey(process.env.APPWRITE_API_KEY);
 

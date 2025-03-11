@@ -4,10 +4,12 @@ const DBID = "inventory-invoice-db";
 const PRODUCTS_COLLECTION = "products";
 const SALES_COLLECTION = "sales";
 const SALE_ITEMS_COLLECTION = "sale-items";
+const SETTINGS_COLLECTION = "settings";
+const SETTINGS_DOCUMENT_ID = "default"; // Default settings document ID
 
 export default async ({ req, res, log, error }) => {
   const client = new Client()
-    .setEndpoint('http://172.30.128.1/v1')
+    .setEndpoint(process.env.APPWRITE_ENDPOINT)
     .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
     .setKey(req.headers['x-appwrite-key']);
 
@@ -27,13 +29,20 @@ export default async ({ req, res, log, error }) => {
     } catch (e) {
       return res.json({
         success: false,
-        message: 'Invalid JSON in request body',
-        details: e.message
+        message: 'Invalid JSON in request body'
       }, 400);
     }
 
-    const { customerId, items, paymentMethod = 'cash' } = saleData;
+    const {
+      customerId,
+      items,
+      paymentMethod = 'cash',
+      paymentStatus = 'paid', // Default to 'paid' for backward compatibility
+      salesRep = null, // Information about the sales rep
+      idempotencyKey
+    } = saleData;
 
+    // Ensure required fields are present
     if (!customerId) {
       throw new Error('Customer ID is required');
     }
@@ -42,7 +51,61 @@ export default async ({ req, res, log, error }) => {
       throw new Error('Sale items are required');
     }
 
-    // 1. Validate stock levels
+    // IDEMPOTENCY CHECK - Prevent duplicate processing
+    if (idempotencyKey) {
+      log(`Checking idempotency key: ${idempotencyKey}`);
+      const existingSales = await databases.listDocuments(
+        DBID,
+        SALES_COLLECTION,
+        [Query.equal('idempotencyKey', idempotencyKey)]
+      );
+
+      if (existingSales.documents.length > 0) {
+        const existingSale = existingSales.documents[0];
+        log(`Found existing sale with idempotency key: ${idempotencyKey}`);
+
+        // Get the sale items for the existing sale
+        const existingItems = await databases.listDocuments(
+          DBID,
+          SALE_ITEMS_COLLECTION,
+          [Query.equal('saleId', existingSale.$id)]
+        );
+
+        return res.json({
+          success: true,
+          message: 'Sale has already been processed',
+          sale: {
+            ...existingSale,
+            items: existingItems.documents
+          }
+        });
+      }
+    }
+
+    // VALIDATION - Check if customer exists
+    try {
+      await databases.getDocument(
+        DBID,
+        'customers',
+        customerId
+      );
+    } catch (e) {
+      throw new Error('Invalid customer ID');
+    }
+
+    // FETCH SETTINGS - Get tax rate and invoice settings
+    log('Fetching settings...');
+    const settings = await databases.getDocument(
+      DBID,
+      SETTINGS_COLLECTION,
+      SETTINGS_DOCUMENT_ID
+    );
+
+    const taxRate = (settings.taxRate || 10) / 100; // Default to 10% if not set
+    const invoicePrefix = settings.invoicePrefix || 'INV-';
+    const nextInvoiceNumber = settings.nextInvoiceNumber || 1000;
+
+    // VALIDATE STOCK LEVELS
     log('Validating stock levels...');
     for (const item of items) {
       const product = await databases.getDocument(
@@ -62,41 +125,55 @@ export default async ({ req, res, log, error }) => {
       });
     }
 
-    // 2. Calculate totals
+    // CALCULATE TOTALS
     const subtotal = items.reduce((sum, item) => {
       const product = updatedProducts.find(p => p.$id === item.productId);
       return sum + (item.quantity * (item.priceAtSale || product.price));
     }, 0);
 
-    const tax = subtotal * 0.10; // 10% tax
+    const tax = subtotal * taxRate;
     const totalAmount = subtotal + tax;
 
-    // 3. Generate invoice number
-    const invoiceNumber = generateInvoiceNumber();
+    // GENERATE INVOICE NUMBER
+    const paddedNumber = nextInvoiceNumber.toString().padStart(6, '0');
+    const invoiceNumber = `${invoicePrefix}${paddedNumber}`;
 
-    // 4. Create sale record - note we're not including items directly in the sale
+    // Increment invoice number in settings
+    await databases.updateDocument(
+      DBID,
+      SETTINGS_COLLECTION,
+      SETTINGS_DOCUMENT_ID,
+      {
+        nextInvoiceNumber: nextInvoiceNumber + 1
+      }
+    );
+
+    // CREATE SALE RECORD
     log('Creating sale record...');
     const sale = await databases.createDocument(
       DBID,
       SALES_COLLECTION,
       ID.unique(),
       {
-        customer: customerId, // This is already a relationship field reference
+        customer: customerId,
         invoiceNumber,
         subtotal,
         tax,
         totalAmount,
         date: new Date().toISOString(),
         paymentMethod,
-        paymentStatus: 'paid', // Default to paid
-        status: 'completed'
+        paymentStatus,
+        status: 'completed',
+        idempotencyKey: idempotencyKey || ID.unique(), // Store idempotency key or generate one
+        taxRate: settings.taxRate, // Store the tax rate used for historical reference
+        salesRep: salesRep  // Store the sales rep information
       }
     );
 
-    saleId = sale.$id;
 
-    // 5. Create sale items and update inventory
-    log('Creating sale items and updating inventory...');
+
+    // CREATE ALL SALE ITEMS FIRST (before updating inventory)
+    log('Creating sale items...');
     for (const item of items) {
       const product = updatedProducts.find(p => p.$id === item.productId);
 
@@ -106,25 +183,48 @@ export default async ({ req, res, log, error }) => {
         SALE_ITEMS_COLLECTION,
         ID.unique(),
         {
-          saleId: sale.$id, // This will create the relationship
-          product: item.productId, // This will create the relationship
+          saleId: sale.$id,
+          product: item.productId,
           quantity: item.quantity,
           priceAtSale: item.priceAtSale || product.price
         }
       );
 
       saleItems.push(saleItem);
+    }
 
-      // Update product inventory
+    // UPDATE INVENTORY - With different behavior based on payment status
+    log('Updating inventory...');
+    for (const item of items) {
+      const product = updatedProducts.find(p => p.$id === item.productId);
+
+      // Prepare update data based on payment status
+      const updateData = {
+        // If paid, deduct from stock; if pending, only mark as reserved
+        stockQuantity: paymentStatus === 'paid'
+          ? Math.max(0, product.stockQuantity - item.quantity)
+          : product.stockQuantity,
+
+        // Track reserved inventory for pending payments
+        reservedQuantity: paymentStatus === 'pending'
+          ? (product.reservedQuantity || 0) + item.quantity
+          : (product.reservedQuantity || 0),
+
+        // Only update sales metrics if payment confirmed
+        totalQuantitySold: paymentStatus === 'paid'
+          ? (product.totalQuantitySold || 0) + item.quantity
+          : (product.totalQuantitySold || 0),
+
+        totalRevenue: paymentStatus === 'paid'
+          ? (product.totalRevenue || 0) + (item.quantity * (item.priceAtSale || product.price))
+          : (product.totalRevenue || 0)
+      };
+
       await databases.updateDocument(
         DBID,
         PRODUCTS_COLLECTION,
         item.productId,
-        {
-          stockQuantity: Math.max(0, product.stockQuantity - item.quantity),
-          totalQuantitySold: (product.totalQuantitySold || 0) + item.quantity,
-          totalRevenue: (product.totalRevenue || 0) + (item.quantity * (item.priceAtSale || product.price))
-        }
+        updateData
       );
     }
 
@@ -141,13 +241,14 @@ export default async ({ req, res, log, error }) => {
 
   } catch (err) {
     error(`Failed to process sale: ${err.message}`);
-    error(`Stack trace: ${err.stack}`);
+
+    // Limit error details sent to client for security
+    const clientErrorMessage = err.message;
 
     // Attempt to clean up if something went wrong
     if (saleId) {
       try {
-        // Delete the sale items - they should cascade delete with the sale
-        // but we'll explicitly delete them just to be sure
+        // Delete the sale items
         for (const item of saleItems) {
           await databases.deleteDocument(
             DBID,
@@ -171,16 +272,7 @@ export default async ({ req, res, log, error }) => {
 
     return res.json({
       success: false,
-      message: err.message,
-      details: err.response || err.stack
+      message: clientErrorMessage
     }, 500);
   }
 };
-
-// Helper function to generate unique invoice numbers
-function generateInvoiceNumber() {
-  const prefix = 'INV';
-  const timestamp = Date.now().toString().slice(-6);
-  const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-  return `${prefix}-${timestamp}-${random}`;
-}

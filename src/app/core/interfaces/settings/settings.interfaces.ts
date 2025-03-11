@@ -1,8 +1,8 @@
-
+// settings.interfaces.ts
 import { BaseDocument } from '../base/base.interfaces';
 
 export interface CompanySettings {
-  name: string;
+  companyName: string;
   address: string;
   phone: string;
   email: string;
@@ -12,9 +12,9 @@ export interface CompanySettings {
 }
 
 export interface InvoiceSettings extends BaseDocument {
-  prefix: string;
-  nextNumber: number;
-  terms?: string;
+  invoicePrefix: string;
+  nextInvoiceNumber: number;
+  termsAndConditions?: string;
   notes?: string;
   taxRate: number;
   currency: string;

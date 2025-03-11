@@ -2,7 +2,7 @@
 import { CategoryFormConfig } from './product-form.types';
 
 export const gamingDesktopsConfig: CategoryFormConfig = {
-  id: 'gaming-desktops',
+  id: 'gaming_desktops',
   name: 'Gaming Desktops',
   fields: [
     {

@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const smartBandsConfig: CategoryFormConfig = {
-  id: 'smart-bands',
+  id: 'smart_bands',
   name: 'Smart Bands',
   fields: [
     {

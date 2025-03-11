@@ -1,45 +1,20 @@
-<!-- Mobile Menu Toggle Button -->
-<button
-  (click)="toggleMobileMenu()"
-  class="md:hidden fixed top-3 left-4 z-50 p-2 rounded-lg
-         bg-white dark:bg-[#121212] text-gray-700 dark:text-gray-300
-         hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors
-         border border-primary-500 shadow-lg hover:shadow-primary-500/20">
-  <span class="material-icons">
-    {{ isMobileMenuOpen() ? 'close' : 'menu' }}
-  </span>
-</button>
 
-<!-- Overlay for mobile -->
-@if (isMobileMenuOpen()) {
+@if (mobileService.isMobileMenuOpen()) {
   <div
     class="fixed inset-0 bg-gray-500/50 dark:bg-black/50 z-30 md:hidden backdrop-blur-sm"
-    (click)="closeMobileMenu()"
+    (click)="mobileService.closeMobileMenu()"
   ></div>
 }
-
 <!-- Sidebar -->
 <aside
-  class="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64
-         bg-white dark:bg-[#121212]
+  class="fixed left-0 top-16 h-screen w-64
+         bg-white dark:bg-surface-dark-primary
          border-r border-gray-200 dark:border-gray-800
          z-30 transform transition-transform duration-300 ease-in-out
          -translate-x-full md:translate-x-0"
-[class.translate-x-0]="isMobileMenuOpen()"
+  [class.translate-x-0]="mobileService.isMobileMenuOpen()"
 >
-  <!-- Logo Section -->
-  <div class="h-16 flex items-center px-4 border-b border-gray-200 dark:border-gray-800">
-    <svg width="180" height="40" viewBox="0 0 180 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8 w-auto">
-      <rect x="2" y="2" width="36" height="36" rx="8" stroke="#4CAF50" stroke-width="3" fill="white"/>
-      <path d="M12 10H28M20 10V30" stroke="#4CAF50" stroke-width="3" stroke-linecap="round"/>
-      <text x="45" y="27" fill="#4CAF50" font-family="Arial" font-weight="bold" font-size="24">
-        TSOFT
-      </text>
-      <text x="45" y="38" fill="#666666" font-family="Arial" font-size="10">
-        TECHNOLOGIES
-      </text>
-    </svg>
-  </div>
+
 
   <!-- Navigation Menu -->
   <div class="overflow-y-auto h-[calc(100vh-4rem)] px-3 py-2">
@@ -57,7 +32,7 @@
                     hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400
                     transition-all duration-200 mb-1 group
                     shadow-sm hover:shadow-md"
-             (click)="closeMobileMenu()">
+             (click)="mobileService.closeMobileMenu()">
             <span class="material-icons text-xl mr-3 text-gray-400 dark:text-gray-500
                          group-hover:text-primary-500 transition-colors">
               {{ item.icon }}
@@ -88,7 +63,7 @@
                       hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400
                       transition-all duration-200 mb-1 group
                       shadow-sm hover:shadow-md"
-               (click)="closeMobileMenu()">
+               (click)="mobileService.closeMobileMenu()">
               <span class="material-icons text-xl mr-3 text-gray-400 dark:text-gray-500
                            group-hover:text-primary-500 transition-colors">
                 {{ item.icon }}
@@ -101,26 +76,5 @@
     }
   </div>
 
-  <!-- Support Section -->
-  <div class="absolute bottom-0 left-0 right-0 p-4
-              border-t border-gray-200 dark:border-gray-800
-              bg-white dark:bg-[#121212]">
-    <button
-      class="w-full flex items-center px-3 py-2 rounded-lg
-             text-gray-700 dark:text-gray-300
-             border border-primary-600 dark:border-primary-600 group
-             hover:bg-primary-50 dark:hover:bg-primary-500/5
-             hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400
-             transition-all duration-200
-             shadow-sm hover:shadow-md">
-      <span class="material-icons text-xl mr-3 text-gray-400 dark:text-gray-500
-                   group-hover:text-primary-500 transition-colors">
-        support_agent
-      </span>
-      <div class="text-left">
-        <div class="text-sm font-medium">Need Help?</div>
-        <div class="text-xs text-gray-500 dark:text-gray-400">Contact support</div>
-      </div>
-    </button>
-  </div>
+
 </aside>

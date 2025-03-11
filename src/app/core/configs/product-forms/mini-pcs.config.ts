@@ -2,7 +2,7 @@
 import { CategoryFormConfig } from './product-form.types';
 
 export const miniPcsConfig: CategoryFormConfig = {
-  id: 'mini-pcs',
+  id: 'mini_pcs',
   name: 'Mini PCs',
   fields: [
     {

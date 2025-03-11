@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const securitySystemsConfig: CategoryFormConfig = {
-  id: 'security-systems',
+  id: 'security_systems',
   name: 'Security Systems',
   fields: [
     {

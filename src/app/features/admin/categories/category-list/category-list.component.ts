@@ -1,17 +1,18 @@
 // category-list.component.ts
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { MatTreeModule, MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTableModule } from '@angular/material/table';
-import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CategoryService } from '../../../../core/services/category.service';
-import { HotToastService } from '@ngxpert/hot-toast';
+import {Component, inject, OnInit, signal} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RouterModule} from '@angular/router';
+import {MatTreeFlatDataSource, MatTreeFlattener, MatTreeModule} from '@angular/material/tree';
+import {FlatTreeControl} from '@angular/cdk/tree';
+import {MatTableModule} from '@angular/material/table';
+import {CdkDragDrop, DragDropModule} from '@angular/cdk/drag-drop';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {CategoryService} from '../../../../core/services/category.service';
+import {HotToastService} from '@ngxpert/hot-toast';
 import {Category} from '../../../../core/interfaces/category/category.interfaces';
+import {AutoAnimationDirective} from '../../../../core/Directives/auto-Animate.directive';
 
 interface FlatNode {
   expandable: boolean;
@@ -33,7 +34,8 @@ interface FlatNode {
     DragDropModule,
     MatIconModule,
     MatButtonModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    AutoAnimationDirective
   ],
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.scss'
@@ -78,12 +80,9 @@ export class CategoryListComponent implements OnInit {
     try {
       this.isLoading.set(true);
       const categories = await this.categoryService.getCategories();
-      console.log('Raw categories:', categories);
 
-      const treeStructure = this.buildTree(categories);
-      console.log('Tree structure:', treeStructure);
 
-      this.dataSource.data = treeStructure;
+  this.dataSource.data = this.buildTree(categories);
     } catch (error) {
       console.error('Error loading categories:', error);
       this.toast.error('Failed to load categories');

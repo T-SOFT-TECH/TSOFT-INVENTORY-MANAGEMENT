@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const lightningCablesConfig: CategoryFormConfig = {
-  id: 'lightning-cables',
+  id: 'lightning_cables',
   name: 'Lightning Cables',
   fields: [
     {

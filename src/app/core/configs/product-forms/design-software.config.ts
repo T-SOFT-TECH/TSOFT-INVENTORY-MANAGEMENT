@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const designSoftwareConfig: CategoryFormConfig = {
-  id: 'design-software',
+  id: 'design_software',
   name: 'Design Software',
   fields: [
     {

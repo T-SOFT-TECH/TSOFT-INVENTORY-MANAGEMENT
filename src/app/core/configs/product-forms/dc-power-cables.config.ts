@@ -1,0 +1,88 @@
+import {CategoryFormConfig} from './product-form.types';
+
+export const dcPowerCablesConfig: CategoryFormConfig = {
+  id: 'dc_power_cables',
+  name: 'DC Power Cables',
+  fields: [
+    {
+      name: 'connectorType',
+      type: 'select',
+      label: 'Connector Type',
+      required: true,
+      options: ['DC Barrel', 'USB-C PD', 'Anderson Powerpole', 'XT60', 'XT90', 'Molex'],
+      group: 'specifications',
+    },
+    {
+      name: 'length',
+      type: 'number',
+      label: 'Cable Length',
+      required: true,
+      unit: 'm',
+      group: 'specifications',
+    },
+    {
+      name: 'maxCurrent',
+      type: 'number',
+      label: 'Maximum Current (A)',
+      required: true,
+      unit: 'A',
+      group: 'specifications',
+    },
+    {
+      name: 'voltageRating',
+      type: 'select',
+      label: 'Voltage Rating',
+      required: true,
+      options: ['5V', '9V', '12V', '19V', '24V', 'Variable'],
+      group: 'specifications',
+    },
+    {
+      name: 'barrelDimensions',
+      type: 'select',
+      label: 'Barrel Dimensions (if applicable)',
+      required: false,
+      options: ['5.5mm x 2.1mm', '5.5mm x 2.5mm', '3.5mm x 1.35mm', '4.0mm x 1.7mm', 'Other'],
+      group: 'specifications',
+    },
+    {
+      name: 'wireGauge',
+      type: 'select',
+      label: 'Wire Gauge (AWG)',
+      required: false,
+      options: ['22 AWG', '20 AWG', '18 AWG', '16 AWG', '14 AWG', '12 AWG'],
+      group: 'specifications',
+    },
+    {
+      name: 'polarity',
+      type: 'select',
+      label: 'Polarity (for barrel connectors)',
+      required: false,
+      options: ['Center Positive', 'Center Negative', 'N/A'],
+      group: 'specifications',
+    },
+    {
+      name: 'compatibleDevices',
+      type: 'textarea',
+      label: 'Compatible Devices',
+      required: false,
+      placeholder: 'List compatible device models',
+      group: 'additional',
+    },
+    {
+      name: 'color',
+      type: 'select',
+      label: 'Color',
+      required: false,
+      options: ['Black', 'Red', 'White', 'Yellow'],
+      group: 'physical',
+    },
+    {
+      name: 'warranty',
+      type: 'select',
+      label: 'Warranty',
+      required: false,
+      options: ['1 Year', '2 Years', '5 Years', 'Lifetime'],
+      group: 'additional',
+    }
+  ],
+};

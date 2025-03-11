@@ -68,6 +68,10 @@ export class ProductFormComponent implements OnInit {
   private loadingService = inject(LoadingService);
 
 
+  categorySearchQuery = '';
+  private allCategories = signal<Category[]>([]);
+  searchResults = signal<Category[]>([]);
+
 // Quill Editor Config
   editorModules = {
     toolbar: [
@@ -142,7 +146,8 @@ export class ProductFormComponent implements OnInit {
       this.brandService.getBrands()
     ]);
 
-    this.parentCategories.set(this.buildCategoryTree(categories));
+      this.allCategories.set(categories); // Store all categories
+      this.parentCategories.set(this.buildCategoryTree(categories));
     this.brands.set(brands);
 
       this.categories.set(categories);
@@ -157,6 +162,20 @@ export class ProductFormComponent implements OnInit {
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  searchCategories() {
+    if (!this.categorySearchQuery.trim()) {
+      this.searchResults.set([]);
+      return;
+    }
+
+    const query = this.categorySearchQuery.toLowerCase();
+    const results = this.allCategories().filter(category =>
+      category.name.toLowerCase().includes(query)
+    );
+
+    this.searchResults.set(results);
   }
 
 
@@ -199,44 +218,7 @@ export class ProductFormComponent implements OnInit {
     }));
   }
 
-  onSubCategorySelect(category: CategoryNode) {
-    // Clear previous expansions first
-    this.collapseAll(this.subCategories());
 
-    // Then handle new selection
-    const selectParents = (cat: CategoryNode) => {
-      const updatedCat: CategoryNode = {
-        ...cat,
-        isSelected: true,
-        isExpanded: true
-      };
-      const parent = this.findParentInSubCategories(updatedCat, this.subCategories());
-      if (parent) {
-        selectParents(parent);
-      }
-    };
-
-    this.selectedCategory.set(category.$id);
-    selectParents(category);
-
-    const config = this.formConfigService.getFormConfig(category.$id);
-    if (config) {
-      this.formConfig.set(config);
-      this.rebuildForm(config);
-      this.groupFieldsByCategory(config.fields);
-    }
-
-    // Re-generating the SKU
-    const nameControl = this.productForm.get('name');
-    if (nameControl?.value) {
-      const timestamp = this.productForm.get('sku')?.value?.split('-')[2] || Date.now().toString(36).toUpperCase();
-      const categoryPrefix = category.$id.substring(0, 3).toUpperCase();
-      const namePrefix = String(nameControl.value).substring(0, 3).toUpperCase();
-      const sku = `${categoryPrefix}-${namePrefix}-${timestamp}`;
-      this.productForm.patchValue({ sku });
-    }
-
-  }
 
   private findParentInSubCategories(child: CategoryNode, categories: CategoryNode[]): CategoryNode | null {
     for (const cat of categories) {
@@ -617,21 +599,26 @@ export class ProductFormComponent implements OnInit {
     config?.fields.forEach(field => {
       if (!commonFieldNames.includes(field.name)) {
         const value = this.productForm.get(field.name)?.value;
-        specs[field.name] = this.sanitizeValue(value, field.type);
+        specs[field.name] = this.sanitizeValue(value, field.type, field.name);
       }
     });
 
     return specs;
   }
 
-  private sanitizeValue(value: any, fieldType: string): any {
+  private sanitizeValue(value: any, fieldType: string, fieldName: string): any {
     if (value === '' || value === null || value === undefined) {
       return this.getDefaultForType(fieldType);
     }
 
-    // Convert numeric strings to numbers
-    if (typeof value === 'string' && fieldType === 'number') {
-      return isNaN(Number(value)) ? null : Number(value);
+    // Convert numeric strings to numbers for number fields and specific select fields
+    if (typeof value === 'string') {
+      // These select fields should be converted to numbers
+      const numericSelectFields = ['portCount', ];
+
+      if (fieldType === 'number' || (fieldType === 'select' && numericSelectFields.includes(fieldName))) {
+        return isNaN(Number(value)) ? null : Number(value);
+      }
     }
 
     return value;
@@ -768,6 +755,178 @@ export class ProductFormComponent implements OnInit {
 
   isFieldOptionType(option: string | FormFieldOption): option is FormFieldOption {
     return (option as FormFieldOption).value !== undefined;
+  }
+
+  getFullCategoryPath(category: Category): string {
+    const path: string[] = [];
+    let current = category;
+
+    while (current) {
+      const parent = this.allCategories().find(c => c.$id === current.parentId);
+      if (parent) {
+        path.unshift(parent.name);
+        current = parent;
+      } else {
+        break;
+      }
+    }
+
+    return path.join(' > ');
+  }
+
+  async selectSearchResult(category: Category) {
+    // Find the root parent category
+    let currentCategory = category;
+    while (currentCategory.parentId) {
+      const parent = this.allCategories().find(c => c.$id === currentCategory.parentId);
+      if (parent) {
+        currentCategory = parent;
+      } else {
+        break;
+      }
+    }
+
+    // Select the parent category first
+    const rootCategory = this.parentCategories().find(c => c.$id === currentCategory.$id);
+    if (rootCategory) {
+      this.onParentCategorySelect(rootCategory);
+
+      // Wait for subcategories to be set
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      // Select the target category
+      if (category.$id !== rootCategory.$id) {
+        const categoryNode = this.findCategoryNodeById(this.subCategories(), category.$id);
+        if (categoryNode) {
+          this.onSubCategorySelect(categoryNode);
+        }
+      }
+    }
+
+    // Clear the search
+    this.categorySearchQuery = '';
+    this.searchResults.set([]);
+  }
+
+  private findCategoryNodeById(categories: CategoryNode[], id: string): CategoryNode | null {
+    for (const category of categories) {
+      if (category.$id === id) {
+        return category;
+      }
+      if (category.children?.length) {
+        const found = this.findCategoryNodeById(category.children, id);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+
+
+
+// Add this helper method to your component
+  isCategorySelectable(category: CategoryNode): boolean {
+    // A category is selectable if:
+    // 1. It's a leaf node (no children) OR
+    // 2. It has a form configuration assigned specifically to it
+    return !category.children?.length ||
+      !!this.formConfigService.getFormConfig(category.$id);
+  }
+
+  onSubCategorySelect(category: CategoryNode) {
+    // Store the current selection
+    const previouslySelected = this.selectedCategory();
+
+    // Instead of collapsing all categories, we'll be selective about it
+    // this.collapseAll(this.subCategories()); <- This is the line causing the issue
+
+    // Update selection state
+    this.selectedCategory.set(category.$id);
+
+    // Create a set of category IDs that should remain expanded (the path to the selected category)
+    const expandedPath = new Set<string>();
+
+    // Helper function to find the path to the selected category
+    const findPathToCategory = (cats: CategoryNode[], targetId: string, currentPath: string[] = []): string[] | null => {
+      for (const cat of cats) {
+        // Check if this is the target
+        if (cat.$id === targetId) {
+          return [...currentPath, cat.$id];
+        }
+
+        // Check children if any
+        if (cat.children?.length) {
+          const path = findPathToCategory(cat.children, targetId, [...currentPath, cat.$id]);
+          if (path) return path;
+        }
+      }
+      return null;
+    };
+
+    // Find the path to the selected category
+    const path = findPathToCategory(this.subCategories(), category.$id);
+    if (path) {
+      // Add all categories in the path to our set of categories that should remain expanded
+      path.forEach(id => expandedPath.add(id));
+    }
+
+    // Selective collapse that preserves the path to the selected category
+    this.selectiveCollapse(this.subCategories(), expandedPath);
+
+    // Make sure the selected category and its parents are expanded
+    this.updateCategoryExpansion(this.subCategories(), category.$id, true);
+
+    // Load the form configuration
+    const config = this.formConfigService.getFormConfig(category.$id);
+    if (config) {
+      this.formConfig.set(config);
+      this.rebuildForm(config);
+      this.groupFieldsByCategory(config.fields);
+    }
+
+    // Re-generating the SKU
+    const nameControl = this.productForm.get('name');
+    if (nameControl?.value) {
+      const timestamp = this.productForm.get('sku')?.value?.split('-')[2] || Date.now().toString(36).toUpperCase();
+      const categoryPrefix = category.$id.substring(0, 3).toUpperCase();
+      const namePrefix = String(nameControl.value).substring(0, 3).toUpperCase();
+      const sku = `${categoryPrefix}-${namePrefix}-${timestamp}`;
+      this.productForm.patchValue({ sku });
+    }
+  }
+
+// Add this new helper method to your component
+  private selectiveCollapse(categories: CategoryNode[], expandedPath: Set<string>) {
+    categories.forEach(cat => {
+      // Only collapse if this category is not in the path to the selected category
+      if (!expandedPath.has(cat.$id)) {
+        cat.isExpanded = false;
+      }
+
+      // Process children recursively
+      if (cat.children?.length) {
+        this.selectiveCollapse(cat.children, expandedPath);
+      }
+    });
+  }
+
+// Add this helper method to expand a category and its parents
+  private updateCategoryExpansion(categories: CategoryNode[], categoryId: string, expanded: boolean): boolean {
+    for (const cat of categories) {
+      if (cat.$id === categoryId) {
+        cat.isExpanded = expanded;
+        cat.isSelected = true;
+        return true;
+      }
+
+      if (cat.children?.length) {
+        const found = this.updateCategoryExpansion(cat.children, categoryId, expanded);
+        if (found) {
+          cat.isExpanded = expanded; // Expand parent if child is found
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
 

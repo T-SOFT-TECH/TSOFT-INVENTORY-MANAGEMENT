@@ -1,5 +1,5 @@
 <!-- category-list.component.html -->
-<div class="p-6 max-w-7xl mx-auto">
+<div class="p-6 max-w-7xl mx-auto" autoAnimate>
   <!-- Header Section -->
   <div class="mb-8">
     <div class="flex items-center justify-between">
@@ -94,7 +94,7 @@
         </h2>
       </div>
 
-      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="category-tree">
+      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="category-tree" autoAnimate>
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding
                        cdkDrag
                        [cdkDragData]="node"

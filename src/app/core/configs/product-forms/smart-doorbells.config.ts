@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const smartDoorbellsConfig: CategoryFormConfig = {
-  id: 'smart-doorbells',
+  id: 'smart_doorbells',
   name: 'Smart Doorbells',
   fields: [
     {

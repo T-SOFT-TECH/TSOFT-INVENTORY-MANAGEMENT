@@ -150,8 +150,8 @@ export class ProductListComponent {
     return doc.body.textContent || '';
   }
 
-  getStockClass(quantity: number): string {
-    return quantity > 10
+  getStockClass(quantity: number, threshold: number): string {
+    return quantity > threshold
       ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
       : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
   }
@@ -255,6 +255,15 @@ export class ProductListComponent {
     }
   }
 
-
+formatCurrency(amount: number | undefined): string {
+    if (amount === undefined || amount === null) {
+      return '₦0.00';
+    }
+   return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'NGN',
+     currencyDisplay: 'narrowSymbol',
+   }).format(amount);
+}
 
 }

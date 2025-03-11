@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const upsSystemsConfig: CategoryFormConfig = {
-  id: 'ups-systems',
+  id: 'ups_systems',
   name: 'UPS Systems',
   fields: [
     {

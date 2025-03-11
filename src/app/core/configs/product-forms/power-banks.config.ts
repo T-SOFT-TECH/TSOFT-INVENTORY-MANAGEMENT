@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const powerBanksConfig: CategoryFormConfig = {
-  id: 'power-banks',
+  id: 'power_banks',
   name: 'Power Banks',
   fields: [
     {

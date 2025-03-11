@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const smartSpeakersConfig: CategoryFormConfig = {
-  id: 'smart-speakers',
+  id: 'smart_speakers',
   name: 'Smart Speakers',
   fields: [
     {

@@ -1,23 +1,14 @@
 <app-loading/>
 <div class="min-h-screen rounded-xl bg-surface-light-primary dark:bg-surface-dark-primary text-text-light-primary dark:text-text-dark-primary transition-colors duration-200 relative">
-  <!-- Background Image with Overlay -->
- <!-- <div class="fixed-background">
-    <img
-      src="assets/img/background.webp"
-      alt="Background Image"
-      class="fixed-background-image"
-    />
-    <div class="overlay"></div>
-  </div>-->
 
   <!-- Header -->
-  <app-header class="relative z-10" />
+  <app-header class="relative z-20" />
   <app-sidebar class="relative z-10" />
 
   <!-- Main Content -->
-  <div class="flex min-h-screen  relative z-5">
-    <main class="flex-1 w-full md:ml-64 ">
-      <div class="container mx-auto">
+  <div class="flex min-h-screen relative z-5">
+    <main class="flex-1 w-full md:ml-64 pt-6"> <!-- Added pt-16 for header space -->
+      <div class="mx-auto">
         <router-outlet />
       </div>
     </main>

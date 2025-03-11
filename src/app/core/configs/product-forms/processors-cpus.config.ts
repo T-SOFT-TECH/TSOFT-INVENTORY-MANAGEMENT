@@ -2,7 +2,7 @@
 import { CategoryFormConfig } from './product-form.types';
 
 export const processorsCpusConfig: CategoryFormConfig = {
-  id: 'processors-cpus',
+  id: 'processors_cpus',
   name: 'Processors (CPUs)',
   fields: [
     {

@@ -1,7 +1,7 @@
 import { CategoryFormConfig } from './product-form.types';
 
 export const allInOnePcsConfig: CategoryFormConfig = {
-  id: 'all-in-one-pcs',
+  id: 'all_in_one_pcs',
   name: 'All-in-One PCs',
   fields: [
     {

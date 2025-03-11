@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const networkCardsConfig: CategoryFormConfig = {
-  id: 'network-cards',
+  id: 'network_cards',
   name: 'Network Cards',
   fields: [
     {

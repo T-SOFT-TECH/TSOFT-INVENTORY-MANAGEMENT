@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const networkSwitchesConfig: CategoryFormConfig = {
-  id: 'network-switches',
+  id: 'network_switches',
   name: 'Network Switches',
   fields: [
     {

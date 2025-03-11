@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import {Component, OnInit, inject, signal, ViewChild, ElementRef, AfterViewChecked} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -17,6 +17,8 @@ import {AppwriteService} from '../../../core/services/appwrite.service';
 import {LoadingService} from '../../../core/services/loading.service';
 import {Sale} from '../../../core/interfaces/sales/sales.interfaces';
 import {ReceiptComponent} from '../../../core/components/receipt/receipt.component';
+import {SettingsService} from '../../../core/services/settings.service';
+import {AuthService} from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-pos',
@@ -24,7 +26,8 @@ import {ReceiptComponent} from '../../../core/components/receipt/receipt.compone
   templateUrl: './pos.component.html',
   styleUrls: ['./pos.component.scss']
 })
-export class PosComponent implements OnInit {
+export class PosComponent implements OnInit, AfterViewChecked {
+
   protected posService = inject(PosService);
   private productService = inject(ProductService);
   private customerService = inject(CustomerService);
@@ -32,6 +35,13 @@ export class PosComponent implements OnInit {
   private toast = inject(HotToastService);
   private appwriteService = inject(AppwriteService);
   private loadingService = inject(LoadingService);
+  protected settings = inject(SettingsService);
+  private authService = inject(AuthService);
+
+
+
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+  private shouldFocusSearch = false;
 
 
   // UI state
@@ -65,6 +75,9 @@ export class PosComponent implements OnInit {
   tax = this.posService.tax;
   total = this.posService.total;
 
+  hasPaid = signal(false); // Default to true for backward compatibility
+
+
 
   constructor(private fb: FormBuilder) {
     // Initialize form
@@ -84,6 +97,16 @@ export class PosComponent implements OnInit {
     this.isCartOpen.set(false);
   }
 
+  // Add this method to toggle payment status
+  togglePaymentStatus() {
+    this.hasPaid.update(current => !current);
+    // If payment status is changed to unpaid, set payment method to a default
+    if (!this.hasPaid()) {
+      this.posService.setPaymentMethod('cash');
+    }
+  }
+
+
   ngOnInit() {
     this.loadInitialData();
   }
@@ -91,7 +114,7 @@ export class PosComponent implements OnInit {
   private async loadInitialData() {
     try {
       this.isLoading.set(true); // Keep this for backward compatibility
-      this.loadingService.start('Loading inventory and customers...'); // Add this
+      // this.loadingService.start('Loading inventory and customers...'); // Add this
 
       const [products, customers, categories] = await Promise.all([
         this.productService.getProducts(),
@@ -108,7 +131,7 @@ export class PosComponent implements OnInit {
       this.toast.error('Failed to load initial data');
     } finally {
       this.isLoading.set(false);
-      this.loadingService.clear(); // Add this
+      //this.loadingService.clear(); // Add this
     }
   }
 
@@ -144,20 +167,29 @@ export class PosComponent implements OnInit {
   async processPayment() {
     try {
       this.isLoading.set(true);
-      this.loadingService.start('Processing payment...');
+      this.loadingService.start('Processing sale...');
 
-      const result = await this.posService.processPayment();
+      // Get current user (sales rep) information
+      const currentUser = this.authService.currentUser();
+      const salesRep = currentUser!.name
+
+      // Set payment status based on hasPaid toggle
+      const paymentStatus = this.hasPaid() ? 'paid' : 'pending';
+
+      const result = await this.posService.processPayment(paymentStatus, salesRep);
 
       // Check if result exists and has sale data
       if (result && 'sale' in result) {
         // Store the completed sale and show receipt
         this.completedSale.set(result.sale);
         this.showReceiptModal.set(true);
-        this.toast.success('Payment completed successfully');
+        this.toast.success(this.hasPaid()
+          ? 'Payment completed successfully'
+          : 'Sale recorded with pending payment');
       }
     } catch (error) {
-      console.error('Payment processing failed:', error);
-      this.toast.error('Payment processing failed');
+      console.error('Sale processing failed:', error);
+      this.toast.error('Sale processing failed');
     } finally {
       this.isLoading.set(false);
       this.loadingService.clear();
@@ -239,7 +271,6 @@ export class PosComponent implements OnInit {
       });
 
       // Always include required fields and status
-      // Always include required fields and status
       customerData['status'] = 'active';
 
       // Only add address if it exists
@@ -292,6 +323,17 @@ export class PosComponent implements OnInit {
     }
   }
 
+  formatCurrency(amount: number | undefined): string {
+    if (amount === undefined || amount === null) {
+      return '₦0.00'; // Return a default value when amount is undefined
+    }
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'NGN',
+      currencyDisplay: 'narrowSymbol' // For compact currency symbol
+    }).format(amount);
+  }
+
 
   selectPaymentMethod(method: 'cash' | 'card' | 'transfer') {
     this.posService.setPaymentMethod(method)
@@ -300,4 +342,21 @@ export class PosComponent implements OnInit {
   closeReceiptModal() {
     this.showReceiptModal.set(false);
   }
+
+  toggleCustomerModal(show: boolean) {
+    this.showCustomerModal.set(show);
+    if (show && !this.showNewCustomerForm()) {
+      // Set flag to focus search on next view check
+      this.shouldFocusSearch = true;
+    }
+  }
+
+  ngAfterViewChecked() {
+    // Check if we should focus the search input
+    if (this.shouldFocusSearch && this.searchInput?.nativeElement) {
+      this.searchInput.nativeElement.focus();
+      this.shouldFocusSearch = false; // Reset flag after focusing
+    }
+  }
+
 }

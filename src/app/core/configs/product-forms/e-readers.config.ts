@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const eReadersConfig: CategoryFormConfig = {
-  id: 'e-readers',
+  id: 'e_readers',
   name: 'E-Readers',
   fields: [
     {

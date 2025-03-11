@@ -1,7 +1,7 @@
 import { CategoryFormConfig } from './product-form.types';
 
 export const powerSuppliesConfig: CategoryFormConfig = {
-  id: 'power-supplies-psus',
+  id: 'power_supplies',
   name: 'Power Supplies',
   fields: [
     {

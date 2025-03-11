@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const labelPrintersConfig: CategoryFormConfig = {
-  id: 'label-printers',
+  id: 'label_printers',
   name: 'Label Printers',
   fields: [
     {

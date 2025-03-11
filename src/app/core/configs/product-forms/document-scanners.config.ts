@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const documentScannersConfig: CategoryFormConfig = {
-  id: 'document-scanners',
+  id: 'document_scanners',
   name: 'Document Scanners',
   fields: [
     {

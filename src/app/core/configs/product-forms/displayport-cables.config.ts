@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const displayPortCablesConfig: CategoryFormConfig = {
-  id: 'displayport-cables',
+  id: 'displayport_cables',
   name: 'DisplayPort Cables',
   fields: [
     {

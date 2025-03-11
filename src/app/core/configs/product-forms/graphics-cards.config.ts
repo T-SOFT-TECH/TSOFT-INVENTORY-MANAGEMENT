@@ -2,7 +2,7 @@
 import { CategoryFormConfig } from './product-form.types';
 
 export const graphicsCardsConfig: CategoryFormConfig = {
-  id: 'graphics-cards-gpus',
+  id: 'graphics_cards_gpus',
   name: 'Graphics Cards',
   fields: [
     {

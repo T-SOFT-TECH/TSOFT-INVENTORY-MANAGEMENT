@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const conferenceSystemsConfig: CategoryFormConfig = {
-  id: 'conference-systems',
+  id: 'conference_systems',
   name: 'Conference Systems',
   fields: [
     {

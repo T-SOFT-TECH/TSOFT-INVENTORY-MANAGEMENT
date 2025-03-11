@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const smartPlugsConfig: CategoryFormConfig = {
-  id: 'smart-plugs',
+  id: 'smart_plugs',
   name: 'Smart Plugs',
   fields: [
     {

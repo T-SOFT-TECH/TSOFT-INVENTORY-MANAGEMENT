@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const watchProtectorsConfig: CategoryFormConfig = {
-  id: 'watch-protectors',
+  id: 'watch_protectors',
   name: 'Watch Protectors',
   fields: [
     {
