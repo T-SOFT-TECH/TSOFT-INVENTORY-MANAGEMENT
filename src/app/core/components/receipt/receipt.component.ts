@@ -266,7 +266,7 @@ export class ReceiptComponent {
     }
   }
 
-  // Send data to connected Bluetooth printer
+  // Send data to connected Bluetooth printer - Fixed version
   private async sendDataToPrinter(data: Uint8Array) {
     const device = this.connectedDevice();
     if (!device || !device.characteristic) {
@@ -274,27 +274,45 @@ export class ReceiptComponent {
     }
 
     try {
+      console.log("Sending data to printer...");
       // For large data, we need to chunk it
       const CHUNK_SIZE = 20; // Common BLE MTU size
 
-      // Get properties to determine write method
-      const props = await device.characteristic.getProperties();
-      const useWriteWithoutResponse = props.writeWithoutResponse;
-
-      console.log(`Sending data using ${useWriteWithoutResponse ? 'writeValueWithoutResponse' : 'writeValue'}`);
+      // Try to determine if writeValueWithoutResponse is available
+      let useWriteWithoutResponse = false;
+      try {
+        useWriteWithoutResponse = typeof device.characteristic.writeValueWithoutResponse === 'function';
+        console.log("writeValueWithoutResponse available:", useWriteWithoutResponse);
+      } catch (e) {
+        console.log("Error checking writeValueWithoutResponse:", e);
+      }
 
       for (let i = 0; i < data.length; i += CHUNK_SIZE) {
         const chunk = data.slice(i, i + CHUNK_SIZE);
 
-        if (useWriteWithoutResponse && device.characteristic.writeValueWithoutResponse) {
-          await device.characteristic.writeValueWithoutResponse(chunk);
-        } else {
-          await device.characteristic.writeValue(chunk);
+        try {
+          // First try writeValueWithoutResponse if available (better for printers)
+          if (useWriteWithoutResponse) {
+            await device.characteristic.writeValueWithoutResponse(chunk);
+          } else {
+            // Fall back to standard writeValue
+            await device.characteristic.writeValue(chunk);
+          }
+
+          // Log progress for debugging
+          if (i % 100 === 0) {
+            console.log(`Sent ${i}/${data.length} bytes`);
+          }
+        } catch (chunkError) {
+          console.error(`Error sending chunk at position ${i}:`, chunkError);
+          // Continue with next chunk - don't abort the whole process
         }
 
         // Small delay between chunks to avoid buffer overflow
         await new Promise(resolve => setTimeout(resolve, 50));
       }
+
+      console.log("Data sent successfully!");
     } catch (error: unknown) {
       console.error('Error sending data to printer:', error);
 
@@ -536,6 +554,37 @@ export class ReceiptComponent {
     }
   }
 
+// Add this to your component
+  async sendTestPrint() {
+    if (!this.isBluetoothConnected()) {
+      this.toast.info('Please connect to a Bluetooth printer first');
+      this.connectBluetoothPrinter();
+      return;
+    }
 
+    try {
+      this.loadingService.start('Sending test print...');
+
+      // Create simple test data
+      const encoder = new TextEncoder();
+      const testData = new Uint8Array([
+        0x1B, 0x40,           // Initialize printer
+        0x1B, 0x61, 0x01,     // Center alignment
+        ...encoder.encode("=== TEST PRINT ===\n\n"),
+        ...encoder.encode("If you can read this,\nyour printer is working!\n\n\n"),
+        0x1D, 0x56, 0x00      // Cut paper
+      ]);
+
+      // Send the data to the printer
+      await this.sendDataToPrinter(testData);
+
+      this.toast.success('Test print sent to printer');
+    } catch (error) {
+      console.error('Test print error:', error);
+      this.toast.error('Failed to send test print');
+    } finally {
+      this.loadingService.clear();
+    }
+  }
 
 }
