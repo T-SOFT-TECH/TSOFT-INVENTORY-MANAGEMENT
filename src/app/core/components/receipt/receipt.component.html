@@ -1,25 +1,25 @@
 <!-- receipt.component.html -->
-<div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-lg shadow-black border border-primary-800 overflow-hidden">
+<div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-lg shadow-black/10 border border-primary-800/20 overflow-hidden">
   <!-- Header -->
-  <div class="p-4 border-b border-gray-200 dark:border-primary-700 bg-gray-50 dark:bg-gray-900">
+  <div class="p-3 md:p-4 border-b border-gray-200 dark:border-primary-700 bg-gray-50 dark:bg-gray-900">
     <div class="flex justify-between items-start">
       <div>
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+        <h2 class="text-lg md:text-xl font-bold text-text-light-primary dark:text-white">
           Receipt
         </h2>
-        <p class="text-sm text-gray-500 dark:text-gray-400">
+        <p class="text-xs md:text-sm text-text-light-tertiary dark:text-gray-400">
           Invoice #{{ saleData?.invoiceNumber || 'N/A' }}
         </p>
       </div>
       <div class="text-right">
-        <p class="text-sm text-gray-500 dark:text-gray-400">
+        <p class="text-xs md:text-sm text-text-light-tertiary dark:text-gray-400">
           Date: {{ saleData?.date | date:'medium' }}
         </p>
-        <p class="inline-flex items-center mt-1 px-2.5 py-0.5 rounded-full text-xs font-medium"
+        <p class="inline-flex items-center mt-1 px-2 py-0.5 rounded-full text-xs font-medium"
            [ngClass]="{
-             'bg-success-100 text-success-800 dark:bg-success-900/20 dark:text-success-400': saleData?.paymentStatus === 'paid',
-             'bg-warning-100 text-warning-800 dark:bg-warning-900/20 dark:text-warning-400': saleData?.paymentStatus === 'pending',
-             'bg-error-100 text-error-800 dark:bg-error-900/20 dark:text-error-400': saleData?.paymentStatus === 'failed'
+             'bg-success-light text-success-dark dark:bg-success-dark/20 dark:text-success-light': saleData?.paymentStatus === 'paid',
+             'bg-warning-light text-warning-dark dark:bg-warning-dark/20 dark:text-warning-light': saleData?.paymentStatus === 'pending',
+             'bg-error-light text-error-dark dark:bg-error-dark/20 dark:text-error-light': saleData?.paymentStatus === 'failed'
            }">
           {{ saleData?.paymentStatus | titlecase }}
         </p>
@@ -27,22 +27,22 @@
     </div>
   </div>
 
-  <!-- Content - Simplified for better performance -->
-  <div class="p-4">
+  <!-- Content -->
+  <div class="p-3 md:p-4">
     <!-- Customer Info -->
     @if (saleData?.customer) {
-      <div class="mb-4 bg-gray-50 dark:bg-gray-800/30 p-3 rounded-lg">
-        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Customer</h3>
-        <p class="text-gray-900 dark:text-white font-medium">{{ saleData?.customer?.name || 'N/A' }}</p>
+      <div class="mb-3 md:mb-4 bg-gray-50 dark:bg-gray-800/30 p-2 md:p-3 rounded-lg">
+        <h3 class="text-xs md:text-sm font-medium text-text-light-tertiary dark:text-gray-400 mb-1">Customer</h3>
+        <p class="text-text-light-primary dark:text-white font-medium text-sm">{{ saleData?.customer?.name || 'N/A' }}</p>
         <div class="flex flex-col gap-0.5 mt-1">
           @if (saleData?.customer?.email) {
-            <p class="text-xs text-gray-600 dark:text-gray-300 flex items-center">
+            <p class="text-xs text-text-light-tertiary dark:text-gray-300 flex items-center">
               <span class="material-icons text-xs mr-1">email</span>
               {{ saleData?.customer?.email }}
             </p>
           }
           @if (saleData?.customer?.phone) {
-            <p class="text-xs text-gray-600 dark:text-gray-300 flex items-center">
+            <p class="text-xs text-text-light-tertiary dark:text-gray-300 flex items-center">
               <span class="material-icons text-xs mr-1">phone</span>
               {{ saleData?.customer?.phone }}
             </p>
@@ -51,29 +51,29 @@
       </div>
     }
 
-    <!-- Products Section in the Receipt Component -->
-    <div class="mb-4">
-      <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Items</h3>
+    <!-- Products Section -->
+    <div class="mb-3 md:mb-4">
+      <h3 class="text-xs md:text-sm font-medium text-text-light-tertiary dark:text-gray-400 mb-2">Items</h3>
       <div class="space-y-2">
         @if (saleData?.saleItems?.length) {
           @for (item of saleData?.saleItems; track $index) {
             <div class="flex justify-between border-b border-gray-100 dark:border-gray-800 pb-2">
               <div>
-                <p class="text-sm text-gray-900 dark:text-white">
+                <p class="text-sm text-text-light-primary dark:text-white">
                   {{ item.product?.name}}
                 </p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">
+                <p class="text-xs text-text-light-tertiary dark:text-gray-400">
                   {{ item.quantity || 1 }} × {{ formatCurrency(getItemPrice(item)) }}
                 </p>
               </div>
-              <p class="text-sm font-medium text-gray-900 dark:text-white">
+              <p class="text-sm font-medium text-text-light-primary dark:text-white">
                 {{ formatCurrency(calculateItemTotal(item)) }}
               </p>
             </div>
           }
         } @else {
-          <div class="text-center py-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-            <p class="text-sm text-gray-500 dark:text-gray-400">
+          <div class="text-center py-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+            <p class="text-sm text-text-light-tertiary dark:text-gray-400">
               No items found in this sale
             </p>
           </div>
@@ -82,83 +82,186 @@
     </div>
 
     <!-- Summary -->
-    <div class="bg-gray-50 dark:bg-gray-800/30 p-3 rounded-lg">
+    <div class="bg-gray-50 dark:bg-gray-800/30 p-2 md:p-3 rounded-lg">
       <div class="flex justify-between text-sm mb-1">
-        <span class="text-gray-600 dark:text-gray-400">Subtotal:</span>
-        <span class="text-gray-900 dark:text-white">{{ formatCurrency(saleData?.subtotal) }}</span>
+        <span class="text-text-light-tertiary dark:text-gray-400">Subtotal:</span>
+        <span class="text-text-light-primary dark:text-white">{{ formatCurrency(saleData?.subtotal) }}</span>
       </div>
       <div class="flex justify-between text-sm mb-2">
-        <span class="text-gray-600 dark:text-gray-400">Tax ({{settingService.settings()?.invoice?.taxRate}}):</span>
-        <span class="text-gray-900 dark:text-white">{{ formatCurrency(saleData?.tax)}}</span>
+        <span class="text-text-light-tertiary dark:text-gray-400">Tax ({{settingService.settings()?.invoice?.taxRate}}):</span>
+        <span class="text-text-light-primary dark:text-white">{{ formatCurrency(saleData?.tax)}}</span>
       </div>
       <div class="flex justify-between text-base font-bold pt-2 border-t border-gray-200 dark:border-gray-700">
-        <span class="text-gray-900 dark:text-white">Total:</span>
+        <span class="text-text-light-primary dark:text-white">Total:</span>
         <span class="text-primary-600 dark:text-primary-400">{{ formatCurrency(saleData?.totalAmount) }}</span>
       </div>
       <div class="flex justify-between text-sm pt-2">
-        <span class="text-gray-600 dark:text-gray-400">Payment Method:</span>
-        <span class="text-gray-900 dark:text-white capitalize">{{ saleData?.paymentMethod || 'Cash' }}</span>
+        <span class="text-text-light-tertiary dark:text-gray-400">Payment Method:</span>
+        <span class="text-text-light-primary dark:text-white capitalize">{{ saleData?.paymentMethod || 'Cash' }}</span>
       </div>
     </div>
   </div>
 
-  <!-- Footer with Actions -->
-  <div class="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 flex flex-wrap gap-2 justify-end">
-    <button
-      (click)="printReceipt()"
-      class="inline-flex items-center px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg
-             hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm">
-      <span class="material-icons text-sm mr-1">print</span>
-      Print
-    </button>
+  <!-- Footer with Actions - Reorganized for Mobile -->
+  <div class="p-3 md:p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
+    <!-- Bluetooth Printing Section - Highlighted for Mobile -->
+    <div class="mb-3 pb-3 border-b border-gray-200 dark:border-gray-700">
+      <h4 class="text-xs font-medium text-text-light-tertiary dark:text-gray-400 mb-2">Thermal Printer</h4>
+      <div class="flex flex-wrap gap-2">
+        <button
+          (click)="connectBluetoothPrinter()"
+          class="inline-flex items-center px-3 py-1.5 bg-primary-500 text-white rounded-lg
+                 hover:bg-primary-600 transition-colors text-sm"
+        >
+          <span class="material-icons text-sm mr-1">bluetooth</span>
+          Connect Printer
+        </button>
 
-    <button
-      (click)="downloadPdf()"
-      class="inline-flex items-center px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-lg
-             hover:bg-primary-200 dark:hover:bg-primary-800/40 transition-colors text-sm">
-      <span class="material-icons text-sm mr-1">download</span>
-      Download
-    </button>
+        <button
+          (click)="printToThermal()"
+          [disabled]="!isBluetoothConnected()"
+          class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm"
+          [ngClass]="isBluetoothConnected() ?
+                    'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/40' :
+                    'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'"
+        >
+          <span class="material-icons text-sm mr-1">receipt</span>
+          Print Receipt
+        </button>
+      </div>
 
-    <button
-      (click)="emailReceipt()"
-      class="inline-flex items-center px-3 py-1.5 bg-primary-500 text-white rounded-lg
-             hover:bg-primary-600 transition-colors text-sm">
-      <span class="material-icons text-sm mr-1">email</span>
-      Email
-    </button>
+      <!-- Printer Status Indicator -->
+      <div class="mt-2 text-xs flex items-center" [ngClass]="isBluetoothConnected() ? 'text-success-DEFAULT' : 'text-text-light-tertiary dark:text-gray-400'">
+        <span class="material-icons text-xs mr-1">
+          {{ isBluetoothConnected() ? 'check_circle' : 'info' }}
+        </span>
+        {{ isBluetoothConnected() ? 'Printer connected' : 'Connect printer to print' }}
+      </div>
+    </div>
 
-    <button
-      (click)="printToPos()"
-      class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white rounded-lg
-         hover:bg-red-600 transition-colors text-sm">
-      <span class="material-icons text-sm mr-1">bug_report</span>
-      Test PDF
-    </button>
+    <!-- Standard Print Options -->
+    <div class="flex flex-wrap gap-2 justify-end">
+      <button
+        (click)="printReceipt()"
+        class="inline-flex items-center px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg
+               hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm">
+        <span class="material-icons text-sm mr-1">print</span>
+        Print
+      </button>
 
+      <button
+        (click)="downloadPdf()"
+        class="inline-flex items-center px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-lg
+               hover:bg-primary-200 dark:hover:bg-primary-800/40 transition-colors text-sm">
+        <span class="material-icons text-sm mr-1">download</span>
+        Download
+      </button>
+
+      <button
+        (click)="emailReceipt()"
+        class="inline-flex items-center px-3 py-1.5 bg-primary-500 text-white rounded-lg
+               hover:bg-primary-600 transition-colors text-sm">
+        <span class="material-icons text-sm mr-1">email</span>
+        Email
+      </button>
+    </div>
   </div>
 </div>
 
-<!-- Preview Section (Only loads when requested) -->
+<!-- Preview Section -->
 @if (!previewUrl() && !isPreviewLoading()) {
-  <div class="mt-6 text-center">
+  <div class="mt-4 md:mt-6 text-center">
     <button
       (click)="loadPreview()"
-      class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg
-             border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+      class="inline-flex items-center px-3 py-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg
+             border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
       <span class="material-icons text-sm mr-1.5">visibility</span>
       Load PDF Preview
     </button>
   </div>
 } @else if (isPreviewLoading()) {
-  <div class="mt-6 flex justify-center">
-    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+  <div class="mt-4 md:mt-6 flex justify-center">
+    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500"></div>
   </div>
 } @else if (previewUrl()) {
-  <div class="mt-6">
-    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">PDF Preview</h3>
+  <div class="mt-4 md:mt-6">
+    <h3 class="text-base md:text-lg font-medium text-text-light-primary dark:text-white mb-2">PDF Preview</h3>
     <div class="aspect-[8.5/11] bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
       <iframe [src]="previewUrl() ?? '' | safeResourceUrl" class="w-full h-full" frameborder="0"></iframe>
+    </div>
+  </div>
+}
+
+<!-- Bluetooth Printer Dialog -->
+@if (showBluetoothDialog()) {
+  <div class="fixed inset-0 bg-black/70 z-50 flex items-start md:items-center justify-center p-4">
+    <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-xl max-w-md w-full p-4 animate-fade-in-up mt-8 md:mt-0">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-bold text-text-light-primary dark:text-white">
+          Connect Bluetooth Printer
+        </h3>
+        <button (click)="showBluetoothDialog.set(false)" class="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      @if (isScanning()) {
+        <div class="py-8 flex flex-col items-center justify-center">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mb-4"></div>
+          <p class="text-text-light-secondary dark:text-gray-300">Scanning for printers...</p>
+        </div>
+      } @else if (bluetoothDevices().length === 0) {
+        <div class="py-6 text-center">
+          <p class="text-text-light-secondary dark:text-gray-300 mb-4">No Bluetooth printers found.</p>
+          <button
+            (click)="scanForBluetoothDevices()"
+            class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+          >
+            Scan Again
+          </button>
+        </div>
+      } @else {
+        <div class="mb-4">
+          <p class="text-sm text-text-light-tertiary dark:text-gray-400 mb-2">
+            Select your 58mm thermal printer from the list below:
+          </p>
+          <div class="max-h-60 overflow-y-auto">
+            @for (device of bluetoothDevices(); track device.id) {
+              <button
+                (click)="connectToDevice(device)"
+                class="w-full text-left p-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between
+                      hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg mb-1"
+              >
+                <div class="flex items-center">
+                  <span class="material-icons text-primary-500 mr-2">print</span>
+                  <div>
+                    <div class="text-text-light-primary dark:text-white font-medium">{{ device.name || 'Unknown Device' }}</div>
+                    <div class="text-xs text-text-light-tertiary dark:text-gray-400">{{ device.id }}</div>
+                  </div>
+                </div>
+                <span class="material-icons text-gray-400">chevron_right</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="flex justify-between">
+          <button
+            (click)="scanForBluetoothDevices()"
+            class="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg
+                   text-text-light-secondary dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm"
+          >
+            Refresh
+          </button>
+          <button
+            (click)="showBluetoothDialog.set(false)"
+            class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-text-light-secondary dark:text-gray-300 rounded-lg
+                   hover:bg-gray-200 dark:hover:bg-gray-700 text-sm"
+          >
+            Cancel
+          </button>
+        </div>
+      }
     </div>
   </div>
 }

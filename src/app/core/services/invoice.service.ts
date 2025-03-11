@@ -765,4 +765,108 @@ export class InvoiceService {
     }
   }
 
+
+
+  // Add these methods to your invoice.service.ts
+
+  /**
+   * Prepare formatted data for 58mm thermal printer
+   * @param saleId Sale ID to get data for
+   * @returns Uint8Array of ESC/POS commands
+   */
+  async prepareThermalReceipt(saleId: string): Promise<Uint8Array> {
+    try {
+      // Get the sale data
+      const sale = await this.getSaleDetails(saleId);
+
+      // Get text content formatted for 58mm printer (24 characters width)
+      const receiptContent = this.createPOSInvoiceTemplate(sale, 24);
+
+      // Convert text to ESC/POS commands
+      return this.generateESCPOSCommands(receiptContent, sale);
+    } catch (error) {
+      console.error('Error preparing thermal receipt:', error);
+      throw new Error('Failed to prepare receipt for thermal printer');
+    }
+  }
+
+  /**
+   * Generate ESC/POS commands for thermal printers
+   * This creates a binary command sequence that most ESC/POS printers understand
+   */
+  private generateESCPOSCommands(textContent: string, sale: SaleWithDetails): Uint8Array {
+    // Initialize array with command parts
+    const parts: Uint8Array[] = [];
+
+    // ESC/POS commands
+    const ESC = 0x1B;
+    const GS = 0x1D;
+
+    // Initialize printer
+    parts.push(new Uint8Array([ESC, 0x40]));
+
+    // Text formatting commands - centered
+    parts.push(new Uint8Array([ESC, 0x61, 0x01]));
+
+    // Text formatting - emphasized
+    parts.push(new Uint8Array([ESC, 0x21, 0x08]));
+
+    // Get company name for header
+    const companyName = this.settingsService.settings()?.company?.companyName || 'Your Company';
+    parts.push(this.textToUint8Array(companyName + '\n'));
+
+    // Reset text formatting
+    parts.push(new Uint8Array([ESC, 0x21, 0x00]));
+
+    // Add the receipt content
+    parts.push(this.textToUint8Array(textContent));
+
+    // Add a QR code for the invoice number if the printer supports it
+    if (sale.invoiceNumber) {
+      // For printers that support QR codes:
+      // Model select QR code
+      parts.push(new Uint8Array([GS, 0x28, 0x6B, 0x04, 0x00, 0x31, 0x41, 0x32, 0x00]));
+
+      // Size of QR code (1-16) - setting to 4
+      parts.push(new Uint8Array([GS, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x43, 0x04]));
+
+      // Store QR code data
+      const qrData = `INV:${sale.invoiceNumber}`;
+      const qrLength = qrData.length + 3;
+      parts.push(new Uint8Array([
+        GS, 0x28, 0x6B, qrLength & 0xff, (qrLength >> 8) & 0xff,
+        0x31, 0x50, 0x30
+      ]));
+      parts.push(this.textToUint8Array(qrData));
+
+      // Print QR code
+      parts.push(new Uint8Array([GS, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x51, 0x30]));
+    }
+
+    // Feed and cut paper
+    parts.push(new Uint8Array([GS, 0x56, 0x00]));
+
+    // Combine all parts into a single Uint8Array
+    let totalLength = parts.reduce((sum, arr) => sum + arr.length, 0);
+    let result = new Uint8Array(totalLength);
+    let offset = 0;
+
+    for (const part of parts) {
+      result.set(part, offset);
+      offset += part.length;
+    }
+
+    return result;
+  }
+
+  /**
+   * Convert text string to Uint8Array for printer
+   */
+  private textToUint8Array(text: string): Uint8Array {
+    const encoder = new TextEncoder();
+    return encoder.encode(text);
+  }
+
+
+
 }
