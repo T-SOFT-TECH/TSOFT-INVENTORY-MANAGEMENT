@@ -1,0 +1,279 @@
+<div class="p-6  min-h-screen">
+  <div class=" mx-auto space-y-6">
+    <!-- Header Section -->
+    <div class="bg-white dark:bg-surface-dark-secondary border-green-200/30 border rounded-xl shadow-lg p-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Sales Analytics</h1>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Insights and metrics about your sales performance
+          </p>
+        </div>
+
+        <!-- Time Range Selector -->
+        <div class="flex flex-wrap gap-2" autoAnimate>
+          @for (range of timeRangeKeys; track range) {
+            <button
+              (click)="setTimeRange(range)"
+              class="px-3 py-1.5 text-sm rounded-lg transition-colors"
+              [class]="currentRange().label === timeRanges[range].label ?
+                'bg-primary-500 text-white' :
+                'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
+            >
+              {{ timeRanges[range].label }}
+            </button>
+          }
+
+          <!-- Custom Range Button -->
+          <button
+            class="px-3 py-1.5 text-sm rounded-lg flex items-center gap-1.5 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 border border-primary-200 dark:border-primary-800"
+            (click)="customRangePopup = !customRangePopup"
+          >
+            <span class="material-icons text-sm">date_range</span>
+            Custom
+          </button>
+
+          <!-- Custom Range Popup -->
+          @if (customRangePopup) {
+            <div class="absolute right-6 mt-10 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+              <div class="flex gap-4">
+                <div>
+                  <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Start Date</label>
+                  <input
+                    type="date"
+                    [(ngModel)]="customStartDate"
+                    class="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                  >
+                </div>
+                <div>
+                  <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">End Date</label>
+                  <input
+                    type="date"
+                    [(ngModel)]="customEndDate"
+                    class="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                  >
+                </div>
+              </div>
+              <div class="mt-3 flex justify-end">
+                <button
+                  (click)="applyCustomRange()"
+                  class="px-3 py-1 text-sm bg-primary-500 text-white rounded-lg"
+                >
+                  Apply
+                </button>
+              </div>
+            </div>
+          }
+
+          <!-- Export Button -->
+          <button
+            (click)="exportToCSV()"
+            class="px-3 py-1.5 text-sm rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 flex items-center gap-1.5"
+          >
+            <span class="material-icons text-sm">download</span>
+            Export
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Metrics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Total Revenue Card -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+          <app-animated-metric
+            [value]="salesData()?.totalRevenue || 0"
+            label="Total Revenue"
+            prefix="₦"
+            [decimals]="2"
+          ></app-animated-metric>
+          <div class="p-3 w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/40">
+            <span class="material-icons text-blue-500 dark:text-blue-400">payments</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Card -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+
+          <app-animated-metric
+            [value]="salesData()?.orderCount || 0"
+            label="Total Orders"
+            [decimals]="0">
+          </app-animated-metric>
+
+
+          <div class="p-3 w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/40">
+            <span class="material-icons text-green-500 dark:text-green-400">shopping_cart</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Average Order Value Card -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+
+          <app-animated-metric
+            [value]="salesData()?.averageOrderValue || 0"
+            label="Avg. Order Value"
+            prefix="₦"
+            [decimals]="2">
+          </app-animated-metric>
+
+
+          <div class="p-3 w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/40">
+            <span class="material-icons text-purple-500 dark:text-purple-400">analytics</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue Trend Chart -->
+    <div class="bg-white dark:dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Revenue Trend</h3>
+
+        <!-- Aggregation Selector -->
+        <div class="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+          <button
+            (click)="changeAggregation('day')"
+            class="px-3 py-1 text-sm rounded-lg transition-colors"
+            [class]="aggregation() === 'day' ?
+              'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm' :
+              'text-gray-700 dark:text-gray-300'"
+          >
+            Daily
+          </button>
+          <button
+            (click)="changeAggregation('week')"
+            class="px-3 py-1 text-sm rounded-lg transition-colors"
+            [class]="aggregation() === 'week' ?
+              'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm' :
+              'text-gray-700 dark:text-gray-300'"
+          >
+            Weekly
+          </button>
+          <button
+            (click)="changeAggregation('month')"
+            class="px-3 py-1 text-sm rounded-lg transition-colors"
+            [class]="aggregation() === 'month' ?
+              'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm' :
+              'text-gray-700 dark:text-gray-300'"
+          >
+            Monthly
+          </button>
+        </div>
+      </div>
+
+      @if (isLoading()) {
+        <div class="flex justify-center items-center h-64">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+        </div>
+      } @else if (revenueChartData()) {
+        <div class="h-80">
+          <app-chart
+            [type]="'line'"
+            [data]="revenueChartData()"
+            [options]="revenueChartOptions"
+          ></app-chart>
+        </div>
+      }
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Category Sales Chart -->
+      <div class="bg-white dark:dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Sales by Category</h3>
+        @if (isLoading()) {
+          <div class="flex justify-center items-center h-64">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+          </div>
+        } @else if (categoryChartData()) {
+          <div class="h-80">
+            <app-chart
+              [type]="'doughnut'"
+              [data]="categoryChartData()"
+              [options]="doughnutChartOptions"
+            ></app-chart>
+          </div>
+        }
+      </div>
+
+      <!-- Payment Methods Chart -->
+      <div class="bg-white dark:dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Payment Methods</h3>
+        @if (isLoading()) {
+          <div class="flex justify-center items-center h-64">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+          </div>
+        } @else if (paymentMethodsChartData()) {
+          <div class="h-80">
+            <app-chart
+              [type]="'pie'"
+              [data]="paymentMethodsChartData()"
+              [options]="pieChartOptions"
+            ></app-chart>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Top Products Section -->
+    <div class="bg-white dark:bg-gray-800 border-green-200/40 border rounded-xl shadow-lg overflow-hidden">
+      <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          Top Selling Products
+        </h3>
+      </div>
+
+      @if (isLoading()) {
+        <div class="flex justify-center items-center h-64">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+        </div>
+      } @else if (salesData()?.topProducts?.length) {
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-900/50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Product
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Units Sold
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Revenue
+              </th>
+            </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              @for (product of salesData()?.topProducts; track product.productId) {
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-900/10">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    {{ product.name }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {{ product.quantity }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {{ formatCurrency(product.revenue) }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="py-12 text-center">
+          <span class="material-icons text-4xl text-gray-300 dark:text-gray-600">
+            inventory_2
+          </span>
+          <p class="mt-2 text-gray-500 dark:text-gray-400">No product data available</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,238 @@
+<!-- customer-insights.component.html -->
+<div class="p-6 min-h-screen">
+  <div class="mx-auto space-y-6">
+    <!-- Header Section -->
+    <div class="bg-white dark:bg-surface-dark-secondary border-green-200/30 border rounded-xl shadow-lg p-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Customer Insights</h1>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Understand your customer base, segments, and behavior patterns
+          </p>
+        </div>
+
+        <!-- Time Range Selector -->
+        <div class="flex flex-wrap gap-2" autoAnimate>
+          @for (range of timeRangeKeys; track range) {
+            <button
+              (click)="setTimeRange(range)"
+              class="px-3 py-1.5 text-sm rounded-lg transition-colors"
+              [class]="currentRange().label === timeRanges[range].label ?
+                'bg-primary-500 text-white' :
+                'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
+            >
+              {{ timeRanges[range].label }}
+            </button>
+          }
+
+          <!-- Export Button -->
+          <button
+            (click)="exportToCSV()"
+            class="px-3 py-1.5 text-sm rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 flex items-center gap-1.5"
+          >
+            <span class="material-icons text-sm">download</span>
+            Export
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Metrics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <!-- Total Customers Card -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Customers</p>
+            <h3 class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
+              {{ customerData()?.totalCustomers || 0 }}
+            </h3>
+          </div>
+          <div class="p-3 w-12 h-12 rounded-full bg-primary-100 dark:bg-primary-900/40">
+            <span class="material-icons text-primary-500 dark:text-primary-400">people</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Customers Card -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Active Customers</p>
+            <h3 class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
+              {{ customerData()?.activeCustomers || 0 }}
+            </h3>
+          </div>
+          <div class="p-3 w-12 h-12 rounded-full bg-accent-teal-100 dark:bg-accent-teal-700/40">
+            <span class="material-icons text-accent-teal-500 dark:text-accent-teal-500">person</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Customers Card -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">New Customers</p>
+            <h3 class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
+              {{ customerData()?.newCustomers || 0 }}
+            </h3>
+          </div>
+          <div class="p-3 w-12 h-12 rounded-full bg-accent-amber-500/20 dark:bg-accent-amber-600/20">
+            <span class="material-icons text-accent-amber-500 dark:text-accent-amber-500">person_add</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Average Customer Value Card -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Avg. Customer Value</p>
+            <h3 class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
+              {{ formatCurrency(customerData()?.averageCustomerValue || 0) }}
+            </h3>
+          </div>
+          <div class="p-3 w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/40">
+            <span class="material-icons text-blue-500 dark:text-blue-400">payments</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segmentation Controls -->
+    <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-4">
+      <div class="flex flex-wrap items-center gap-4" autoAnimate>
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Segment By:
+        </span>
+        @for (option of segmentationOptions; track option.value) {
+          <button
+            (click)="onSegmentationChange(option.value)"
+            class="px-3 py-1.5 text-sm rounded-lg transition-colors"
+            [class]="selectedSegmentation() === option.value ?
+              'bg-primary-500 text-white' :
+              'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
+          >
+            {{ option.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Retention Rate Card -->
+    <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Customer Retention Rate</h3>
+
+      <div class="flex items-end mb-2">
+        <p class="text-3xl font-bold text-gray-900 dark:text-white">
+          {{ (customerData()?.customerRetentionRate || 0).toFixed(1) }}%
+        </p>
+        <p class="ml-2 text-sm text-gray-500 dark:text-gray-400 mb-1">
+          of customers returned from previous period
+        </p>
+      </div>
+
+      <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+        <div
+          class="h-full bg-primary-500"
+          [style.width.%]="customerData()?.customerRetentionRate || 0"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Customer Segment Chart -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6" autoAnimate>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Customer Segments</h3>
+        @if (isLoading()) {
+          <div class="flex justify-center items-center h-64">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+          </div>
+        } @else if (segmentChartData()) {
+          <div class="h-80">
+            <app-chart
+              [type]="'pie'"
+              [data]="segmentChartData()"
+              [options]="segmentChartOptions"
+            ></app-chart>
+          </div>
+        }
+      </div>
+
+      <!-- Customer Trends Chart -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Customer Acquisition Trends</h3>
+        @if (isLoading()) {
+          <div class="flex justify-center items-center h-64">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+          </div>
+        } @else if (trendChartData()) {
+          <div class="h-80">
+            <app-chart
+              [type]="'line'"
+              [data]="trendChartData()"
+              [options]="trendChartOptions"
+            ></app-chart>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Customer Segments Detail Table -->
+    <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg overflow-hidden" autoAnimate>
+      <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          Customer Segment Details
+        </h3>
+      </div>
+
+      @if (isLoading()) {
+        <div class="flex justify-center items-center h-64">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+        </div>
+      } @else if (customerData()?.customerSegments?.length) {
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-900/50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Segment
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Count
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Percentage
+              </th>
+            </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700" autoAnimate>
+              @for (segment of customerData()?.customerSegments; track segment.segment) {
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-900/10">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    {{ segment.segment }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {{ segment.count }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {{ segment.percentage.toFixed(1) }}%
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="py-12 text-center">
+          <span class="material-icons text-4xl text-gray-300 dark:text-gray-600">
+            group
+          </span>
+          <p class="mt-2 text-gray-500 dark:text-gray-400">No segment data available</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

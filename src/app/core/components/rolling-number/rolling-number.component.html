@@ -1,0 +1,54 @@
+<div class="rolling-number-display">
+  @if (prefix){
+    <span  class="prefix">{{ prefix }}</span>
+  }
+
+
+  <div class="digits-container">
+    @for (digit of digitGroups; track $index) {
+      <div class="digit-slot">
+        <div class="digit-track"
+             [@digitRoll]="{
+                   value: digit.animationState,
+                   params: {
+                     startPos: digit.startPosition,
+                     endPos: digit.endPosition,
+                     duration: digit.duration
+                   }
+                 }">
+          @for (num of numberRange; track num) {
+            <div class="digit">{{ num }}</div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Decimal point if needed -->
+    @if (decimals > 0) {
+      <div class="decimal-point">.</div>
+
+      <!-- Decimal digits -->
+      @for (digit of decimalDigitGroups; track $index) {
+        <div class="digit-slot">
+          <div class="digit-track"
+               [@digitRoll]="{
+                     value: digit.animationState,
+                     params: {
+                       startPos: digit.startPosition,
+                       endPos: digit.endPosition,
+                       duration: digit.duration
+                     }
+                   }">
+            @for (num of numberRange; track num) {
+              <div class="digit">{{ num }}</div>
+            }
+          </div>
+        </div>
+      }
+    }
+  </div>
+@if (suffix){
+  <span  class="suffix">{{ suffix }}</span>
+}
+
+</div>

@@ -1,0 +1,291 @@
+@use 'sass:color';
+
+/* receipt-pdf-template.component.pdf.scss */
+
+// PDF-specific variables
+$page-width: 595pt;
+$page-height: 842pt;
+$margin: 40pt;
+$content-width: $page-width - ($margin * 2);
+
+// Colors
+$primary-color: #3498db; // Blue
+$heading-color: #2c3e50; // Dark blue/slate
+$text-color: #333333;    // Dark gray
+$muted-color: #7f8c8d;   // Medium gray
+$border-color: #ecf0f1;  // Light gray
+$success-color: #2ecc71; // Green
+$warning-color: #f39c12; // Orange
+$danger-color: #e74c3c;  // Red
+$light-bg: #f9f9f9;      // Light background
+$white: #ffffff;         // White
+
+// Typography
+$pdf-font-family: 'Helvetica', Arial, sans-serif;
+$heading-size: 18pt;
+$subheading-size: 14pt;
+$body-size: 9pt;
+$small-size: 8pt;
+
+// Container
+.pdf-container {
+  width: $page-width;
+  min-height: $page-height;
+  padding: $margin;
+  position: relative;
+  background: $white;
+  font-family: $pdf-font-family;
+  color: $text-color;
+  font-size: $body-size;
+  line-height: 1.4;
+  box-sizing: border-box;
+}
+
+// Watermark
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  font-size: 72pt;
+  opacity: 0.15;
+  color: $danger-color;
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 1;
+  text-align: center;
+  width: 100%;
+}
+
+// Header section
+.invoice-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30pt;
+  position: relative;
+  z-index: 2;
+
+  .company-info {
+    width: 60%;
+
+    .logo-container {
+      margin-bottom: 10pt;
+
+      .company-logo {
+        max-width: 150pt;
+        max-height: 60pt;
+        object-fit: contain;
+      }
+    }
+
+    h1 {
+      font-size: $heading-size;
+      color: $heading-color;
+      margin: 0 0 8pt 0;
+    }
+
+    p {
+      font-size: $body-size;
+      color: $text-color;
+      margin: 0 0 4pt 0;
+      line-height: 1.3;
+    }
+  }
+
+  .invoice-info {
+    width: 35%;
+    text-align: right;
+
+    h2 {
+      font-size: $heading-size;
+      color: $primary-color;
+      margin: 0 0 10pt 0;
+      letter-spacing: 1pt;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: $body-size;
+      margin-bottom: 5pt;
+
+      .label {
+        font-weight: bold;
+        color: $heading-color;
+      }
+    }
+  }
+}
+
+// Customer section
+.customer-section {
+  background: $light-bg;
+  padding: 15pt;
+  margin-bottom: 20pt;
+  border-radius: 5pt;
+  position: relative;
+  z-index: 2;
+
+  h3 {
+    font-size: $subheading-size;
+    color: $heading-color;
+    margin: 0 0 8pt 0;
+    font-weight: bold;
+  }
+
+  .customer-name {
+    font-size: $subheading-size;
+    font-weight: bold;
+    color: $text-color;
+    margin: 0 0 5pt 0;
+  }
+
+  .customer-detail {
+    font-size: $body-size;
+    color: $text-color;
+    margin: 0 0 3pt 0;
+  }
+}
+
+// Items table
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20pt;
+  position: relative;
+  z-index: 2;
+
+  th {
+    background-color: $primary-color;
+    color: $white;
+    font-size: $body-size;
+    font-weight: bold;
+    text-align: left;
+    padding: 8pt;
+  }
+
+  td {
+    padding: 8pt;
+    font-size: $body-size;
+    border-bottom: 0.5pt solid $border-color;
+    color: $text-color;
+  }
+
+  .item-name {
+    width: 50%;
+  }
+
+  .item-qty {
+    width: 15%;
+    text-align: center;
+  }
+
+  .item-price, .item-total {
+    width: 17.5%;
+    text-align: right;
+  }
+
+  tr:nth-child(even) {
+    background-color: $light-bg;
+  }
+
+  tr:hover {
+    background-color: color.adjust($light-bg, $lightness: -2%);
+
+  }
+}
+
+// Invoice footer (contains summary and QR)
+.invoice-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30pt;
+  position: relative;
+  z-index: 2;
+}
+
+// Summary section
+.summary-section {
+  width: 250pt;
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5pt 0;
+    font-size: $body-size;
+
+    &.total {
+      font-weight: bold;
+      font-size: $subheading-size;
+      color: $primary-color;
+      border-top: 1pt solid $border-color;
+      padding-top: 8pt;
+      margin-top: 2pt;
+    }
+  }
+}
+
+// QR Code section
+.qr-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .qr-code {
+    width: 80pt;
+    height: 80pt;
+  }
+
+  .qr-caption {
+    font-size: $small-size;
+    color: $muted-color;
+    text-align: center;
+    margin-top: 5pt;
+  }
+}
+
+// Footer
+.footer {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding-top: 10pt;
+  border-top: 1pt solid $border-color;
+
+  .thank-you {
+    font-size: $subheading-size;
+    color: $primary-color;
+    margin-bottom: 10pt;
+  }
+
+  .terms-section {
+    margin-top: 15pt;
+    padding: 10pt;
+    background-color: $light-bg;
+    border-radius: 5pt;
+
+    .terms-title {
+      font-size: $body-size;
+      font-weight: bold;
+      color: $heading-color;
+      margin-bottom: 5pt;
+    }
+
+    .terms-text {
+      font-size: $small-size;
+      color: $muted-color;
+      text-align: left;
+    }
+  }
+}
+
+// Add any print-specific styles
+@media print {
+  .pdf-container {
+    margin: 0;
+    padding: $margin;
+    width: 100%;
+    height: 100%;
+  }
+}

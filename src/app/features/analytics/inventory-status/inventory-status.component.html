@@ -1,0 +1,226 @@
+
+<div class="p-6 min-h-screen">
+  <div class="mx-auto space-y-6">
+    <!-- Header Section -->
+    <div class="bg-white dark:bg-surface-dark-secondary border-green-200/30 border rounded-xl shadow-lg p-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Inventory Status</h1>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Monitor your inventory levels, stock trends, and category distributions
+          </p>
+        </div>
+
+        <!-- Time Range Selector -->
+        <div class="flex flex-wrap gap-2" autoAnimate>
+          @for (range of timeRangeKeys; track range) {
+            <button
+              (click)="setTimeRange(range)"
+              class="px-3 py-1.5 text-sm rounded-lg transition-colors"
+              [class]="currentRange().label === timeRanges[range].label ?
+                'bg-primary-500 text-white' :
+                'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
+            >
+              {{ timeRanges[range].label }}
+            </button>
+          }
+
+          <!-- Export Button -->
+          <button
+            (click)="exportToCSV()"
+            class="px-3 py-1.5 text-sm rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 flex items-center gap-1.5"
+          >
+            <span class="material-icons text-sm">download</span>
+            Export
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Metrics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <!-- Total Stock Value Card -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+
+          <app-animated-metric
+            [value]="inventoryData()?.totalStockValue || 0"
+            label="Total Stock Value"
+            prefix="₦"
+            [decimals]="2">
+          </app-animated-metric>
+
+
+
+          <div class="p-3 w-12 h-12 rounded-full bg-primary-100 dark:bg-primary-900/40">
+            <span class="material-icons text-primary-500 dark:text-primary-400">inventory</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stock Items Card -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+
+          <app-animated-metric
+            [value]=" inventoryData()?.stockItems || 0 "
+            label="Stock Items"
+            [decimals]="0">
+          </app-animated-metric>
+
+
+          <div class="p-3 w-12 h-12 rounded-full bg-accent-emerald-100 dark:bg-accent-emerald-700/40">
+            <span class="material-icons text-accent-emerald-500 dark:text-accent-emerald-500">category</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Low Stock Items Card -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+
+          <app-animated-metric
+            [value]="inventoryData()?.lowStockItems || 0"
+            label="Low Stock Items"
+            [decimals]="0">
+          </app-animated-metric>
+
+
+          <div class="p-3 w-12 h-12 rounded-full bg-warning-light/20 dark:bg-warning-dark/20">
+            <span class="material-icons text-warning-DEFAULT dark:text-warning-light">warning</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Out of Stock Items Card -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+
+          <app-animated-metric
+            [value]="inventoryData()?.outOfStockItems || 0"
+            label="Out of Stock Items"
+            [decimals]="0">
+          </app-animated-metric>
+
+
+          <div class="p-3 w-12 h-12 rounded-full bg-error-light/20 dark:bg-error-dark/20">
+            <span class="material-icons text-error-DEFAULT dark:text-error-light">inventory_2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stock Trends Chart -->
+    <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Stock Trends</h3>
+
+        <!-- Category Filter (if needed) -->
+        <div class="flex">
+          <select
+            #categorySelect
+            (change)="onCategoryChange(categorySelect.value)"
+            class="px-3 py-1.5 text-sm rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600"
+          >
+            <option value="">All Categories</option>
+            @for (category of inventoryData()?.stockByCategory; track category.categoryId) {
+              <option [value]="category.categoryId">{{ category.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      @if (isLoading()) {
+        <div class="flex justify-center items-center h-64">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+        </div>
+      } @else if (trendChartData()) {
+        <div class="h-80">
+          <app-chart
+            [type]="'line'"
+            [data]="trendChartData()"
+            [options]="trendChartOptions"
+          ></app-chart>
+        </div>
+      }
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Stock by Category Chart -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6" autoAnimate>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Stock Value by Category</h3>
+        @if (isLoading()) {
+          <div class="flex justify-center items-center h-64">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+          </div>
+        } @else if (categoryChartData()) {
+          <div class="h-80">
+            <app-chart
+              [type]="'doughnut'"
+              [data]="categoryChartData()"
+              [options]="categoryChartOptions"
+            ></app-chart>
+          </div>
+        }
+      </div>
+
+      <!-- Inventory Stats Card -->
+      <div class="bg-white dark:bg-surface-dark-secondary border-green-200/40 border rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Inventory Performance</h3>
+
+        <div class="space-y-6">
+          <!-- Inventory Turnover -->
+          <div>
+            <div class="flex justify-between mb-2">
+              <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Inventory Turnover</p>
+              <p class="text-sm font-medium text-gray-900 dark:text-white">
+                {{ (inventoryData()?.inventoryTurnover || 0).toFixed(2) }}
+              </p>
+            </div>
+            <div class="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div
+                class="h-full bg-primary-500"
+                [style.width.%]="Math.min((inventoryData()?.inventoryTurnover || 0) * 10, 100)"
+              ></div>
+            </div>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              Higher values indicate better inventory efficiency
+            </p>
+          </div>
+
+          <!-- Stock Level Distribution -->
+          <div class="mt-8">
+            <p class="text-sm font-medium text-gray-900 dark:text-white mb-3">Stock Level Distribution</p>
+
+            <div class="space-y-3">
+              <div class="flex items-center">
+                <span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span>
+                <span class="text-sm text-gray-700 dark:text-gray-300 flex-1">Healthy Stock</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">
+                    {{ getHealthyStockCount() }} items
+                </span>
+              </div>
+
+              <div class="flex items-center">
+                <span class="w-3 h-3 rounded-full bg-warning-DEFAULT mr-2"></span>
+                <span class="text-sm text-gray-700 dark:text-gray-300 flex-1">Low Stock</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">
+                  {{ inventoryData()?.lowStockItems || 0 }} items
+                </span>
+              </div>
+
+              <div class="flex items-center">
+                <span class="w-3 h-3 rounded-full bg-error-DEFAULT mr-2"></span>
+                <span class="text-sm text-gray-700 dark:text-gray-300 flex-1">Out of Stock</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">
+                  {{ inventoryData()?.outOfStockItems || 0 }} items
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

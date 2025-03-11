@@ -1,0 +1,27 @@
+<div class="pdf-container" style="padding: 40pt; width: 595pt;">
+  <h1 style="color: #000; font-size: 24pt; margin-bottom: 20pt;">INVOICE #{{sale?.$id || sale?.invoiceNumber || 'N/A'}}</h1>
+
+  <div style="margin-bottom: 20pt; padding: 10pt; border: 1px solid #ccc;">
+    <h2 style="color: #000; font-size: 16pt;">Customer: {{sale?.customer?.name || 'N/A'}}</h2>
+    <p style="color: #333;">Date: {{formatDate(sale?.date) || 'N/A'}}</p>
+    <p style="color: #333;">Status: {{sale?.paymentStatus || 'N/A'}}</p>
+    <p style="color: #333;">Total: {{formatCurrency(sale?.totalAmount) || 'N/A'}}</p>
+  </div>
+
+  <table style="width: 100%; border-collapse: collapse;">
+    <tr style="background-color: #3498db; color: white;">
+      <th style="padding: 8pt; text-align: left;">Item</th>
+      <th style="padding: 8pt; text-align: center;">Qty</th>
+      <th style="padding: 8pt; text-align: right;">Price</th>
+    </tr>
+    <tr *ngFor="let item of sale?.saleItems" style="border-bottom: 1px solid #ddd;">
+      <td style="padding: 8pt; text-align: left;">{{item?.product?.name || 'Unknown'}}</td>
+      <td style="padding: 8pt; text-align: center;">{{item?.quantity || 1}}</td>
+      <td style="padding: 8pt; text-align: right;">{{formatCurrency(getItemPrice(item))}}</td>
+    </tr>
+  </table>
+
+  <div style="margin-top: 20pt; text-align: center;">
+    <p>Thank you for your business!</p>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+.rolling-number-display {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-mono, 'Roboto Mono', monospace);
+  font-size: 2rem;
+  line-height: 1;
+  height: 2.5rem;
+}
+
+.prefix, .suffix {
+  margin: 0 0.2rem;
+}
+
+.digits-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  overflow: hidden;
+}
+
+.digit-slot {
+  width: 1.2em;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  background-color: var(--bg-digit, rgba(0,0,0,0.05));
+  border-radius: 0.2rem;
+  margin: 0 1px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.digit-track {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.digit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5rem;
+  width: 100%;
+}
+
+.decimal-point {
+  margin: 0 0.1rem;
+  font-weight: bold;
+}
+
+:host-context(.dark) .digit-slot {
+  background-color: var(--bg-digit-dark, rgba(255,255,255,0.1));
+  color: var(--text-primary-dark, #fff);
+}
