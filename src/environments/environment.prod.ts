@@ -1,32 +1,32 @@
 export const environment = {
   production: true,
-  
-  // API Configuration
-  api: {
-    baseUrl: 'https://api.yourcompany.com',
-    version: 'v1'
-  },
 
-  // Appwrite Configuration
   appwrite: {
-    endpoint: 'https://appwrite.yourcompany.com/v1',
-    projectId: 'your-production-project-id',
-    databaseId: 'your-production-database-id',
+    endpoint: 'https://appwrite.tsoft-tech.dev/v1',
+    projectId: 'tsoftmart-inventory-invoice-system',
+    databaseId: 'inventory-invoice-db',
     collections: {
-      products: 'products-collection-id',
-      customers: 'customers-collection-id',
-      sales: 'sales-collection-id',
-      invoices: 'invoices-collection-id',
-      settings: 'settings-collection-id',
-      categories: 'categories-collection-id'
+      products: 'products',
+      customers: 'customers',
+      sales: 'sales',
+      invoices: 'invoices',
+      settings: 'settings',
+      categories: 'categories',
+      brands: 'brands',
+      stockTransactions: 'stock_transactions'
     },
     buckets: {
-      productImages: 'product-images-bucket-id',
-      companyLogos: 'company-logos-bucket-id'
+      productImages: 'productImages',
+      companyLogos: 'company-logo',
+      brandLogos: 'brand-logo',
+      receiptImages: 'stock-receipts'
+    },
+    api:{
+      createProduct: 'create-product',
     }
   },
 
-  // Company Information (same as development)
+  // Company Information
   company: {
     name: 'Your Company Name',
     address: '123 Business Street, City, Country',
@@ -37,20 +37,20 @@ export const environment = {
     taxId: 'TAX-12345-ID'
   },
 
-  // Default Settings (same as development)
+  // Default Settings
   defaults: {
-    currency: 'USD',
+    currency: 'NGN',
     dateFormat: 'MM/DD/YYYY',
     timezone: 'UTC',
     language: 'en',
-    theme: 'light',
+    theme: 'dark',
     itemsPerPage: 10,
     taxRate: 10,
     invoicePrefix: 'INV-',
     invoiceStartNumber: 1000
   },
 
-  // Feature Flags (might differ from development)
+  // Feature Flags
   features: {
     darkMode: true,
     multiLanguage: true,
@@ -59,7 +59,7 @@ export const environment = {
     customerPortal: true
   },
 
-  // Storage Keys (same as development)
+  // Storage Keys
   storage: {
     authToken: 'auth_token',
     userPreferences: 'user_preferences',
@@ -67,13 +67,13 @@ export const environment = {
     language: 'selected_language'
   },
 
-  // Notification Settings (same as development)
+  // Notification Settings
   notifications: {
     defaultDuration: 3000,
     position: 'top-right'
   },
 
-  // File Upload Limits (same as development)
+  // File Upload Limits
   upload: {
     maxFileSize: 5 * 1024 * 1024, // 5MB
     allowedImageTypes: ['image/jpeg', 'image/png', 'image/webp'],

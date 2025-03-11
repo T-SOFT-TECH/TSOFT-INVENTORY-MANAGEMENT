@@ -1,12 +1,6 @@
 export const environment = {
   production: false,
 
-  // API Configuration
-  api: {
-    baseUrl: 'http://localhost:3000/api',
-    version: 'v1'
-  },
-
   // Appwrite Configuration
   appwrite: {
     endpoint: 'https://appwrite.tsoft-tech.dev/v1',
