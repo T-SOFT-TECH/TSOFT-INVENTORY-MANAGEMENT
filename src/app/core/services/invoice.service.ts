@@ -811,7 +811,7 @@ export class InvoiceService {
 
     // Get logo URL
     const logoUrl = this.settingsService.settings()?.company?.logo ||
-      'https://appwrite.tsoft-tech.dev/v1/storage/buckets/company-logo/files/67d0aba0002f83da6aa7/view?project=tsoftmart-inventory-invoice-system&project=tsoftmart-inventory-invoice-system&mode=admin';
+      'https://appwrite.tsoft-tech.dev/v1/storage/buckets/company-logo/files/67d1aa3b001447b9a5a2/view?project=tsoftmart-inventory-invoice-system&project=tsoftmart-inventory-invoice-system&mode=admin';
 
     // Constants for receipt layout
     const CHARS_PER_LINE = 32; // Character limit for 58mm paper
@@ -850,7 +850,7 @@ export class InvoiceService {
       }
 
       // Company Name - Large bold text
-      parts.push(new Uint8Array([ESC, 0x21, 0x30])); // Double width, double height
+      parts.push(new Uint8Array([ESC, 0x21, 0x18])); // Double width, double height
       parts.push(this.textToUint8Array(companyName + '\n'));
 
       // Reset text formatting
