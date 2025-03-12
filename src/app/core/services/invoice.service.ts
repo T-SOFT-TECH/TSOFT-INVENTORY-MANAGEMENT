@@ -811,7 +811,7 @@ export class InvoiceService {
 
     // Get logo URL
     const logoUrl = this.settingsService.settings()?.company?.logo ||
-      'https://appwrite.tsoft-tech.dev/v1/storage/buckets/company-logo/files/67d1bb050007d30049b7/view?project=tsoftmart-inventory-invoice-system&project=tsoftmart-inventory-invoice-system&mode=admin';
+      'https://appwrite.tsoft-tech.dev/v1/storage/buckets/company-logo/files/67d1c36b001bd989c3b4/view?project=tsoftmart-inventory-invoice-system&project=tsoftmart-inventory-invoice-system&mode=admin';
 
     // Constants for receipt layout
     const CHARS_PER_LINE = 32; // Character limit for 58mm paper
@@ -970,7 +970,7 @@ export class InvoiceService {
       const totalText = 'TOTAL:';
       const totalValue = formatCurrency(sale.totalAmount);
 
-      parts.push(new Uint8Array([ESC, 0x21, 0x10])); // Double height for total
+      parts.push(new Uint8Array([ESC, 0x21, 0x18])); // Double height + Bold for total
       const totalLine = totalText + ' '.repeat(Math.max(0, CHARS_PER_LINE - totalText.length - totalValue.length - 8)) + totalValue;
       parts.push(this.textToUint8Array(totalLine + '\n'));
       parts.push(new Uint8Array([ESC, 0x21, 0x00])); // Normal
