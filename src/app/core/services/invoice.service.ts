@@ -1037,41 +1037,45 @@ export class InvoiceService {
 
 
   // Fixed fetchAndPrintLogo method
+  // Updated method that can handle SVG logos
   private async fetchAndPrintLogo(logoUrl: string): Promise<Uint8Array[]> {
     const parts: Uint8Array[] = [];
     const ESC = 0x1B;
     const GS = 0x1D;
 
     try {
-      // Fetch the image
+      // Fetch the image (SVG or other format)
       const response = await fetch(logoUrl);
       const blob = await response.blob();
+      const isSVG = blob.type === 'image/svg+xml' || logoUrl.toLowerCase().endsWith('.svg');
 
-      // Convert to base64 for processing
+      // Convert to bitmap for printing
       return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = function() {
-          const img = new Image();
-          img.onload = function() {
-            // For thermal printers, we need to resize and convert to bitmap
-            // A good width for 58mm printer is around 300-350 pixels
-            const canvas = document.createElement('canvas');
-            const maxWidth = 350;
-            const scaleFactor = maxWidth / img.width;
-            canvas.width = maxWidth;
-            canvas.height = img.height * scaleFactor;
+        const img = new Image();
 
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-              ctx.fillStyle = 'white';
-              ctx.fillRect(0, 0, canvas.width, canvas.height);
-              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        img.onload = function() {
+          // Create canvas for rasterizing
+          const canvas = document.createElement('canvas');
+          // For 58mm printer, width ~350px works well
+          const maxWidth = 350;
+          const scaleFactor = maxWidth / img.width;
+          canvas.width = maxWidth;
+          canvas.height = Math.round(img.height * scaleFactor);
 
-              // Prepare bitmap data for printer
-              // GS v 0 - Print raster bitmap
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            // Clear canvas with white background
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the image (works for both SVG and raster)
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            // Convert to 1-bit bitmap for ESC/POS
+            try {
+              // GS v 0 - Print raster bitmap command
               parts.push(new Uint8Array([GS, 0x76, 0x30, 0x00]));
 
-              // Define bitmap dimensions
               // Width in bytes (each byte is 8 pixels)
               const widthBytes = Math.ceil(canvas.width / 8);
               parts.push(new Uint8Array([widthBytes & 0xff, (widthBytes >> 8) & 0xff]));
@@ -1079,50 +1083,51 @@ export class InvoiceService {
               // Height in pixels
               parts.push(new Uint8Array([canvas.height & 0xff, (canvas.height >> 8) & 0xff]));
 
-              // Process image data - convert to 1-bit bitmap
+              // Convert to 1-bit bitmap
               const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
               const data = imageData.data;
+
+              // Process each row
               for (let y = 0; y < canvas.height; y++) {
-                let byteValue = 0;
-                let bitCount = 0;
+                const row = new Uint8Array(widthBytes);
 
                 for (let x = 0; x < canvas.width; x++) {
                   const index = (y * canvas.width + x) * 4;
-                  // Convert RGB to grayscale
+                  // Get grayscale value
                   const gray = 0.299 * data[index] + 0.587 * data[index + 1] + 0.114 * data[index + 2];
 
-                  // Set bit if pixel is darker than threshold (0=black, 1=white in ESC/POS)
-                  byteValue = (byteValue << 1) | (gray < 128 ? 0 : 1);
-                  bitCount++;
+                  // Set bit in appropriate byte (0 = black, 1 = white in ESC/POS)
+                  const byteIndex = Math.floor(x / 8);
+                  const bitIndex = 7 - (x % 8);  // MSB first
 
-                  // When we have 8 bits, add the byte to output
-                  if (bitCount === 8) {
-                    parts.push(new Uint8Array([byteValue]));
-                    byteValue = 0;
-                    bitCount = 0;
+                  if (gray < 128) {  // Dark pixel
+                    row[byteIndex] |= (1 << bitIndex);
                   }
                 }
 
-                // Pad remaining bits in the last byte
-                if (bitCount > 0) {
-                  byteValue = byteValue << (8 - bitCount);
-                  parts.push(new Uint8Array([byteValue]));
-                }
+                // Add row to output
+                parts.push(row);
               }
+
+            } catch (error) {
+              console.error('Error processing bitmap:', error);
             }
+          }
 
-            resolve(parts);
-          };
-
-          // Set image source to the base64 data
-          img.src = reader.result as string;
+          resolve(parts);
         };
 
-        reader.readAsDataURL(blob);
+        img.onerror = function() {
+          console.error('Error loading image');
+          resolve(parts);  // Return empty array on error
+        };
+
+        // Load the image - works for both SVG and raster formats
+        const url = URL.createObjectURL(blob);
+        img.src = url;
       });
     } catch (error) {
-      console.error('Error fetching or processing logo:', error);
-      // Return an empty array if logo processing fails
+      console.error('Error fetching logo:', error);
       return parts;
     }
   }
