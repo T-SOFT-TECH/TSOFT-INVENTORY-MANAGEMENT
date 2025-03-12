@@ -976,7 +976,7 @@ export class InvoiceService {
       parts.push(new Uint8Array([ESC, 0x21, 0x00])); // Normal
 
       // Payment method
-      const paymentText = 'Payment:';
+      const paymentText = 'Payment Method:';
       const paymentValue = sale.paymentMethod ? sale.paymentMethod.toUpperCase() : 'CASH';
       const paymentLine = paymentText + ' '.repeat(Math.max(0, CHARS_PER_LINE - paymentText.length - paymentValue.length)) + paymentValue;
       parts.push(this.textToUint8Array(paymentLine + '\n'));
@@ -986,7 +986,7 @@ export class InvoiceService {
       parts.push(new Uint8Array([ESC, 0x61, 0x01])); // Center align
 
       // Thank you message
-      parts.push(this.textToUint8Array('\nYour satisfaction is our priority!\n'));
+      parts.push(this.textToUint8Array('\nYour satisfaction is our priority\n'));
       parts.push(this.textToUint8Array('Thank you for choosing us!\n\n'));
 
       // Current date and time
