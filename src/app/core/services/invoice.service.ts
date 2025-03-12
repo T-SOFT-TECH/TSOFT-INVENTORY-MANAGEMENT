@@ -986,8 +986,8 @@ export class InvoiceService {
       parts.push(new Uint8Array([ESC, 0x61, 0x01])); // Center align
 
       // Thank you message
-      parts.push(this.textToUint8Array('\nThank you for your business!\n'));
-      parts.push(this.textToUint8Array('Please come again\n\n'));
+      parts.push(this.textToUint8Array('\nYour satisfaction is our priority!\n'));
+      parts.push(this.textToUint8Array('Thank you for choosing us!\n\n'));
 
       // Current date and time
       const now = new Date().toLocaleString('en-NG', {
