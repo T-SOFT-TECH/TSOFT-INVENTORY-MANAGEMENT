@@ -811,7 +811,7 @@ export class InvoiceService {
 
     // Get logo URL
     const logoUrl = this.settingsService.settings()?.company?.logo ||
-      'https://appwrite.tsoft-tech.dev/v1/storage/buckets/company-logo/files/67d1c36b001bd989c3b4/view?project=tsoftmart-inventory-invoice-system&project=tsoftmart-inventory-invoice-system&mode=admin';
+      'https://appwrite.tsoft-tech.dev/v1/storage/buckets/company-logo/files/67d1bb050007d30049b7/view?project=tsoftmart-inventory-invoice-system&project=tsoftmart-inventory-invoice-system&mode=admin';
 
     // Constants for receipt layout
     const CHARS_PER_LINE = 32; // Character limit for 58mm paper
@@ -1037,45 +1037,85 @@ export class InvoiceService {
 
 
   // Fixed fetchAndPrintLogo method
-  // Updated method that can handle SVG logos
   private async fetchAndPrintLogo(logoUrl: string): Promise<Uint8Array[]> {
     const parts: Uint8Array[] = [];
     const ESC = 0x1B;
     const GS = 0x1D;
 
     try {
-      // Fetch the image (SVG or other format)
+      // Fetch the image
       const response = await fetch(logoUrl);
       const blob = await response.blob();
-      const isSVG = blob.type === 'image/svg+xml' || logoUrl.toLowerCase().endsWith('.svg');
 
-      // Convert to bitmap for printing
+      // Convert to base64 for processing
       return new Promise((resolve) => {
-        const img = new Image();
+        const reader = new FileReader();
+        reader.onloadend = function() {
+          const img = new Image();
+          img.onload = function() {
+            // For thermal printers, we need to resize and convert to bitmap
+            // A good width for 58mm printer is around 300-350 pixels
+            const canvas = document.createElement('canvas');
+            const maxWidth = 350;
+            const scaleFactor = maxWidth / img.width;
+            canvas.width = maxWidth;
+            canvas.height = img.height * scaleFactor;
 
-        img.onload = function() {
-          // Create canvas for rasterizing
-          const canvas = document.createElement('canvas');
-          // For 58mm printer, width ~350px works well
-          const maxWidth = 350;
-          const scaleFactor = maxWidth / img.width;
-          canvas.width = maxWidth;
-          canvas.height = Math.round(img.height * scaleFactor);
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.fillStyle = 'white';
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            // Clear canvas with white background
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+              // Draw the image
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-            // Draw the image (works for both SVG and raster)
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              // Get image data for processing
+              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              const data = imageData.data;
 
-            // Convert to 1-bit bitmap for ESC/POS
-            try {
-              // GS v 0 - Print raster bitmap command
+              // Apply contrast, brightness and threshold adjustments for higher quality
+              const contrast = 1.8;      // Increase contrast (1.0 is normal)
+              const brightness = -15;    // Decrease brightness (negative makes darker)
+              const threshold = 110;     // Threshold for black/white conversion (lower = more black)
+
+              // Process each pixel
+              for (let i = 0; i < data.length; i += 4) {
+                // Get RGB values
+                let r = data[i];
+                let g = data[i + 1];
+                let b = data[i + 2];
+
+                // Apply brightness
+                r += brightness;
+                g += brightness;
+                b += brightness;
+
+                // Apply contrast
+                r = Math.max(0, Math.min(255, ((r - 128) * contrast) + 128));
+                g = Math.max(0, Math.min(255, ((g - 128) * contrast) + 128));
+                b = Math.max(0, Math.min(255, ((b - 128) * contrast) + 128));
+
+                // Convert to grayscale using improved formula
+                const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+
+                // Apply threshold to create pure black and white
+                const bw = gray < threshold ? 0 : 255;
+
+                // Set modified pixel values
+                data[i] = bw;     // R
+                data[i + 1] = bw; // G
+                data[i + 2] = bw; // B
+                // Alpha channel (data[i + 3]) remains unchanged
+              }
+
+              // Put the modified image data back to canvas
+              ctx.putImageData(imageData, 0, 0);
+
+              // Prepare bitmap data for printer
+              // GS v 0 - Print raster bitmap
               parts.push(new Uint8Array([GS, 0x76, 0x30, 0x00]));
 
+              // Define bitmap dimensions
               // Width in bytes (each byte is 8 pixels)
               const widthBytes = Math.ceil(canvas.width / 8);
               parts.push(new Uint8Array([widthBytes & 0xff, (widthBytes >> 8) & 0xff]));
@@ -1083,51 +1123,48 @@ export class InvoiceService {
               // Height in pixels
               parts.push(new Uint8Array([canvas.height & 0xff, (canvas.height >> 8) & 0xff]));
 
-              // Convert to 1-bit bitmap
-              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-              const data = imageData.data;
+              // Process image data - convert to 1-bit bitmap
+              // Get the processed image data
+              const processedData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
 
-              // Process each row
+              // For each row
               for (let y = 0; y < canvas.height; y++) {
-                const row = new Uint8Array(widthBytes);
+                // Create a new byte array for this row
+                const rowBytes = new Uint8Array(widthBytes);
 
+                // Process each pixel in the row
                 for (let x = 0; x < canvas.width; x++) {
                   const index = (y * canvas.width + x) * 4;
-                  // Get grayscale value
-                  const gray = 0.299 * data[index] + 0.587 * data[index + 1] + 0.114 * data[index + 2];
+                  // Get the pixel value (already converted to B&W)
+                  const isBlack = processedData[index] < 128;
 
-                  // Set bit in appropriate byte (0 = black, 1 = white in ESC/POS)
+                  // Calculate byte and bit position
                   const byteIndex = Math.floor(x / 8);
-                  const bitIndex = 7 - (x % 8);  // MSB first
+                  const bitIndex = 7 - (x % 8); // MSB first
 
-                  if (gray < 128) {  // Dark pixel
-                    row[byteIndex] |= (1 << bitIndex);
+                  // Set bit if pixel is black (most ESC/POS printers use 1 for black)
+                  if (isBlack) {
+                    rowBytes[byteIndex] |= (1 << bitIndex);
                   }
                 }
 
-                // Add row to output
-                parts.push(row);
+                // Add the row bytes to the output
+                parts.push(rowBytes);
               }
-
-            } catch (error) {
-              console.error('Error processing bitmap:', error);
             }
-          }
 
-          resolve(parts);
+            resolve(parts);
+          };
+
+          // Set image source to the base64 data
+          img.src = reader.result as string;
         };
 
-        img.onerror = function() {
-          console.error('Error loading image');
-          resolve(parts);  // Return empty array on error
-        };
-
-        // Load the image - works for both SVG and raster formats
-        const url = URL.createObjectURL(blob);
-        img.src = url;
+        reader.readAsDataURL(blob);
       });
     } catch (error) {
-      console.error('Error fetching logo:', error);
+      console.error('Error fetching or processing logo:', error);
+      // Return an empty array if logo processing fails
       return parts;
     }
   }
