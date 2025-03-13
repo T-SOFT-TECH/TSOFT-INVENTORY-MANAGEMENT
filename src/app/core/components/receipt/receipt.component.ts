@@ -68,56 +68,10 @@ export class ReceiptComponent {
     }
 
     this.showBluetoothDialog.set(true);
-    this.scanForBluetoothDevices();
+    this.scanForAllBluetoothDevices();
   }
 
 
-// Scan for Bluetooth devices - Fixed UUID format
-  async scanForBluetoothDevices() {
-    this.isScanning.set(true);
-    this.bluetoothDevices.set([]);
-
-    try {
-      // Request Bluetooth devices with properly formatted UUIDs
-      const device = await (navigator as any).bluetooth.requestDevice({
-        // Accept all Bluetooth printers with common patterns
-        filters: [
-          { namePrefix: 'BT' }, // Common prefix for Bluetooth thermal printers
-          { namePrefix: 'POS' },
-          { namePrefix: 'Printer' },
-          { namePrefix: 'SPRT' }, // Common for some thermal printers
-          { namePrefix: 'TP' },   // Thermal Printer abbreviation
-          { namePrefix: 'ZJ' }    // Common for Zjiang printers
-        ],
-        // Include all potential services used by printers with PROPER UUID formats
-        optionalServices: [
-          '000018f0-0000-1000-8000-00805f9b34fb',
-          'e7810a71-73ae-499d-8c15-faa9aef0c3f2',
-          '0000ffe0-0000-1000-8000-00805f9b34fb',
-          '49535343-fe7d-4ae5-8fa9-9fafd205e455',
-          '0000fff0-0000-1000-8000-00805f9b34fb' // Corrected format
-        ]
-      });
-
-      if (device) {
-        console.log("Found device:", device.name, device.id);
-        this.bluetoothDevices.update(devices => [...devices, {
-          id: device.id,
-          name: device.name,
-          device: device
-        }]);
-      }
-    } catch (error) {
-      console.error('Bluetooth scan error:', error);
-      if ((error as Error).name === 'NotFoundError') {
-        this.toast.info('No Bluetooth printers found');
-      } else {
-        this.toast.error(`Bluetooth error: ${(error as Error).message}`);
-      }
-    } finally {
-      this.isScanning.set(false);
-    }
-  }
 
 
 // Connect to selected Bluetooth device

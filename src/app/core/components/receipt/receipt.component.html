@@ -222,7 +222,8 @@
   </div>
 }
 
-<!-- Bluetooth Printer Dialog -->
+
+<!-- Bluetooth Printer Dialog - Simplified to only use the working method -->
 @if (showBluetoothDialog()) {
   <div class="fixed inset-0 bg-black/70 z-50 flex items-start md:items-center justify-center p-4">
     <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-xl max-w-md w-full p-4 animate-fade-in-up mt-8 md:mt-0">
@@ -240,33 +241,24 @@
       @if (isScanning()) {
         <div class="py-8 flex flex-col items-center justify-center">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mb-4"></div>
-          <p class="text-text-light-secondary dark:text-gray-300">Scanning for printers...</p>
+          <p class="text-text-light-secondary dark:text-gray-300">Scanning for devices...</p>
         </div>
       } @else if (bluetoothDevices().length === 0) {
         <!-- Empty State -->
         <div class="py-6 text-center">
-          <p class="text-text-light-secondary dark:text-gray-300 mb-4">No Bluetooth printers found.</p>
-          <div class="flex flex-col sm:flex-row gap-2 justify-center">
-            <button
-              (click)="scanForBluetoothDevices()"
-              class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
-            >
-              Scan for Printers
-            </button>
-            <button
-              (click)="scanForAllBluetoothDevices()"
-              class="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-text-light-secondary dark:text-gray-300
-             rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-            >
-              Show All Devices
-            </button>
-          </div>
+          <p class="text-text-light-secondary dark:text-gray-300 mb-4">No Bluetooth devices found.</p>
+          <button
+            (click)="scanForAllBluetoothDevices()"
+            class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+          >
+            Scan for Devices
+          </button>
         </div>
       } @else {
         <!-- Device List -->
         <div class="mb-4">
           <p class="text-sm text-text-light-tertiary dark:text-gray-400 mb-2">
-            Select your 58mm thermal printer from the list below:
+            Select your thermal printer from the list below:
           </p>
           <div class="max-h-48 overflow-y-auto border border-gray-100 dark:border-gray-700 rounded-lg">
             @for (device of bluetoothDevices(); track device.id) {
@@ -276,7 +268,7 @@
                       hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors last:border-b-0"
               >
                 <div class="flex items-center">
-                  <span class="material-icons text-primary-500 mr-2">print</span>
+                  <span class="material-icons text-primary-500 mr-2">bluetooth</span>
                   <div>
                     <div class="text-text-light-primary dark:text-white font-medium">{{ device.name || 'Unknown Device' }}</div>
                     <div class="text-xs text-text-light-tertiary dark:text-gray-400">{{ device.id }}</div>
@@ -311,7 +303,7 @@
           </div>
         </div>
 
-        <!-- Replace the debugging information in the dialog -->
+        <!-- Debugging Information -->
         <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
           <details class="text-xs text-text-light-tertiary dark:text-gray-400">
             <summary class="cursor-pointer hover:text-primary-500 pb-2">Show debugging information</summary>
@@ -331,7 +323,7 @@
         <!-- Dialog Actions -->
         <div class="flex justify-between mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
           <button
-            (click)="scanForBluetoothDevices()"
+            (click)="scanForAllBluetoothDevices()"
             class="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg
                  text-text-light-secondary dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm"
           >
@@ -348,9 +340,4 @@
       }
     </div>
   </div>
-
-
-
-
-
 }
