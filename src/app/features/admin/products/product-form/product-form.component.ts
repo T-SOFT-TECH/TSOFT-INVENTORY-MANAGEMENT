@@ -220,30 +220,6 @@ export class ProductFormComponent implements OnInit {
 
 
 
-  private findParentInSubCategories(child: CategoryNode, categories: CategoryNode[]): CategoryNode | null {
-    for (const cat of categories) {
-      if (cat.children?.some(c => c.$id === child.$id)) {
-        return cat;
-      }
-      if (cat.children?.length) {
-        const parent = this.findParentInSubCategories(child, cat.children);
-        if (parent) return parent;
-      }
-    }
-    return null;
-  }
-
-// Update collapseAll method
-  private collapseAll(categories: CategoryNode[]) {
-    categories.forEach(cat => {
-      cat.isExpanded = false;
-      cat.isSelected = false;
-      if (cat.children?.length) {
-        this.collapseAll(cat.children);
-      }
-    });
-  }
-
 
   private groupFieldsByCategory(fields: FormFieldConfig[]) {
     const grouped = fields.reduce<{ [key: string]: FormFieldConfig[] }>((acc, field) => {
@@ -301,6 +277,7 @@ export class ProductFormComponent implements OnInit {
       case 'checkbox':
         return field.defaultValue ?? false;
       case 'multiselect':
+        return field.defaultValue ?? [];
       case 'checkbox-group':
         return field.defaultValue ?? [];
       default:
@@ -928,6 +905,37 @@ export class ProductFormComponent implements OnInit {
     }
     return false;
   }
+
+  // Add these methods to product-form.component.ts
+ onCheckboxGroupChange(event: Event, fieldName: string, optionValue: string) {
+    const checkbox = event.target as HTMLInputElement;
+    const currentValue = this.productForm.get(fieldName)?.value || [];
+
+    // Ensure currentValue is an array
+    const valueArray = Array.isArray(currentValue) ? [...currentValue] : [];
+
+    if (checkbox.checked) {
+      // Add the value if not already present
+      if (!valueArray.includes(optionValue)) {
+        valueArray.push(optionValue);
+      }
+    } else {
+      // Remove the value
+      const index = valueArray.indexOf(optionValue);
+      if (index !== -1) {
+        valueArray.splice(index, 1);
+      }
+    }
+
+    // Update the form control value
+    this.productForm.get(fieldName)?.setValue(valueArray);
+  }
+
+  isOptionSelected(fieldName: string, optionValue: string): boolean {
+    const values = this.productForm.get(fieldName)?.value;
+    return Array.isArray(values) && values.includes(optionValue);
+  }
+
 
 
 }

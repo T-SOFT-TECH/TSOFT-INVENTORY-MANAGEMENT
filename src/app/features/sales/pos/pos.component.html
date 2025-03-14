@@ -3,48 +3,327 @@
   <div class="h-full flex flex-col md:flex-row">
     <!-- Left Side - Products (Full width on mobile) -->
     <div class="w-full md:w-2/3 h-full md:h-screen overflow-hidden flex flex-col md:border-r border-gray-200 dark:border-gray-700">
-      <!-- Header with Search, Filters and Cart Button for Mobile -->
-      <div class="p-3 md:p-4 bg-white dark:bg-surface-dark-secondary shadow-soft">
-        <div class="flex flex-col space-y-2 sm:space-y-0 sm:space-x-3">
-          <!-- Top row with search and cart button -->
-          <div class="flex items-center space-x-2">
-            <div class="flex-1 relative">
-              <input
-                type="text"
-                [(ngModel)]="searchQuery"
-                placeholder="Search products..."
-                class="w-full pl-9 pr-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700
-                       bg-white dark:bg-surface-dark-secondary text-text-light-primary dark:text-white
-                       focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-sm"
-              >
-              <span class="material-icons absolute left-2.5 top-1/2 -translate-y-1/2 text-text-light-tertiary dark:text-gray-400 text-sm">
-                search
-              </span>
+
+
+      <!-- Header with Filters Section -->
+      <div class="bg-white dark:bg-surface-dark-secondary rounded-lg shadow-sm mb-3">
+        <!-- Main Header -->
+        <div class="p-4 border-b border-gray-100 dark:border-gray-800">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <!-- Left: Title & Stats -->
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-lg bg-primary-500/10 flex items-center justify-center">
+                <span class="material-icons text-primary-500">point_of_sale</span>
+              </div>
+              <div>
+                <h1 class="text-xl font-bold text-gray-900 dark:text-white">Point of Sale</h1>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  {{getFilteredProducts().length}} of {{products().length}} products
+                </p>
+              </div>
             </div>
 
-            <!-- Mobile Cart Button -->
+            <!-- Right: Search & Cart Button -->
+            <div class="flex items-center gap-2">
+              <!-- Search -->
+              <div class="relative flex-grow max-w-sm">
+                <input
+                  type="text"
+                  [(ngModel)]="searchQuery"
+                  placeholder="Search products..."
+                  class="w-full pl-9 pr-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700
+                  bg-white dark:bg-surface-dark-secondary text-text-light-primary dark:text-white
+                  focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-sm"
+                >
+                <span class="material-icons absolute left-2.5 top-1/2 -translate-y-1/2 text-text-light-tertiary dark:text-gray-400 text-sm">
+            search
+          </span>
+                @if (searchQuery()) {
+                  <button
+                    (click)="searchQuery.set('')"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <span class="material-icons text-sm">close</span>
+                  </button>
+                }
+              </div>
+
+              <!-- Mobile Cart Button -->
+              <button
+                (click)="toggleCartPanel()"
+                class="md:hidden relative p-2 rounded-lg bg-primary-500 text-white
+                hover:bg-primary-600 transition-colors"
+              >
+                <span class="material-icons">shopping_cart</span>
+                @if (itemCount() > 0) {
+                  <span class="absolute -top-1 -right-1 bg-error-DEFAULT text-white w-5 h-5 rounded-full text-xs flex items-center justify-center">
+              {{ itemCount() }}
+            </span>
+                }
+              </button>
+
+              <!-- Mobile Filters Toggle -->
+              <button
+                (click)="toggleFiltersPanel()"
+                class="md:hidden relative p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300
+                hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
+                <span class="material-icons">filter_list</span>
+                @if (hasActiveFilters()) {
+                  <span class="absolute -top-1 -right-1 bg-primary-500 w-2 h-2 rounded-full"></span>
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Controls - Desktop -->
+        <div class="hidden md:block p-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Category Filter -->
+            <div class="relative">
+              <select
+                [(ngModel)]="selectedCategory"
+                class="pl-8 pr-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700
+                bg-white dark:bg-surface-dark-secondary text-text-light-primary dark:text-white
+                focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                appearance-none cursor-pointer text-xs min-w-[140px]"
+              >
+                <option value="all">All Categories</option>
+                @for (category of categories(); track category.$id) {
+                  <option [value]="category.$id">{{ category.name }}</option>
+                }
+              </select>
+              <span class="material-icons absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
+          category
+        </span>
+            </div>
+
+            <!-- Brand Filter -->
+            <div class="relative">
+              <select
+                [(ngModel)]="selectedBrand"
+                class="pl-8 pr-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700
+                bg-white dark:bg-surface-dark-secondary text-text-light-primary dark:text-white
+                focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                appearance-none cursor-pointer text-xs min-w-[140px]"
+              >
+                <option value="all">All Brands</option>
+                @for (brand of brands(); track brand.$id) {
+                  <option [value]="brand.$id">{{ brand.name }}</option>
+                }
+              </select>
+              <span class="material-icons absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
+          business
+        </span>
+            </div>
+
+            <!-- In-Stock Only Toggle -->
             <button
-              (click)="toggleCartPanel()"
-              class="md:hidden relative p-2 bg-primary-100 dark:bg-primary-900/30 rounded-lg text-primary-700 dark:text-primary-300
-                     hover:bg-primary-200 dark:hover:bg-primary-800/40 transition-colors"
+              (click)="toggleStockOnly()"
+              class="px-3 py-1.5 rounded-lg border text-xs flex items-center gap-1.5 transition-colors"
+              [class]="showOnlyInStock() ?
+                'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800' :
+                'bg-white dark:bg-surface-dark-secondary text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700'"
             >
-              <span class="material-icons">shopping_cart</span>
-              @if (itemCount() > 0) {
-                <span class="absolute -top-1 -right-1 bg-primary-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center">
-                  {{ itemCount() }}
-                </span>
-              }
+              <span class="material-icons text-xs">{{showOnlyInStock() ? 'check_box' : 'check_box_outline_blank'}}</span>
+              In-Stock Only
             </button>
+
+            <!-- Price Range Dropdown -->
+            <div class="relative group">
+              <button
+                class="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 text-xs flex items-center gap-1.5
+                bg-white dark:bg-surface-dark-secondary text-gray-700 dark:text-gray-300
+                hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                [class.border-primary-300]="priceRange().min > 0 || priceRange().max !== null"
+              >
+                <span class="material-icons text-xs">payments</span>
+                <span>
+            @if (priceRange().min > 0 || priceRange().max !== null) {
+              ₦{{priceRange().min}} - {{priceRange().max !== null ? '₦'+priceRange().max : 'Any'}}
+            } @else {
+              Price Range
+            }
+          </span>
+                <span class="material-icons text-xs">expand_more</span>
+              </button>
+
+              <!-- Price Range Dropdown Content -->
+              <div class="absolute left-0 mt-1 w-56 bg-white dark:bg-surface-dark-secondary rounded-lg shadow-lg border border-gray-200 dark:border-gray-700
+                  hidden group-hover:block z-10 p-3">
+                <div class="space-y-3">
+                  <div class="flex items-center gap-2">
+                    <div class="relative flex-1">
+                      <span class="absolute inset-y-0 left-2 flex items-center text-gray-500 dark:text-gray-400">₦</span>
+                      <input
+                        type="number"
+                        [(ngModel)]="priceRange().min"
+                        (ngModelChange)="setMinPrice($event)"
+                        placeholder="Min"
+                        class="w-full pl-6 pr-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700
+                        bg-white dark:bg-surface-dark-secondary text-text-light-primary dark:text-white
+                        focus:ring-2 focus:ring-primary-500 focus:border-transparent text-xs"
+                      >
+                    </div>
+                    <span class="text-gray-500 dark:text-gray-400">to</span>
+                    <div class="relative flex-1">
+                      <span class="absolute inset-y-0 left-2 flex items-center text-gray-500 dark:text-gray-400">₦</span>
+                      <input
+                        type="number"
+                        [(ngModel)]="priceRange().max"
+                        (ngModelChange)="setMaxPrice($event)"
+                        placeholder="Max"
+                        class="w-full pl-6 pr-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700
+                        bg-white dark:bg-surface-dark-secondary text-text-light-primary dark:text-white
+                        focus:ring-2 focus:ring-primary-500 focus:border-transparent text-xs"
+                      >
+                    </div>
+                  </div>
+
+                  <!-- Quick price ranges -->
+                  <div class="grid grid-cols-2 gap-1">
+                    <button
+                      (click)="priceRange.set({min: 0, max: 1000})"
+                      class="px-2 py-1 text-xs text-center rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+                      Under ₦1,000
+                    </button>
+                    <button
+                      (click)="priceRange.set({min: 1000, max: 5000})"
+                      class="px-2 py-1 text-xs text-center rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+                      ₦1,000 - ₦5,000
+                    </button>
+                    <button
+                      (click)="priceRange.set({min: 5000, max: 10000})"
+                      class="px-2 py-1 text-xs text-center rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+                      ₦5,000 - ₦10,000
+                    </button>
+                    <button
+                      (click)="priceRange.set({min: 10000, max: null})"
+                      class="px-2 py-1 text-xs text-center rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+                      Above ₦10,000
+                    </button>
+                  </div>
+
+                  <button
+                    (click)="priceRange.set({min: 0, max: null})"
+                    class="w-full py-1 text-xs text-primary-600 dark:text-primary-400 hover:underline"
+                  >
+                    Reset price
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reset All Filters -->
+            @if (hasActiveFilters()) {
+              <button
+                (click)="resetFilters()"
+                class="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 text-xs flex items-center gap-1.5
+                bg-white dark:bg-surface-dark-secondary text-gray-700 dark:text-gray-300
+                hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ml-auto"
+              >
+                <span class="material-icons text-xs">restart_alt</span>
+                Reset Filters
+              </button>
+            }
           </div>
 
-          <!-- Category filter -->
-          <div class="sm:flex-none">
+          <!-- Active Filters Chips -->
+          @if (hasActiveFilters()) {
+            <div class="flex flex-wrap gap-1 mt-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+              @if (searchQuery()) {
+                <div class="inline-flex items-center px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs">
+                  <span>Search: "{{searchQuery()}}"</span>
+                  <button (click)="searchQuery.set('')" class="ml-1 hover:text-gray-900 dark:hover:text-white">
+                    <span class="material-icons text-xs">close</span>
+                  </button>
+                </div>
+              }
+
+              @if (selectedCategory() !== 'all') {
+                <div class="inline-flex items-center px-2 py-1 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 text-xs">
+                  <span class="material-icons text-xs mr-1">category</span>
+                  <span>{{getCategoryName(selectedCategory())}}</span>
+                  <button (click)="selectedCategory.set('all')" class="ml-1 hover:text-purple-800 dark:hover:text-purple-200">
+                    <span class="material-icons text-xs">close</span>
+                  </button>
+                </div>
+              }
+
+              @if (selectedBrand() !== 'all') {
+                <div class="inline-flex items-center px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-xs">
+                  <span class="material-icons text-xs mr-1">business</span>
+                  <span>{{getBrandName(selectedBrand())}}</span>
+                  <button (click)="selectedBrand.set('all')" class="ml-1 hover:text-blue-800 dark:hover:text-blue-200">
+                    <span class="material-icons text-xs">close</span>
+                  </button>
+                </div>
+              }
+
+              @if (showOnlyInStock()) {
+                <div class="inline-flex items-center px-2 py-1 rounded-full bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 text-xs">
+                  <span class="material-icons text-xs mr-1">inventory</span>
+                  <span>In-Stock Only</span>
+                  <button (click)="showOnlyInStock.set(false)" class="ml-1 hover:text-green-800 dark:hover:text-green-200">
+                    <span class="material-icons text-xs">close</span>
+                  </button>
+                </div>
+              }
+
+              @if (priceRange().min > 0 || priceRange().max !== null) {
+                <div class="inline-flex items-center px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 text-xs">
+                  <span class="material-icons text-xs mr-1">payments</span>
+                  <span>₦{{priceRange().min}} - {{priceRange().max !== null ? '₦'+priceRange().max : 'Any'}}</span>
+                  <button (click)="priceRange.set({min: 0, max: null})" class="ml-1 hover:text-amber-800 dark:hover:text-amber-200">
+                    <span class="material-icons text-xs">close</span>
+                  </button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Mobile Filters Panel (slides in from left) -->
+      <div class="md:hidden fixed inset-0 bg-black/80 z-30 transition-opacity duration-300"
+           [class.opacity-0]="!showFiltersPanel()"
+           [class.pointer-events-none]="!showFiltersPanel()"
+           (click)="showFiltersPanel.set(false)">
+      </div>
+
+      <div class="md:hidden fixed top-0 left-0 w-[85vw] max-w-md h-full bg-white dark:bg-surface-dark-secondary shadow-xl z-40
+           transform transition-transform duration-300 ease-in-out"
+           [class.translate-x-0]="showFiltersPanel()"
+           [class.translate-x-[-100%)]="!showFiltersPanel()">
+
+        <!-- Mobile Filters Header -->
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+          <h2 class="text-lg font-bold text-text-light-primary dark:text-white flex items-center">
+            <span class="material-icons mr-2 text-primary-500">filter_alt</span>
+            Filter Products
+          </h2>
+          <button
+            (click)="showFiltersPanel.set(false)"
+            class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+
+        <!-- Mobile Filters Content -->
+        <div class="p-4 space-y-4 overflow-y-auto h-[calc(100%-60px)]">
+          <!-- Category Filter -->
+          <div>
+            <label class=" text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+              <span class="material-icons text-sm mr-1">category</span>
+              Category
+            </label>
             <select
               [(ngModel)]="selectedCategory"
               class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700
-                     bg-white dark:bg-surface-dark-secondary text-text-light-primary dark:text-white
-                     focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200
-                     appearance-none cursor-pointer text-sm"
+               bg-white dark:bg-surface-dark-secondary text-text-light-primary dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200
+               appearance-none cursor-pointer text-sm"
             >
               <option value="all">All Categories</option>
               @for (category of categories(); track category.$id) {
@@ -52,11 +331,181 @@
               }
             </select>
           </div>
+
+          <!-- Brand Filter -->
+          <div>
+            <label class=" text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+              <span class="material-icons text-sm mr-1">business</span>
+              Brand
+            </label>
+            <select
+              [(ngModel)]="selectedBrand"
+              class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700
+               bg-white dark:bg-surface-dark-secondary text-text-light-primary dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200
+               appearance-none cursor-pointer text-sm"
+            >
+              <option value="all">All Brands</option>
+              @for (brand of brands(); track brand.$id) {
+                <option [value]="brand.$id">{{ brand.name }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- In-Stock Filter -->
+          <div>
+            <label class=" text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+              <span class="material-icons text-sm mr-1">inventory</span>
+              Stock Status
+            </label>
+            <div class="flex items-center p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark-secondary">
+              <span class="text-sm text-gray-700 dark:text-gray-300 flex-1">Show only in-stock products</span>
+              <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                <input type="checkbox"
+                       [(ngModel)]="showOnlyInStock"
+                       class="checked:bg-primary-500 absolute block w-5 h-5 rounded-full appearance-none cursor-pointer
+                       bg-white border-2 border-gray-300 dark:border-gray-600 left-0 top-0 transition-transform duration-200
+                       checked:transform checked:translate-x-full checked:border-primary-500"
+                />
+                <label class="block overflow-hidden h-5 rounded-full bg-gray-300 dark:bg-gray-700 cursor-pointer"></label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Price Range Filter -->
+          <div>
+            <label class=" text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+              <span class="material-icons text-sm mr-1">payments</span>
+              Price Range
+            </label>
+            <div class="p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-surface-dark-secondary space-y-3">
+              <div class="flex items-center gap-2">
+                <div class="relative flex-1">
+                  <span class="absolute inset-y-0 left-2 flex items-center text-gray-500 dark:text-gray-400">₦</span>
+                  <input
+                    type="number"
+                    [(ngModel)]="priceRange().min"
+                    (ngModelChange)="setMinPrice($event)"
+                    placeholder="Min"
+                    class="w-full pl-6 pr-2 py-2 rounded-lg border border-gray-200 dark:border-gray-700
+                    bg-white dark:bg-surface-dark-secondary text-text-light-primary dark:text-white
+                    focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                  >
+                </div>
+                <span class="text-gray-500 dark:text-gray-400">to</span>
+                <div class="relative flex-1">
+                  <span class="absolute inset-y-0 left-2 flex items-center text-gray-500 dark:text-gray-400">₦</span>
+                  <input
+                    type="number"
+                    [(ngModel)]="priceRange().max"
+                    (ngModelChange)="setMaxPrice($event)"
+                    placeholder="Max"
+                    class="w-full pl-6 pr-2 py-2 rounded-lg border border-gray-200 dark:border-gray-700
+                    bg-white dark:bg-surface-dark-secondary text-text-light-primary dark:text-white
+                    focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                  >
+                </div>
+              </div>
+
+              <!-- Quick price ranges -->
+              <div class="grid grid-cols-2 gap-2">
+                <button
+                  (click)="priceRange.set({min: 0, max: 1000})"
+                  class="px-2 py-2 text-xs text-center rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+                  Under ₦1,000
+                </button>
+                <button
+                  (click)="priceRange.set({min: 1000, max: 5000})"
+                  class="px-2 py-2 text-xs text-center rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+                  ₦1,000 - ₦5,000
+                </button>
+                <button
+                  (click)="priceRange.set({min: 5000, max: 10000})"
+                  class="px-2 py-2 text-xs text-center rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+                  ₦5,000 - ₦10,000
+                </button>
+                <button
+                  (click)="priceRange.set({min: 10000, max: null})"
+                  class="px-2 py-2 text-xs text-center rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+                  Above ₦10,000
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Filters Summary -->
+          @if (hasActiveFilters()) {
+            <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
+              <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                <span class="material-icons text-xs mr-1">filter_list</span>
+                Active Filters
+              </h3>
+              <div class="flex flex-wrap gap-1">
+                @if (selectedCategory() !== 'all') {
+                  <div class="inline-flex items-center px-2 py-1 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 text-xs">
+                    <span>{{getCategoryName(selectedCategory())}}</span>
+                    <button (click)="selectedCategory.set('all')" class="ml-1">
+                      <span class="material-icons text-xs">close</span>
+                    </button>
+                  </div>
+                }
+
+                @if (selectedBrand() !== 'all') {
+                  <div class="inline-flex items-center px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-xs">
+                    <span>{{getBrandName(selectedBrand())}}</span>
+                    <button (click)="selectedBrand.set('all')" class="ml-1">
+                      <span class="material-icons text-xs">close</span>
+                    </button>
+                  </div>
+                }
+
+                @if (showOnlyInStock()) {
+                  <div class="inline-flex items-center px-2 py-1 rounded-full bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 text-xs">
+                    <span>In-Stock Only</span>
+                    <button (click)="showOnlyInStock.set(false)" class="ml-1">
+                      <span class="material-icons text-xs">close</span>
+                    </button>
+                  </div>
+                }
+
+                @if (priceRange().min > 0 || priceRange().max !== null) {
+                  <div class="inline-flex items-center px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 text-xs">
+                    <span>₦{{priceRange().min}} - {{priceRange().max !== null ? '₦'+priceRange().max : 'Any'}}</span>
+                    <button (click)="priceRange.set({min: 0, max: null})" class="ml-1">
+                      <span class="material-icons text-xs">close</span>
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Action Buttons -->
+          <div class="pt-4 flex gap-2">
+            <button
+              (click)="resetFilters(); showFiltersPanel.set(false)"
+              class="flex-1 py-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300
+               hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center text-sm"
+            >
+              <span class="material-icons text-sm mr-1">restart_alt</span>
+              Reset All
+            </button>
+
+            <button
+              (click)="showFiltersPanel.set(false)"
+              class="flex-1 py-2.5 rounded-lg bg-primary-500 text-white
+               hover:bg-primary-600 transition-colors flex items-center justify-center text-sm"
+            >
+              <span class="material-icons text-sm mr-1">check</span>
+              Apply Filters
+            </button>
+          </div>
         </div>
       </div>
 
+
       <!-- Products Grid -->
-      <div class="flex-1 overflow-y-auto p-2 md:p-3 bg-surface-light-tertiary dark:bg-surface-dark-primary" autoAnimate>
+      <div class="flex-1 overflow-y-auto p-2 md:p-3 bg-surface-light-tertiary dark:bg-surface-dark-primary custom-scrollbar" autoAnimate>
         @if (isLoading()) {
           <div class="flex justify-center items-center h-full">
             <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-500"></div>

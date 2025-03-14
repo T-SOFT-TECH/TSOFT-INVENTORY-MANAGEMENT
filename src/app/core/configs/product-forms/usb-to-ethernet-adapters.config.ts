@@ -30,10 +30,10 @@ export const usbToEthernetAdaptersConfig: CategoryFormConfig = {
     },
     {
       name: 'powerDeliveryPassthrough',
-      type: 'radio',
+      type: 'checkbox',
       label: 'Power Delivery Passthrough',
       required: false,
-      options: ['Yes', 'No'],
+
       group: 'features',
     },
     {
@@ -54,10 +54,9 @@ export const usbToEthernetAdaptersConfig: CategoryFormConfig = {
     },
     {
       name: 'driverRequired',
-      type: 'radio',
+      type: 'checkbox',
       label: 'Driver Required',
       required: false,
-      options: ['Yes', 'No'],
       group: 'compatibility',
     },
     {
@@ -70,10 +69,9 @@ export const usbToEthernetAdaptersConfig: CategoryFormConfig = {
     },
     {
       name: 'compactDesign',
-      type: 'radio',
+      type: 'checkbox',
       label: 'Compact Design',
       required: false,
-      options: ['Yes', 'No'],
       group: 'physical',
     },
     {
@@ -86,10 +84,9 @@ export const usbToEthernetAdaptersConfig: CategoryFormConfig = {
     },
     {
       name: 'ledIndicator',
-      type: 'radio',
+      type: 'checkbox',
       label: 'LED Indicator',
       required: false,
-      options: ['Yes', 'No'],
       group: 'features',
     },
     {

@@ -1,7 +1,7 @@
 import {CategoryFormConfig} from './product-form.types';
 
 export const otgCablesConfig: CategoryFormConfig = {
-  id: 'otg_on_the_go_cables',
+  id: 'otg_cables',
   name: 'OTG (On-The-Go) Cables',
   fields: [
     {
@@ -36,10 +36,9 @@ export const otgCablesConfig: CategoryFormConfig = {
     },
     {
       name: 'powerDelivery',
-      type: 'radio',
+      type: 'checkbox',
       label: 'Power Delivery Support',
       required: false,
-      options: ['Yes', 'No'],
       group: 'features',
     },
     {
@@ -83,26 +82,23 @@ export const otgCablesConfig: CategoryFormConfig = {
     },
     {
       name: 'powerRequired',
-      type: 'radio',
+      type: 'checkbox',
       label: 'External Power Required',
       required: false,
-      options: ['Yes', 'No'],
       group: 'specifications',
     },
     {
       name: 'hubFeature',
-      type: 'radio',
+      type: 'checkbox',
       label: 'Multiple Port Hub Feature',
       required: false,
-      options: ['Yes', 'No'],
       group: 'features',
     },
     {
       name: 'chargingSupport',
-      type: 'radio',
+      type: 'checkbox',
       label: 'Simultaneous Charging Support',
       required: false,
-      options: ['Yes', 'No'],
       group: 'features',
     },
     {
@@ -120,6 +116,20 @@ export const otgCablesConfig: CategoryFormConfig = {
       required: false,
       options: ['1 Year', '2 Years', '3 Years', '5 Years', 'Lifetime'],
       group: 'additional',
+    },
+    {
+      name: 'formFactor',
+      type: 'select',
+      label: 'Form Factor',
+      required: true,
+      options: [
+        'Nano/Compact Adapter',
+        'Standard Adapter',
+        'Cable-Style',
+        'Multi-Port Hub',
+        'Right-Angle Adapter'
+      ],
+      group: 'physical',
     }
   ],
 };

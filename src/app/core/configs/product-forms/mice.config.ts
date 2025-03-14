@@ -1,8 +1,8 @@
 import { CategoryFormConfig } from './product-form.types';
 
 export const miceConfig: CategoryFormConfig = {
-  id: 'mice',
-  name: 'Mice',
+  id: 'mouse',
+  name: 'Mouse',
   fields: [
     {
       name: 'mouseType',
@@ -34,7 +34,7 @@ export const miceConfig: CategoryFormConfig = {
       name: 'dpi',
       type: 'number',
       label: 'Maximum DPI',
-      required: true,
+      required: false,
       group: 'performance'
     },
     {
@@ -60,7 +60,7 @@ export const miceConfig: CategoryFormConfig = {
       name: 'pollingRate',
       type: 'select',
       label: 'Polling Rate',
-      required: true,
+      required: false,
       options: [
         '125Hz',
         '500Hz',
@@ -74,7 +74,7 @@ export const miceConfig: CategoryFormConfig = {
       name: 'buttons',
       type: 'number',
       label: 'Number of Buttons',
-      required: true,
+      required: false,
       min: 2,
       group: 'specifications'
     },
@@ -88,7 +88,7 @@ export const miceConfig: CategoryFormConfig = {
       name: 'weight',
       type: 'number',
       label: 'Weight',
-      required: true,
+      required: false,
       unit: 'g',
       group: 'physical'
     },
@@ -106,7 +106,7 @@ export const miceConfig: CategoryFormConfig = {
     },
     {
       name: 'rgbZones',
-      type: 'multiselect',
+      type: 'checkbox-group',
       label: 'RGB Zones',
       options: [
         'Logo',

@@ -84,7 +84,7 @@ export class SalesHistoryComponent implements OnInit {
 
   private async loadInitialData() {
     try {
-      this.loadingService.start('Loading sales history...');
+
 
       const [sales, customers] = await Promise.all([
         this.salesService.fetchSales(),
@@ -104,7 +104,7 @@ export class SalesHistoryComponent implements OnInit {
       console.error('Failed to load sales data:', error);
       this.toast.error('Failed to load sales history');
     } finally {
-      this.loadingService.clear();
+
     }
   }
 

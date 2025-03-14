@@ -14,10 +14,10 @@ export const microUSBCablesConfig: CategoryFormConfig = {
     },
     {
       name: 'chargingSupport',
-      type: 'radio',
+      type: 'checkbox',
       label: 'Supports Fast Charging',
       required: false,
-      options: ['Yes', 'No'],
+
       group: 'features',
     },
     {

@@ -14,7 +14,9 @@ export const headphonesConfig: CategoryFormConfig = {
         'On-Ear',
         'In-Ear',
         'True Wireless',
-        'Gaming'
+        'Gaming',
+       ' Earbuds & In-ear Monitors',
+        'Wireless Earbuds'
       ],
       group: 'specifications'
     },

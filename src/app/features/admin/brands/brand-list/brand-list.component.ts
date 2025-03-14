@@ -126,7 +126,7 @@ getActiveBrandsCount(): number {
 }
 
 getTotalProducts(): number {
-  return this.brands().reduce((sum, brand) => sum + (brand.productCount || 0), 0);
+  return this.brands().reduce((sum, brand) => sum + (brand.products?.length || 0), 0);
 }
 
 getBadgeClass(status: string): string {

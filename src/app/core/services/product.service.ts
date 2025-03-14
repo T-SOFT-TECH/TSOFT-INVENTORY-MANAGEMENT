@@ -2,8 +2,8 @@ import {inject, Injectable, Signal, signal} from '@angular/core';
 import {AppwriteService} from './appwrite.service';
 
 import {environment} from '../../../environments/environment';
-import {ID, Query, Storage} from 'appwrite';
-import {BaseProduct, Product, ProductInput} from '../interfaces/product/product.interfaces';
+import {ID, ImageFormat, ImageGravity, Query, Storage} from 'appwrite';
+import {BaseProduct, Product} from '../interfaces/product/product.interfaces';
 
 
 @Injectable({
@@ -144,21 +144,21 @@ export class ProductService {
     }
   }
 
-  getProductImageUrl(fileId: string): string {
-    return this.storage.getFileView(
-      environment.appwrite.buckets.productImages,
-      fileId
-    );
-  }
+
 
   // Method to get product with its specifications
 
 
+  // In product.service.ts
+
+// Update the getProducts and refreshProducts methods
   async getProducts(): Promise<BaseProduct[]> {
     try {
+      // Fetch up to 100 products (Appwrite default limit is 25)
       const response = await this.appwrite.database.listDocuments(
         environment.appwrite.databaseId,
-        environment.appwrite.collections.products
+        environment.appwrite.collections.products,
+        [Query.limit(100)] // Increase limit to 100
       );
       const products = response.documents as unknown as BaseProduct[];
       this.productsSignal.set(products);
@@ -169,19 +169,21 @@ export class ProductService {
     }
   }
 
-  async refreshProducts(): Promise<void> {
+  async refreshProducts(): Promise<BaseProduct[]> {
     try {
       const response = await this.appwrite.database.listDocuments(
         environment.appwrite.databaseId,
-        environment.appwrite.collections.products
+        environment.appwrite.collections.products,
+        [Query.limit(100)] // Increase limit to 100
       );
-      this.productsSignal.set(response.documents as unknown  as BaseProduct[]);
+      const products = response.documents as unknown as BaseProduct[];
+      this.productsSignal.set(products);
+      return products;
     } catch (error) {
       console.error('Error fetching products:', error);
       throw error;
     }
   }
-
 
 
   async getLowStockProducts(threshold: number = 10): Promise<BaseProduct[]> {
@@ -198,9 +200,6 @@ export class ProductService {
     }
   }
 
-
-
-// In product.service.ts
 
   async getProductById(id: string): Promise<BaseProduct> {
     try {
@@ -220,6 +219,51 @@ export class ProductService {
     } catch (error) {
       console.error('Error fetching product:', error);
       throw error;
+    }
+  }
+
+
+
+
+
+// Basic image URL method (keep this as it's working)
+  getProductImageUrl(fileId: string): string {
+    if (!fileId) return 'assets/placeholder.png';
+    return this.storage.getFileView(
+      environment.appwrite.buckets.productImages,
+      fileId
+    );
+  }
+
+// Simple thumbnail that only resizes
+  getOptimizedImage(fileId: string | undefined, size: number, compression: number): string {
+    if (!fileId) return 'assets/placeholder.png';
+
+    try {
+      // Only use the essential parameters
+      const url = this.storage.getFilePreview(
+        environment.appwrite.buckets.productImages,
+        fileId,
+        size,    // width
+        size,     // height
+        ImageGravity.Center,  // Gravity, Centered
+        compression, // Compression. Image Quality
+        0, // Border Width, Images gets broken if border width is 1 and above
+        '000000', // Border Color
+        0, //border Radius
+        1, //opacity
+        0, //rotate
+        'FFFFFF', // Background Color
+        ImageFormat.Jpg
+
+
+      );
+
+      return url;
+    } catch (error) {
+      console.error('Error generating thumbnail:', error);
+      // Fallback to regular image
+     return 'Error generating thumbnail:';
     }
   }
 

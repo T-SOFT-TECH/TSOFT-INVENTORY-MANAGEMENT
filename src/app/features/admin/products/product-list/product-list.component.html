@@ -1,70 +1,204 @@
-
-
-<div class="min-h-screen p-6">
+<div class="min-h-screen p-3 md:p-6 bg-gray-50 dark:bg-gray-900">
   <!-- Header Section -->
-  <div class="bg-surface-light-secondary dark:bg-surface-dark-secondary border border-primary-600 dark:border-primary-500 rounded-xl shadow-lg">
-    <div class="mx-auto p-6">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <!-- Title & Stats -->
-        <div>
-          <h1 class="text-3xl font-bold text-white">Products</h1>
-          <div class="flex gap-6 mt-3" >
-            <div class="bg-gray-800/50 rounded-lg p-3" autoAnimate>
-              <p class="text-sm text-gray-400">Total Products</p>
-              <p class="text-2xl font-semibold text-white" autoAnimate>{{filteredProducts().length}}</p>
-            </div>
 
+  <div class="relative overflow-hidden">
+    <!-- Background gradient effect -->
+    <div class="absolute inset-0 bg-gradient-to-br from-primary-50/40 to-info-50/20 dark:from-primary-900/10 dark:to-info-900/5 rounded-xl -z-10"></div>
+
+    <!-- Header content container -->
+    <div class="relative backdrop-blur-sm bg-white/80 dark:bg-surface-dark-secondary/90 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-5">
+      <!-- Header top section -->
+      <div class="flex flex-col lg:flex-row justify-between gap-5">
+        <!-- Left side: Title and quick stats -->
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-primary-500/10 dark:bg-primary-600/20">
+              <span class="material-icons text-primary-600 dark:text-primary-400">inventory_2</span>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Products</h1>
           </div>
+
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Manage your inventory and product catalog
+          </p>
         </div>
 
-        <!-- Search & Filters -->
-        <div class="w-full md:w-auto space-y-4 md:space-y-0 md:flex md:items-center md:gap-4">
-          <div class="relative flex-1 min-w-[300px]">
-            <input
-              type="text"
-              [(ngModel)]="searchQuery"
-              placeholder="Search products..."
-              class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-700
-                    bg-gray-800/50 text-white placeholder-gray-400
-                    focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-            <span class="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+        <!-- Right side: Stats cards -->
+        <div class="flex flex-wrap items-center gap-4" autoAnimate>
+          <!-- Total Products Card -->
+          <div class="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-full pl-2 pr-5 py-2 shadow-sm border border-gray-100 dark:border-gray-700 group hover:bg-primary-50 dark:hover:bg-primary-900/10 transition-all duration-300">
+            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400">
+              <span class="material-icons text-sm">category</span>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Total</p>
+              <p class="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                {{totalProducts()}}
+              </p>
+            </div>
           </div>
 
-          <div class="flex gap-4">
-            <select [(ngModel)]="selectedCategory"
-                    class="px-4 py-3 rounded-xl border border-gray-700
-                    bg-gray-800/50 text-white">
-              <option value="all">All Categories</option>
-              @for (cat of activeCategories(); track cat.$id) {
-                <option [value]="cat.$id">{{cat.name}}</option>
-              }
-            </select>
-
-            <button routerLink="new"
-                    class="px-6 py-3 bg-primary-500 text-white rounded-xl
-                          hover:bg-primary-600 transition-all duration-200
-                          flex items-center gap-2 shadow-lg shadow-primary-500/20">
-              <span class="material-icons">add</span>
-              Add Product
-            </button>
+          <!-- Filtered Products Card -->
+          <div class="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-full pl-2 pr-5 py-2 shadow-sm border border-gray-100 dark:border-gray-700 group hover:bg-info-50 dark:hover:bg-info-900/10 transition-all duration-300">
+            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-info-100 dark:bg-info-900/30 text-info-600 dark:text-info-400">
+              <span class="material-icons text-sm">filter_alt</span>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Filtered</p>
+              <p class="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-info-600 dark:group-hover:text-info-400 transition-colors">
+                {{filteredProducts().length}}
+              </p>
+            </div>
           </div>
+
+          <!-- Add Product Button (moved from bottom) -->
+          <button routerLink="new" class="flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white rounded-full pl-3 pr-5 py-2 shadow-md transition-all duration-300 hover:shadow-lg hover:shadow-primary-500/20">
+            <span class="material-icons text-sm">add</span>
+            <span class="font-medium">Add Product</span>
+          </button>
         </div>
       </div>
+
+      <!-- Divider with accent -->
+      <div class="relative h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent my-5">
+        <div class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full border-2 border-gray-200 dark:border-gray-700 flex items-center justify-center bg-white dark:bg-gray-800">
+          <span class="material-icons text-gray-400 dark:text-gray-500 text-sm">more_horiz</span>
+        </div>
+      </div>
+
+      <!-- Search & Filters section -->
+      <div class="grid grid-cols-1 lg:grid-cols-6 gap-3">
+        <!-- Search box (span 3 columns) -->
+        <div class="relative lg:col-span-3">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="material-icons text-gray-400 dark:text-gray-500">search</span>
+          </div>
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            placeholder="Search by name, SKU, or description..."
+            class="w-full pl-10 pr-10 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700
+                bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400
+                focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300"
+          >
+          @if (searchQuery()) {
+            <button (click)="clearSearch()"
+                    class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+              <span class="material-icons text-sm">close</span>
+            </button>
+          }
+        </div>
+
+        <!-- Category dropdown -->
+        <div class="relative lg:col-span-1">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="material-icons text-gray-400 dark:text-gray-500">category</span>
+          </div>
+          <select
+            [(ngModel)]="selectedCategory"
+            class="w-full pl-10 pr-8 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700
+                bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                appearance-none transition-all duration-300">
+            <option value="all">All Categories</option>
+            @for (cat of activeCategories(); track cat.$id) {
+              <option [value]="cat.$id">{{cat.name}}</option>
+            }
+          </select>
+          <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <span class="material-icons text-gray-400 dark:text-gray-500">expand_more</span>
+          </div>
+        </div>
+
+        <!-- Brand dropdown -->
+        <div class="relative lg:col-span-1">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="material-icons text-gray-400 dark:text-gray-500">business</span>
+          </div>
+          <select
+            [(ngModel)]="selectedBrand"
+            class="w-full pl-10 pr-8 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700
+                bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                appearance-none transition-all duration-300">
+            <option value="all">All Brands</option>
+            @for (brand of activeBrands(); track brand.$id) {
+              <option [value]="brand.$id">{{brand.name}}</option>
+            }
+          </select>
+          <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <span class="material-icons text-gray-400 dark:text-gray-500">expand_more</span>
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex items-center gap-2 lg:col-span-1">
+          @if (hasActiveFilters()) {
+            <button (click)="resetAllFilters()"
+                    class="flex-1 h-full flex items-center justify-center gap-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300">
+              <span class="material-icons text-sm">filter_alt_off</span>
+              <span class="text-sm">Reset</span>
+            </button>
+          }
+
+          <button (click)="toggleView()"
+                  class="flex-1 h-full flex items-center justify-center gap-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300">
+            <span class="material-icons text-sm">{{ isGridView() ? 'view_list' : 'grid_view' }}</span>
+            <span class="text-sm hidden sm:inline">{{ isGridView() ? 'List' : 'Grid' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Active filters chips (shown only when filters are active) -->
+      @if (hasActiveFilters()) {
+        <div class="flex flex-wrap gap-2 mt-4">
+          @if (searchQuery()) {
+            <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full px-3 py-1 text-xs">
+              <span>Search: "{{searchQuery()}}"</span>
+              <button (click)="clearSearch()" class="ml-1 hover:text-gray-900 dark:hover:text-white">
+                <span class="material-icons text-xs">close</span>
+              </button>
+            </div>
+          }
+
+          @if (selectedCategory() !== 'all') {
+            <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full px-3 py-1 text-xs">
+              <span>Category: {{getCategoryName(selectedCategory())}}</span>
+              <button (click)="resetCategory()" class="ml-1 hover:text-gray-900 dark:hover:text-white">
+                <span class="material-icons text-xs">close</span>
+              </button>
+            </div>
+          }
+
+          @if (selectedBrand() !== 'all') {
+            <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full px-3 py-1 text-xs">
+              <span>Brand: {{getBrandName(selectedBrand())}}</span>
+              <button (click)="resetBrand()" class="ml-1 hover:text-gray-900 dark:hover:text-white">
+                <span class="material-icons text-xs">close</span>
+              </button>
+            </div>
+          }
+        </div>
+      }
     </div>
   </div>
 
   <!-- Content Section -->
-  <div class="w-full mx-auto mt-6">
+  <div class="w-full mx-auto mt-4">
     @if (isLoading()) {
-      <div class="flex justify-center items-center h-64">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+      <!-- Loading State -->
+      <div class="flex justify-center items-center h-64 bg-white dark:bg-surface-dark-secondary rounded-xl shadow-lg p-8">
+        <div class="flex flex-col items-center gap-4">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+          <p class="text-gray-500 dark:text-gray-400">Loading products...</p>
+        </div>
       </div>
     } @else {
       @if (isEmpty()) {
         <!-- Empty State - No Products -->
         <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-lg p-8">
           <div class="text-center space-y-4">
-            <span class="material-icons text-4xl text-gray-400 dark:text-gray-600">
+            <span class="material-icons text-5xl text-gray-300 dark:text-gray-600">
               inventory_2
             </span>
             <h3 class="text-xl font-medium text-gray-900 dark:text-white">
@@ -84,9 +218,9 @@
         </div>
       } @else if (hasNoResults()) {
         <!-- No Results State -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+        <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-lg p-8">
           <div class="text-center space-y-4">
-            <span class="material-icons text-4xl text-gray-400 dark:text-gray-600">
+            <span class="material-icons text-5xl text-gray-300 dark:text-gray-600">
               search_off
             </span>
             <h3 class="text-xl font-medium text-gray-900 dark:text-white">
@@ -95,11 +229,11 @@
             <p class="text-gray-500 dark:text-gray-400">
               Try adjusting your search terms or filters to find what you're looking for.
             </p>
-            <div class="flex gap-4 justify-center">
+            <div class="flex flex-wrap gap-3 justify-center">
               @if (searchQuery()) {
                 <button (click)="clearSearch()"
-                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300
-                               hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg
+                        class="px-4 py-2 text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300
+                               hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg
                                flex items-center gap-2">
                   <span class="material-icons text-sm">close</span>
                   Clear search
@@ -107,171 +241,255 @@
               }
               @if (selectedCategory() !== 'all') {
                 <button (click)="resetCategory()"
-                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300
-                               hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg
+                        class="px-4 py-2 text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300
+                               hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg
                                flex items-center gap-2">
                   <span class="material-icons text-sm">filter_alt_off</span>
                   Reset category
                 </button>
               }
+              @if (selectedBrand() !== 'all') {
+                <button (click)="resetBrand()"
+                        class="px-4 py-2 text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300
+                               hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg
+                               flex items-center gap-2">
+                  <span class="material-icons text-sm">business_center</span>
+                  Reset brand
+                </button>
+              }
             </div>
           </div>
         </div>
-    } @else {
-      <!-- Table View (md+) -->
-      <div class="hidden md:block bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden w-full border border-primary-600"> <!-- Added w-full -->
-        <div class="overflow-x-auto"> <!-- Added overflow wrapper -->
-          <table class="w-full min-w-[1200px]">
-          <thead>
-          <tr class="border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-700/50">
-            <th (click)="sort('name')"
-                class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600/50">
-              Product
-              <span class="material-icons text-sm align-middle ml-1">{{getSortIcon('name')}}</span>
-            </th>
-            <th (click)="sort('sku')"
-                class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600/50">
-              SKU
-              <span class="material-icons text-sm align-middle ml-1">{{getSortIcon('sku')}}</span>
-            </th>
-            <th (click)="sort('category')"
-                class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600/50">
-              Category
-              <span class="material-icons text-sm align-middle ml-1">{{getSortIcon('category')}}</span>
-            </th>
-            <th (click)="sort('price')"
-                class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600/50">
-              Price
-              <span class="material-icons text-sm align-middle ml-1">{{getSortIcon('price')}}</span>
-            </th>
-
-
-            <th (click)="sort('stock')"
-                class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600/50">
-              Stock
-              <span class="material-icons text-sm align-middle ml-1">{{getSortIcon('stock')}}</span>
-            </th>
-            <th class="px-6 py-4 text-right text-sm font-semibold text-gray-900 dark:text-white">
-              Actions
-            </th>
-          </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200 dark:divide-gray-700 text-sm" autoAnimate>
-            @for (product of filteredProducts(); track product.$id) {
-              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <td class="px-6 py-4">
-                  <div class="flex items-center gap-4">
-                    <img [src]="getImageUrl(product.imageId)"
-                         class="w-12 h-12 rounded-lg object-cover">
-                    <div class="max-w-xs">
-                      <div class="font-medium text-gray-900 dark:text-white truncate">
-                        {{product.name}}
-                      </div>
-                      <div class="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
-                        {{stripHtml(product.description)}}
-                      </div>
+      } @else {
+        <!-- Products Display -->
+        @if (!isGridView()) {
+          <!-- Table View -->
+          <div class="bg-white dark:bg-surface-dark-secondary rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+        <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
+          <table class="w-full min-w-[1000px]">
+                <thead>
+                <tr class="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                  <th (click)="sort('name')"
+                      class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                    <div class="flex items-center gap-1">
+                      Product
+                      <span class="material-icons text-sm">{{getSortIcon('name')}}</span>
                     </div>
-                  </div>
-                </td>
-                <td class="px-6 py-4 text-gray-500 dark:text-gray-400">{{product.sku}}</td>
-                <td class="px-6 py-4 text-gray-500 dark:text-gray-400">{{product.category.name}}</td>
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                  {{product.price | currency:'NGN':'symbol-narrow'}}
-                </td>
-
-
-                <td class="px-6 py-4">
-                 <span class="px-2 py-1 rounded-full text-xs font-medium"
-                       [class]="getStockClass(product.stockQuantity, product.lowStockThreshold)">
-                   {{product.stockQuantity}}
-                 </span>
-                </td>
-                <td class="px-6 py-4">
-                  <div class="flex justify-end gap-2">
+                  </th>
+                  <th (click)="sort('sku')"
+                      class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                    <div class="flex items-center gap-1">
+                      SKU
+                      <span class="material-icons text-sm">{{getSortIcon('sku')}}</span>
+                    </div>
+                  </th>
+                  <th (click)="sort('category')"
+                      class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                    <div class="flex items-center gap-1">
+                      Category
+                      <span class="material-icons text-sm">{{getSortIcon('category')}}</span>
+                    </div>
+                  </th>
+                  <th (click)="sort('brand')"
+                      class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                    <div class="flex items-center gap-1">
+                      Brand
+                      <span class="material-icons text-sm">{{getSortIcon('brand')}}</span>
+                    </div>
+                  </th>
+                  <th (click)="sort('price')"
+                      class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                    <div class="flex items-center gap-1">
+                      Price
+                      <span class="material-icons text-sm">{{getSortIcon('price')}}</span>
+                    </div>
+                  </th>
+                  <th (click)="sort('stock')"
+                      class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                    <div class="flex items-center gap-1">
+                      Stock
+                      <span class="material-icons text-sm">{{getSortIcon('stock')}}</span>
+                    </div>
+                  </th>
+                  <th class="px-4 py-3 text-right text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">
+                    Actions
+                  </th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700" autoAnimate>
+                  @for (product of paginatedProducts(); track product.$id) {
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 group transition-colors">
+                      <td class="px-4 py-3">
+                        <div class="flex items-center gap-3">
+                          <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-700">
+                            <img [src]="getProductThumbnail(product.imageId)"
+                                 [alt]="product.name"
+                                 class="w-full h-full object-cover">
+                          </div>
+                          <div class="overflow-hidden">
+                            <div class="font-medium text-gray-900 dark:text-white truncate">
+                              {{product.name}}
+                            </div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]">
+                              {{stripHtml(product.description)}}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 font-mono">{{product.sku}}</td>
+                      <td class="px-4 py-3">
+                        <span class="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full">
+                          {{product.category.name}}
+                        </span>
+                      </td>
+                      <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+                        {{product.brand.name || 'Unbranded'}}
+                      </td>
+                      <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                        {{product.price | currency:'NGN':'symbol-narrow'}}
+                      </td>
+                      <td class="px-4 py-3">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium"
+                              [class]="getStockClass(product.stockQuantity, product.lowStockThreshold)">
+                          {{product.stockQuantity}}
+                        </span>
+                      </td>
+                      <td class="px-4 py-3">
+                        <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button [routerLink]="[product.$id, 'edit']"
+                                  class="p-1.5 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20
+                                         text-primary-500">
+                            <span class="material-icons text-sm">edit</span>
+                          </button>
+                          <button (click)="deleteProduct(product.$id, product.name)"
+                                  [disabled]="isDeleting()"
+                                  class="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20
+                                         text-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  [id]="'delete-btn-' + product.$id">
+                            <span class="material-icons text-sm">
+                              {{ isDeleting() ? 'hourglass_empty' : 'delete' }}
+                            </span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        } @else {
+        <!-- Grid View - More compact and optimized -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3" autoAnimate>
+          @for (product of paginatedProducts(); track product.$id) {
+            <div class="bg-white dark:bg-surface-dark-secondary rounded-lg shadow border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-primary-200 dark:hover:border-primary-700 transition-all duration-200 flex flex-col h-full group">
+              <!-- Image with optimized loading -->
+              <div class="aspect-square relative overflow-hidden bg-gray-100 dark:bg-gray-800 rounded-t-lg">
+                <img [src]="getProductThumbnail(product.imageId)"
+                     [alt]="product.name"
+                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                <!-- Actions overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-2">
+                  <div class="flex gap-1 w-full justify-end">
                     <button [routerLink]="[product.$id, 'edit']"
-                            class="p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20
-                                 text-primary-500">
-                      <span class="material-icons">edit</span>
+                            class="p-1 rounded-md bg-white/90 hover:bg-primary-50 text-primary-500">
+                      <span class="material-icons text-xs">edit</span>
                     </button>
-
                     <button (click)="deleteProduct(product.$id, product.name)"
                             [disabled]="isDeleting()"
-                            class="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20
-               text-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            class="p-1 rounded-md bg-white/90 hover:bg-red-50 text-red-500 disabled:opacity-50"
                             [id]="'delete-btn-' + product.$id">
-  <span class="material-icons">
-    {{ isDeleting() ? 'hourglass_empty' : 'delete' }}
-  </span>
+              <span class="material-icons text-xs">
+                {{ isDeleting() ? 'hourglass_empty' : 'delete' }}
+              </span>
                     </button>
                   </div>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-        </div>
-      </div>
+                </div>
+              </div>
 
-      <!-- Grid View (< md) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 md:hidden" autoAnimate>
-        @for (product of filteredProducts(); track product.$id) {
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg">
-            <div class="aspect-video relative">
-              <img [src]="getImageUrl(product.imageId)"
-                   [alt]="product.name"
-                   class="w-full h-full object-cover rounded-t-xl">
-              <div class="absolute top-2 right-2 flex gap-2">
-                <button [routerLink]="['edit', product.$id]"
-                        class="p-2 rounded-lg bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm
-                        text-primary-500 shadow-lg hover:bg-white dark:hover:bg-gray-900">
-                  <span class="material-icons">edit</span>
-                </button>
-                <!-- In product-list.component.html -->
-                <button (click)="deleteProduct(product.$id, product.name)"
-                        [disabled]="isDeleting()"
-                        class="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20
-               text-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                        [id]="'delete-btn-' + product.$id">
-  <span class="material-icons">
-    {{ isDeleting() ? 'hourglass_empty' : 'delete' }}
-  </span>
-                </button>
+              <!-- Product details -->
+              <div class="p-2 flex flex-col flex-grow">
+                <!-- Product ID/SKU -->
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-mono truncate mb-0.5">{{product.sku}}</p>
+
+                <!-- Product name -->
+                <h3 class="font-medium text-gray-900 dark:text-white line-clamp-1 text-sm mb-0.5">{{product.name}}</h3>
+
+                <!-- Price and stock -->
+                <div class="mt-auto pt-1.5 flex items-center justify-between">
+                  <p class="text-sm font-bold text-primary-600 dark:text-primary-400">
+                    {{product.price | currency:'NGN':'symbol-narrow'}}
+                  </p>
+                  <span class="px-1.5 py-0.5 rounded-full text-[10px] font-medium"
+                        [class]="getStockClass(product.stockQuantity, product.lowStockThreshold)">
+            {{product.stockQuantity}}
+          </span>
+                </div>
+
+                <!-- Category and brand -->
+                <div class="flex items-center justify-between mt-1 pt-1 border-t border-gray-100 dark:border-gray-700">
+          <span class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[80%]">
+            {{product.category.name || 'Uncategorized'}}
+          </span>
+                </div>
               </div>
             </div>
+          }
+        </div>
+        }
 
-            <div class="p-4">
-              <div class="space-y-2">
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-mono">{{product.sku}}</p>
-                <h3 class="font-medium text-gray-900 dark:text-white line-clamp-2">{{product.name}}</h3>
+        <!-- Pagination -->
+        @if (totalPages() > 1) {
+          <div class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white dark:bg-surface-dark-secondary rounded-lg shadow p-3">
+            <div class="text-xs text-gray-600 dark:text-gray-400">
+              Showing <span class="font-medium">{{startItem()}}</span> to
+              <span class="font-medium">{{endItem()}}</span> of
+              <span class="font-medium">{{filteredProducts().length}}</span> products
+            </div>
 
-                <div class="flex items-center justify-between">
-            <span class="text-sm text-gray-500 dark:text-gray-400">
-              {{product.category.name}}
-            </span>
+            <div class="flex items-center gap-1">
+              <button (click)="previousPage()"
+                      [disabled]="currentPage() === 1"
+                      class="p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed">
+                <span class="material-icons text-xs">chevron_left</span>
+              </button>
 
-                </div>
+              @for (page of pagesArray(); track page.value) {
+                @if (page.isPage) {
+                  <button (click)="goToPage(page.value)"
+                          [class]="page.value === currentPage() ?
+                    'px-2 py-1 rounded-md bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 font-medium' :
+                    'px-2 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'"
+                          class="text-xs">
+                    {{page.value}}
+                  </button>
+                } @else {
+                  <span class="px-1.5 py-1 text-xs text-gray-400 dark:text-gray-600">
+            {{page.value}}
+          </span>
+                }
+              }
 
-                <div class="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
-                  <div class="text-right">
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Price</p>
-                    <p class="text-lg font-bold text-primary-500">
-                      {{product.price | currency:'NGN':'symbol-narrow'}}
-                    </p>
-                  </div>
-                </div>
+              <button (click)="nextPage()"
+                      [disabled]="currentPage() === totalPages()"
+                      class="p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed">
+                <span class="material-icons text-xs">chevron_right</span>
+              </button>
+            </div>
 
-                <div class="flex justify-between items-center pt-2">
-            <span class="px-2.5 py-1 rounded-full text-xs font-medium"
-                  [class]="getStockClass(product.stockQuantity, product.lowStockThreshold)">
-              {{product.stockQuantity}} in stock
-            </span>
-                </div>
-              </div>
+            <div class="flex items-center gap-2">
+              <label class="text-xs text-gray-600 dark:text-gray-400">Per page:</label>
+              <select [(ngModel)]="pageSize" (change)="goToPage(1)"
+                      class="px-2 py-1 text-xs rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                <option [value]="10">10</option>
+                <option [value]="25">25</option>
+                <option [value]="50">50</option>
+                <option [value]="100">100</option>
+              </select>
             </div>
           </div>
         }
-      </div>
-    }
+      }
     }
   </div>
 </div>

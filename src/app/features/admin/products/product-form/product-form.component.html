@@ -4,7 +4,7 @@
   </div>
 } @else {
 
-  <div class="min-h-screen bg-surface-light-tertiary dark:bg-surface-dark-tertiary  p-3 sm:p-4 md:p-6 lg:p-8">
+  <div class="min-h-screen p-3 sm:p-4 md:p-6 lg:p-8">
     <div class="max-w-7xl mx-auto" autoAnimate>
       <!-- Header -->
       <div
@@ -402,13 +402,13 @@
                                 <label class="flex items-center gap-2">
                                   <input
                                     type="checkbox"
-                                    [id]="field.name"
-                                    [formControlName]="field.name"
-                                    [value]="isFieldOptionType(option) ? option.value : option"
+                                    [id]="field.name + '_' + $index"
+                                    [checked]="isOptionSelected(field.name, isFieldOptionType(option) ? option.value : option)"
+                                    (change)="onCheckboxGroupChange($event, field.name, isFieldOptionType(option) ? option.value : option)"
                                     class="w-5 h-5 rounded text-primary-500 border-gray-300 dark:border-gray-600 focus:ring-primary-500 dark:bg-gray-900">
                                   <span class="text-sm text-gray-900 dark:text-white">
-                                {{ isFieldOptionType(option) ? option.label : option }}
-                              </span>
+          {{ isFieldOptionType(option) ? option.label : option }}
+        </span>
                                 </label>
                               }
                             </div>

@@ -19,6 +19,8 @@ import {Sale} from '../../../core/interfaces/sales/sales.interfaces';
 import {ReceiptComponent} from '../../../core/components/receipt/receipt.component';
 import {SettingsService} from '../../../core/services/settings.service';
 import {AuthService} from '../../../core/services/auth.service';
+import {BrandService} from '../../../core/services/brand.service';
+import {Brand} from '../../../core/interfaces/brand/brand.interfaces';
 
 @Component({
   selector: 'app-pos',
@@ -37,6 +39,7 @@ export class PosComponent implements OnInit, AfterViewChecked {
   private loadingService = inject(LoadingService);
   protected settings = inject(SettingsService);
   private authService = inject(AuthService);
+  private brandService = inject(BrandService);
 
 
 
@@ -54,6 +57,12 @@ export class PosComponent implements OnInit, AfterViewChecked {
   isCartOpen = signal(false);
 
 
+  selectedBrand = signal('all');
+  showOnlyInStock = signal(false);
+  priceRange = signal<{min: number, max: number | null}>({ min: 0, max: null });
+  showFiltersPanel = signal(false); // To toggle advanced filters on mobile
+
+
   showNewCustomerForm = signal(false);
   isCreatingCustomer = signal(false);
   phoneSearchQuery = signal('');
@@ -66,6 +75,7 @@ export class PosComponent implements OnInit, AfterViewChecked {
   products = signal<Product[]>([]);
   customers = signal<Customer[]>([]);
   categories = signal<Category[]>([]);
+  brands = signal<Brand[]>([]);
 
   // POS service connections
   cart = this.posService.cart;
@@ -76,6 +86,8 @@ export class PosComponent implements OnInit, AfterViewChecked {
   total = this.posService.total;
 
   hasPaid = signal(false); // Default to true for backward compatibility
+
+
 
 
 
@@ -91,6 +103,10 @@ export class PosComponent implements OnInit, AfterViewChecked {
 
   toggleCartPanel() {
     this.isCartOpen.update(current => !current);
+  }
+
+  toggleStockOnly(){
+    this.showOnlyInStock.update(current => !current);
   }
 
   closeCartPanel() {
@@ -113,38 +129,110 @@ export class PosComponent implements OnInit, AfterViewChecked {
 
   private async loadInitialData() {
     try {
-      this.isLoading.set(true); // Keep this for backward compatibility
-      // this.loadingService.start('Loading inventory and customers...'); // Add this
+      this.isLoading.set(true);
 
-      const [products, customers, categories] = await Promise.all([
+      // Add BrandService to your injected services at the top
+
+
+      const [products, customers, categories, brands] = await Promise.all([
         this.productService.getProducts(),
         this.customerService.getCustomers(),
-        this.categoryService.getCategories()
+        this.categoryService.getCategories(),
+        this.brandService.getBrands() // Add this
       ]);
 
       this.products.set(products);
       this.customers.set(customers);
       this.categories.set(categories);
+      this.brands.set(brands); // Add this
 
     } catch (error) {
       console.error('Failed to load initial data:', error);
       this.toast.error('Failed to load initial data');
     } finally {
       this.isLoading.set(false);
-      //this.loadingService.clear(); // Add this
     }
   }
 
+
+
+// Then update the getFilteredProducts method with proper null checks
   getFilteredProducts() {
-    return this.products().filter(product =>
-      product.name.toLowerCase().includes(this.searchQuery().toLowerCase()) &&
-      (this.selectedCategory() === 'all' || product.category?.$id === this.selectedCategory())
-    );
+    return this.products().filter(product => {
+      // Text search filter
+      const matchesSearch = product.name.toLowerCase().includes(this.searchQuery().toLowerCase());
+
+      // Category filter
+      const matchesCategory = this.selectedCategory() === 'all' ||
+        product.category?.$id === this.selectedCategory();
+
+      // Brand filter
+      const matchesBrand = this.selectedBrand() === 'all' ||
+        product.brand?.$id === this.selectedBrand();
+
+      // Stock filter
+      const matchesStock = !this.showOnlyInStock() ||
+        (product.stockQuantity > 0);
+
+      // Price filter with proper null checks
+      const minPrice = this.priceRange().min;
+      const maxPrice = this.priceRange().max;
+      const price = product.price || 0;
+
+      const matchesMinPrice = minPrice === 0 || price >= minPrice;
+      const matchesMaxPrice = maxPrice === null || price <= maxPrice;
+      const matchesPrice = matchesMinPrice && matchesMaxPrice;
+
+      return matchesSearch && matchesCategory && matchesBrand && matchesStock && matchesPrice;
+    });
   }
+
+
+  setMinPrice(value: number) {
+    this.priceRange.update(current => ({
+      min: value,
+      max: current.max
+    }));
+  }
+
+  setMaxPrice(value: number | null) {
+    this.priceRange.update(current => ({
+      min: current.min,
+      max: value
+    }));
+  }
+
+// Helper method for quick price ranges
+  setPriceRange(min: number, max: number | null) {
+    this.priceRange.set({ min, max });
+  }
+
+
+  resetFilters() {
+    this.searchQuery.set('');
+    this.selectedCategory.set('all');
+    this.selectedBrand.set('all');
+    this.showOnlyInStock.set(false);
+    this.priceRange.set({ min: 0, max: null });
+  }
+
+  toggleFiltersPanel() {
+    this.showFiltersPanel.update(current => !current);
+  }
+
+// Helper to check if any filters are active
+  hasActiveFilters() {
+    return this.searchQuery() !== '' ||
+      this.selectedCategory() !== 'all' ||
+      this.selectedBrand() !== 'all' ||
+      this.showOnlyInStock() ||
+      (this.priceRange().min > 0 || this.priceRange().max !== null);
+  }
+
 
   getImageUrl(imageUrl?: string): string {
     if (!imageUrl) return 'assets/images/placeholder.png';
-    return this.productService.getProductImageUrl(imageUrl);
+    return this.productService.getOptimizedImage(imageUrl, 200, 80);
   }
 
   addToCart(product: Product) {
@@ -357,6 +445,17 @@ export class PosComponent implements OnInit, AfterViewChecked {
       this.searchInput.nativeElement.focus();
       this.shouldFocusSearch = false; // Reset flag after focusing
     }
+  }
+
+  // Helper methods to get display names for IDs
+  getCategoryName(categoryId: string): string {
+    const category = this.categories().find(c => c.$id === categoryId);
+    return category ? category.name : 'Unknown';
+  }
+
+  getBrandName(brandId: string): string {
+    const brand = this.brands().find(b => b.$id === brandId);
+    return brand ? brand.name : 'Unknown';
   }
 
 }

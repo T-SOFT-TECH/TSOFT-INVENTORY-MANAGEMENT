@@ -19,3 +19,50 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(35%) sepia(85%) saturate(1350%) hue-rotate(85deg) brightness(95%) contrast(90%);
   cursor: pointer;
 }
+
+
+
+
+/* Custom scrollbar styles */
+.custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(200, 200, 200, 0.2);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--primary-500, #22c55e);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-600, #16a34a);
+  }
+
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-500, #22c55e) rgba(200, 200, 200, 0.2);
+}
+
+/* Dark mode */
+.dark .custom-scrollbar {
+  &::-webkit-scrollbar-track {
+    background: rgba(50, 50, 50, 0.2);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--primary-600, #16a34a);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-500, #22c55e);
+  }
+
+  /* Firefox */
+  scrollbar-color: var(--primary-600, #16a34a) rgba(50, 50, 50, 0.2);
+}

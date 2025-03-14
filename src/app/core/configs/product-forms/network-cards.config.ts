@@ -19,6 +19,22 @@ export const networkCardsConfig: CategoryFormConfig = {
       ],
       group: 'specifications'
     },
+
+    {
+      name: 'usbVersion',
+      type: 'select',
+      label: 'USB Version',
+      required: false,
+      options: [
+        'USB 1.1',
+        'USB 2.0',
+        'USB 3.0/3.1 Gen 1',
+        'USB 3.1 Gen 2',
+        'USB 3.2'
+      ],
+      group: 'specifications'
+    },
+
     {
       name: 'networkType',
       type: 'select',
@@ -32,6 +48,24 @@ export const networkCardsConfig: CategoryFormConfig = {
       ],
       group: 'specifications'
     },
+
+    {
+      name: 'wifiSpeed',
+      type: 'select',
+      label: 'Wi-Fi Speed',
+      required: false,
+      options: [
+        '150 Mbps',
+        '300 Mbps',
+        '433 Mbps',
+        '867 Mbps',
+        '1200 Mbps',
+        '1800 Mbps',
+        '3000 Mbps'
+      ],
+      group: 'specifications'
+    },
+
     {
       name: 'ethernetSpeed',
       type: 'select',
@@ -91,7 +125,7 @@ export const networkCardsConfig: CategoryFormConfig = {
     },
     {
       name: 'features',
-      type: 'multiselect',
+      type: 'checkbox-group',
       label: 'Features',
       required: false,
       options: [
@@ -114,7 +148,10 @@ export const networkCardsConfig: CategoryFormConfig = {
         'M.2 2230',
         'M.2 2242',
         'M.2 2260',
-        'M.2 2280'
+        'M.2 2280',
+        'USB Nano',
+        'USB Mini',
+        'USB Standard'
       ],
       group: 'specifications'
     },
@@ -122,7 +159,7 @@ export const networkCardsConfig: CategoryFormConfig = {
       name: 'chipset',
       type: 'text',
       label: 'Chipset',
-      required: true,
+      required: false,
       placeholder: 'e.g., Intel AX210, Realtek 8125',
       group: 'specifications'
     }

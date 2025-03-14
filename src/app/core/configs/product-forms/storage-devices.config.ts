@@ -1,4 +1,3 @@
-
 import { CategoryFormConfig } from './product-form.types';
 
 export const storageDevicesConfig: CategoryFormConfig = {
@@ -17,8 +16,11 @@ export const storageDevicesConfig: CategoryFormConfig = {
         'External SSD',
         'External HDD',
         'Memory Card',
-        'Flash Drive'
-
+        'Flash Drive',
+        'Optane Memory/Storage',
+        'Hybrid Drive (SSHD)',
+        'Enterprise SSD',
+        'NAS Drive'
       ],
       group: 'basic'
     },
@@ -39,9 +41,16 @@ export const storageDevicesConfig: CategoryFormConfig = {
         'M.2 2280',
         'M.2 2260',
         'M.2 2242',
+        'M.2 22110',
         '2.5-inch',
         '3.5-inch',
-        'External'
+        'Add-in Card (AIC)',
+        'U.2 2.5-inch',
+        'SD Card',
+        'microSD Card',
+        'CompactFlash',
+        'Flash Drive',
+        'External Enclosure'
       ],
       group: 'physical'
     },
@@ -49,17 +58,79 @@ export const storageDevicesConfig: CategoryFormConfig = {
       name: 'interface',
       type: 'select',
       label: 'Interface',
-      required: true,
+      required: false,
       options: [
+        'PCIe 5.0 x4',
         'PCIe 4.0 x4',
         'PCIe 3.0 x4',
         'SATA III',
+        'SATA II',
+        'SAS 12Gb/s',
+        'SAS 6Gb/s',
+        'USB4 2.0',
+        'USB4',
         'USB 3.2 Gen 2',
         'USB 3.2 Gen 1',
-        'Thunderbolt'
+        'USB 3.1 Gen 2',
+        'USB 3.1 Gen 1',
+        'USB 3.0',
+        'USB 2.0',
+        'Thunderbolt',
+        'UHS-I',
+        'UHS-II'
       ],
       group: 'connectivity'
     },
+    {
+      name: 'connectorTypes',
+      type: 'checkbox-group',
+      label: 'Connector Types',
+      options: [
+        'USB Type-A',
+        'USB Type-C',
+        'Lightning',
+        'Micro USB',
+        'Thunderbolt',
+        'SD Card Reader',
+        'microSD Card Reader'
+      ],
+      helpText: 'Select all connector types available on this device',
+      group: 'connectivity'
+    },
+    {
+      name: 'multiInterfaceType',
+      type: 'select',
+      label: 'Multi-Interface Type',
+      options: [
+        'Single Interface',
+        'Dual Interface',
+        '3-in-1',
+        '4-in-1',
+        'OTG (On-The-Go)'
+      ],
+      helpText: 'For devices with multiple connector types',
+      group: 'connectivity'
+    },
+    {
+      name: 'flashDriveFeatures',
+      type: 'checkbox-group',
+      label: 'Flash Drive Features',
+      options: [
+        'Swivel Design',
+        'Retractable',
+        'Capless',
+        'Fingerprint Scanner',
+        'Hardware Encryption',
+        'Password Protection',
+        'Keyring Hole',
+        'LED Indicator',
+        'Rugged/Waterproof',
+        'Metal Body'
+      ],
+      helpText: 'Special features of flash drives',
+      group: 'features'
+    },
+
     {
       name: 'readSpeed',
       type: 'number',
@@ -91,6 +162,46 @@ export const storageDevicesConfig: CategoryFormConfig = {
       group: 'performance'
     },
     {
+      name: 'rpmSpeed',
+      type: 'select',
+      label: 'RPM Speed',
+      options: ['5400', '7200', '10000', '15000'],
+      group: 'performance',
+      helpText: 'Only applicable for HDDs'
+    },
+    {
+      name: 'cacheSize',
+      type: 'number',
+      label: 'Cache Size',
+      unit: 'MB',
+      group: 'specifications',
+      helpText: 'Only applicable for HDDs'
+    },
+    {
+      name: 'recordingTechnology',
+      type: 'select',
+      label: 'Recording Technology',
+      options: ['CMR (Conventional)', 'SMR (Shingled)'],
+      group: 'specifications',
+      helpText: 'Only applicable for HDDs'
+    },
+    {
+      name: 'speedClass',
+      type: 'select',
+      label: 'Speed Class',
+      options: ['Class 10', "Class 6", 'Class 4', 'Class 2', 'UHS-I', 'UHS-II', 'UHS-III', 'V30', 'V60', 'V90'],
+      group: 'performance',
+      helpText: 'Only applicable for memory cards'
+    },
+    {
+      name: 'appPerformanceClass',
+      type: 'select',
+      label: 'App Performance Class',
+      options: ['A1', 'A2'],
+      group: 'performance',
+      helpText: 'Only applicable for memory cards'
+    },
+    {
       name: 'nandType',
       type: 'select',
       label: 'NAND Type',
@@ -100,26 +211,30 @@ export const storageDevicesConfig: CategoryFormConfig = {
         'MLC',
         'SLC'
       ],
-      group: 'specifications'
+      group: 'specifications',
+      helpText: 'Only applicable for SSDs'
     },
     {
       name: 'dramCache',
       type: 'checkbox',
       label: 'DRAM Cache',
-      group: 'specifications'
+      group: 'specifications',
+      helpText: 'Only applicable for SSDs'
     },
     {
       name: 'dramSize',
       type: 'number',
       label: 'DRAM Cache Size',
       unit: 'MB',
-      group: 'specifications'
+      group: 'specifications',
+      helpText: 'Only applicable for SSDs'
     },
     {
       name: 'tbw',
       type: 'number',
       label: 'Terabytes Written (TBW)',
-      group: 'endurance'
+      group: 'endurance',
+      helpText: 'Only applicable for SSDs'
     },
     {
       name: 'mtbf',
@@ -128,14 +243,17 @@ export const storageDevicesConfig: CategoryFormConfig = {
       unit: 'hours',
       group: 'endurance'
     },
+    // Changed from multiselect to checkbox-group
     {
       name: 'encryption',
-      type: 'multiselect',
+      type: 'checkbox-group',
       label: 'Encryption Support',
       options: [
         'AES 256-bit',
         'TCG Opal',
-        'eDrive'
+        'eDrive',
+        'Hardware Encryption',
+        'Password Protection'
       ],
       group: 'security'
     },
@@ -153,27 +271,35 @@ export const storageDevicesConfig: CategoryFormConfig = {
       unit: 'W',
       group: 'power'
     },
+    // Changed from multiselect to checkbox-group
     {
       name: 'features',
-      type: 'multiselect',
+      type: 'checkbox-group',
       label: 'Features',
       options: [
         'TRIM Support',
         'S.M.A.R.T.',
         'Garbage Collection',
         'DEVSLP',
-        'Power Loss Protection'
+        'Power Loss Protection',
+        'Shock Resistant',
+        'Vibration Resistant',
+        'Water Resistant',
+        'Temperature Resistant'
       ],
       group: 'features'
     },
+    // Changed from multiselect to checkbox-group
     {
       name: 'includedSoftware',
-      type: 'multiselect',
+      type: 'checkbox-group',
       label: 'Included Software',
       options: [
         'Data Migration',
         'Drive Health Monitor',
-        'Drive Toolbox'
+        'Drive Toolbox',
+        'Backup Software',
+        'Encryption Software'
       ],
       group: 'software'
     }
