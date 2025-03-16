@@ -126,6 +126,8 @@ import {lightningDockingStationsConfig} from './lightning-docking-stations.confi
 import {surfaceDockingStationsConfig} from './surface-docking-stations.config';
 import {hardDiskEnclosuresConfig} from './hard-disk-enclosures.config';
 import {ssdEnclosuresConfig} from './ssd-enclosure.config';
+import {mobileCellularRoutersConfig} from './mobile-cellular-router.config';
+import {laptopChargersConfig} from './laptop-chargers.config';
 
 export const productFormConfigs: Map<string, CategoryFormConfig> = new Map([
   // Computer & Components
@@ -171,6 +173,7 @@ export const productFormConfigs: Map<string, CategoryFormConfig> = new Map([
   [displayPortCablesConfig.id, displayPortCablesConfig],
   [usbCCablesConfig.id, usbCCablesConfig],
   [lightningCablesConfig.id, lightningCablesConfig],
+  [mobileCellularRoutersConfig.id, mobileCellularRoutersConfig],
 
   // Audio/Video
   [audioInterfaceConfig.id, audioInterfaceConfig],
@@ -262,6 +265,7 @@ export const productFormConfigs: Map<string, CategoryFormConfig> = new Map([
   [phoneAccessoriesConfig.id, phoneAccessoriesConfig],
   [drawingTabletsConfig.id, drawingTabletsConfig],
   [soundCardConfig.id, soundCardConfig],
+  [laptopChargersConfig.id, laptopChargersConfig],
 ]);
 
 // Export all configs individually
@@ -309,6 +313,7 @@ export {
   displayPortCablesConfig,
   usbCCablesConfig,
   lightningCablesConfig,
+  mobileCellularRoutersConfig,
 
   // Audio/Video
   audioInterfaceConfig,
@@ -397,6 +402,7 @@ export {
   phoneAccessoriesConfig,
   drawingTabletsConfig,
   soundCardConfig,
+  laptopChargersConfig
 };
 
 // Export types
@@ -438,6 +444,7 @@ export * from './enterprise-switches.config';
 export * from './network-cards.config';
 export * from './network-security.config';
 export * from './ethernet-cables.config';
+export * from './mobile-cellular-router.config';
 export * from './fiber-optic-cables.config';
 export * from './hdmi-cables.config';
 export * from './displayport-cables.config';
@@ -543,6 +550,7 @@ export * from './operating-systems.config';
 export * from './phone-accessories.config';
 export * from './drawing-tablets.config';
 export * from './sound-card.config';
+export * from './laptop-chargers.config';
 
 // Helper functions
 export function getFormConfigById(id: string): CategoryFormConfig | undefined {

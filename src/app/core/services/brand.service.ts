@@ -22,7 +22,7 @@ export class BrandService {
         environment.appwrite.databaseId,
         environment.appwrite.collections.brands,
         [
-          Query.limit(100) // Increase limit to get more records
+          Query.limit(1000) // Increase limit to get more records
         ]
       );
       const brands = response.documents as unknown as Brand[];
