@@ -285,16 +285,21 @@
       </div>
 
       <!-- Mobile Filters Panel (slides in from left) -->
-      <div class="md:hidden fixed inset-0 bg-black/80 z-30 transition-opacity duration-300"
+
+
+
+
+      <div class="md:hidden fixed inset-0 bg-black/90 z-30 transition-opacity duration-300"
            [class.opacity-0]="!showFiltersPanel()"
            [class.pointer-events-none]="!showFiltersPanel()"
-           (click)="showFiltersPanel.set(false)">
+           (click)="closeFilters()">
       </div>
+
+
 
       <div class="md:hidden fixed top-0 left-0 w-[85vw] max-w-md h-full bg-white dark:bg-surface-dark-secondary shadow-xl z-40
            transform transition-transform duration-300 ease-in-out"
-           [class.translate-x-0]="showFiltersPanel()"
-           [class.translate-x-[-100%)]="!showFiltersPanel()">
+           [ngClass]="{'translate-x-0': showFiltersPanel(), '-translate-x-full':!showFiltersPanel()}">
 
         <!-- Mobile Filters Header -->
         <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
@@ -303,10 +308,10 @@
             Filter Products
           </h2>
           <button
-            (click)="showFiltersPanel.set(false)"
-            class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            (click)=closeFilters()
+            class=" h-8 w-8 rounded-full hover:bg-gray-100 dark:bg-gray-600 transition-colors"
           >
-            <span class="material-icons">close</span>
+            <span class="material-icons text-sm text-red-400">close</span>
           </button>
         </div>
 
@@ -502,6 +507,7 @@
           </div>
         </div>
       </div>
+
 
 
       <!-- Products Grid -->

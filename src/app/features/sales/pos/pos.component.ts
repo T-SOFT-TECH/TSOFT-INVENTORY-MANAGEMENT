@@ -113,6 +113,10 @@ export class PosComponent implements OnInit, AfterViewChecked {
     this.isCartOpen.set(false);
   }
 
+  closeFilters(){
+    this.showFiltersPanel.set(false);
+  }
+
   // Add this method to toggle payment status
   togglePaymentStatus() {
     this.hasPaid.update(current => !current);
